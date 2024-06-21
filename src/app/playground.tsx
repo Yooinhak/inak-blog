@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
 
-import Button from '@components/Button';
 import { useRouter } from 'next/router';
+
+import Button from '@components/Button';
 
 import Test from './test';
 
@@ -10,11 +11,7 @@ const Component = () => {
 
   useEffect(() => {}, []);
 
-  return (
-    <div>
-      <Button />
-    </div>
-  );
+  return <div></div>;
 };
 
 export default Component;

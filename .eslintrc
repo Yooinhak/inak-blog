@@ -2,9 +2,9 @@
   "extends": [
     "next",
     "prettier",
-    "plugin:prettier/recommended",
+    // "plugin:prettier/recommended",
     "plugin:import/errors",
-    "plugin:import/warnings"
+    "plugin:import/warnings",
   ],
 
   "parser": "@typescript-eslint/parser",
@@ -28,37 +28,42 @@
           // object: object import
           "object",
           // type: type import
-          "type"
+          "type",
         ],
         "pathGroups": [
           {
-            "pattern": "@/**",
-            "group": "index",
-            "position": "after"
-          }
-        ],
-        "pathGroupsExcludedImportTypes": [
-          "builtin",
-          "external",
-          "internal",
-          "parent",
-          "sibling"
+            "pattern": "@*/*",
+            "group": "internal",
+            "position": "after",
+          },
         ],
         "newlines-between": "always",
         "alphabetize": {
           "order": "asc",
-          "caseInsensitive": true
-        }
-      }
-    ]
+          "caseInsensitive": true,
+        },
+      },
+    ],
   },
 
-  "settings": {
-    "import/parsers": {
-      "@typescript-eslint/parser": [".ts", ".tsx"]
-    },
-    "import/resolver": {
-      "typescript": "./tsconfig.json"
-    }
-  }
+  // "plugins": ["react"],
+
+  // "settings": {
+  //   "import/parsers": {
+  //     "@typescript-eslint/parser": [".ts", ".tsx"],
+  //   },
+  //   "import/resolver": {
+  //     "typescript": "./tsconfig.json",
+  //     "node": {
+  //       "extensions": [".ts", ".tsx"],
+  //     },
+  //     "alias": {
+  //       "map": [
+  //         ["@components", "./src/components"],
+  //         // 다른 절대 경로들도 필요하다면 추가해주세요.
+  //       ],
+  //       "extensions": [".ts", ".tsx"],
+  //     },
+  //   },
+  // },
 }
