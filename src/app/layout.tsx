@@ -1,4 +1,5 @@
-import StyledComponentsRegistry from 'lib/registry';
+import Header from '@components/Header';
+import './global.css';
 
 import type { Metadata } from 'next';
 
@@ -15,7 +16,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
+        <Header />
+        {children}
       </body>
     </html>
   );
