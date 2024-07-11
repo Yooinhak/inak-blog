@@ -5,7 +5,7 @@ import HamburgerMenu from '@components/FancyIcon/HamburgerMenu';
 
 export default function Home() {
   return (
-    <div>
+    <div className="flex justify-center">
       <HamburgerMenu />
     </div>
   );
