@@ -1,15 +1,18 @@
+'use client';
+
 import {
   Disclosure,
   DisclosureButton,
   DisclosurePanel,
 } from '@headlessui/react';
+import { useRouter, usePathname } from 'next/navigation';
 import { useState } from 'react';
 
 import HamburgerMenu from '@components/FancyIcon/HamburgerMenu';
 
 const navigation = [
-  { name: 'Posts', href: '#', current: true },
-  { name: 'About', href: '#', current: false },
+  { name: 'Posts', href: '/posts', current: true },
+  { name: 'About', href: '/about', current: false },
 ];
 
 function classNames(...classes: string[]) {
@@ -17,6 +20,12 @@ function classNames(...classes: string[]) {
 }
 
 const Component = () => {
+  const pathname = usePathname();
+
+  const isCurrentPage = (url: string) => {
+    return pathname.startsWith(url);
+  };
+
   return (
     <Disclosure as="nav" className="bg-gray-800">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -38,7 +47,7 @@ const Component = () => {
                     href={item.href}
                     aria-current={item.current ? 'page' : undefined}
                     className={classNames(
-                      item.current
+                      isCurrentPage(item.href)
                         ? 'bg-gray-900 text-white'
                         : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                       'rounded-md px-3 py-2 text-sm font-medium',
