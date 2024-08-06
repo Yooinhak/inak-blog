@@ -1,1 +1,2 @@
-export { getPostList } from './getPosts';
+export { getPostList } from './getPostList';
+export { getPostDetail } from './getPostDetail';

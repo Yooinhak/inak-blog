@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { useMemo } from 'react';
 
 import { getPostList } from '@lib/postManagement';
-import { PostListItem } from '@lib/postManagement/types';
+import { PostAbstract } from '@lib/postManagement/types';
 
 interface SearchParams {
   searchParams: {
@@ -18,7 +18,7 @@ interface CategoryOptionItem {
 
 const Page = ({ searchParams }: SearchParams) => {
   const { category } = searchParams;
-  const postList: PostListItem[] = getPostList();
+  const postList: PostAbstract[] = getPostList();
 
   const postCategoryOptions = useMemo(() => {
     const allCategories = postList.map(post => post.category);
@@ -60,10 +60,11 @@ const Page = ({ searchParams }: SearchParams) => {
 
       <div className="flex flex-col">
         {postListFilteredByCategry.map(postItem => (
-          <div
+          <Link
             className="cursor-pointer"
             key={`${postItem.category}_${postItem.slug}`}
-          >{`${postItem.category}_${postItem.slug}`}</div>
+            href={postItem.url}
+          >{`${postItem.category}_${postItem.slug}`}</Link>
         ))}
       </div>
     </div>

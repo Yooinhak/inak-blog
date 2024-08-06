@@ -1,34 +1,16 @@
-export interface PostMatter {
+export interface PostDetailData {
   title: string;
-  date: Date;
-  // dateString: string;
-  thumbnail: string;
-  desc: string;
+  createdDate: Date;
+  thumbnailImage: string;
 }
 
-export interface PostListItem {
+export interface PostDetail extends PostDetailData {
+  content: string;
+  formattedCreatedDate: string;
+}
+
+export interface PostAbstract {
   url: string;
   category: string;
   slug: string;
-}
-
-export interface Post extends PostMatter {
-  url: string;
-  slug: string;
-  category: string;
-  // content: string;
-  // readingMinutes: number;
-  // categoryPublicName: string;
-}
-
-export interface CategoryDetail {
-  dirName: string;
-  publicName: string;
-  count: number;
-}
-
-export interface HeadingItem {
-  text: string;
-  link: string;
-  indent: number;
 }
