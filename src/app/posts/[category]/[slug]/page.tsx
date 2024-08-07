@@ -18,6 +18,8 @@ const Page = ({ params }: PageParams) => {
     <div>
       {/* <div>{postDetail.title}</div>
       <div>{postDetail.formattedCreatedDate}</div> */}
+      
+      {/* @ts-expect-error Async Server Component */}
       <MDXRemote source={postDetail.content} />
     </div>
   );
