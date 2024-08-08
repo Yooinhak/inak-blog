@@ -20,7 +20,7 @@ export default function RootLayout({
       <body>
         <ThemeProvider>
           <Header />
-          {children}
+          <main className="bg-white dark:bg-black">{children}</main>
         </ThemeProvider>
       </body>
     </html>

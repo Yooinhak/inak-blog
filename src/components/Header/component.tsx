@@ -10,6 +10,8 @@ import { useState } from 'react';
 
 import HamburgerMenu from '@components/FancyIcon/HamburgerMenu';
 
+import DarkMode from './darkMode';
+
 const navigation = [
   { name: 'Posts', href: '/posts', current: true },
   { name: 'About', href: '/about', current: false },
@@ -28,6 +30,7 @@ const Component = () => {
 
   return (
     <Disclosure as="nav" className="bg-gray-800">
+      <DarkMode />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
