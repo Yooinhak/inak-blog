@@ -33,7 +33,7 @@
         "pathGroups": [
           {
             "pattern": "@/**",
-            "group": "index",
+            "group": "internal",
             "position": "after"
           }
         ],
