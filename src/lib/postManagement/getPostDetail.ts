@@ -1,10 +1,10 @@
+import { POSTS_PATH } from './config';
+import { PostDetail, PostDetailData } from './types';
+
 import { format } from 'date-fns';
 import { readFileSync } from 'fs';
 import matter from 'gray-matter';
 import { notFound } from 'next/navigation';
-
-import { POSTS_PATH } from './config';
-import { PostDetail, PostDetailData } from './types';
 
 export const getPostDetail = (category: string, slug: string): PostDetail => {
   const filePath = `${POSTS_PATH}/${category}/${slug}.mdx`;
