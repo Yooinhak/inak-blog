@@ -1,3 +1,3 @@
 export default function Home() {
-  return <div>content!</div>;
+  return <div className="h-screen">content!</div>;
 }

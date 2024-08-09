@@ -5,6 +5,7 @@ import {
   DisclosureButton,
   DisclosurePanel,
 } from '@headlessui/react';
+import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { useState } from 'react';
 
@@ -29,17 +30,16 @@ const Component = () => {
   };
 
   return (
-    <Disclosure as="nav" className="bg-gray-800">
-      <DarkMode />
+    <Disclosure as="nav" className="bg-gradient-to-r from-primary-500 to-primary-200 fixed top-0 left-0 w-full">
+      {/* <DarkMode /> */}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <img
-                alt="Your Company"
-                src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                className="h-8 w-8"
-              />
+              <Link
+                className="bg-gray-500 cursor-pointer"
+                href={'/'}
+              >LOGO</Link>
             </div>
 
             <div className="hidden md:block">

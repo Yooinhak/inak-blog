@@ -26,6 +26,7 @@ function DarkMode({}: IDarkMode) {
 
   return (
     <div className="bg-darkModeBg cursor-pointer rounded-[50%] p-1">
+      <div onClick={onClick('system')}>test123</div>
       {currentTheme === 'dark' ? (
         <BsFillMoonFill onClick={onClick('light')} />
       ) : (
