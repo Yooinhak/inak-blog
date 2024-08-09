@@ -16,6 +16,7 @@
         "groups": [
           // builtin: Node's builtin modules
           // external: external modules (외부 라이브러리)
+          ["external", "builtin"],
           // internal: internal modules (webpack 등에 의해 매핑한 절대 경로)
           "internal",
           // parent: modules in parent path (상위 경로에 있는 모듈)
@@ -24,8 +25,7 @@
           // index: current directoy (현재 경로 index 파일)
           "index",
           // object: object import
-          "object",
-          ["external", "builtin"]
+          "object"
         ],
         "pathGroups": [
           {

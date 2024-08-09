@@ -1,7 +1,7 @@
+import { sync } from 'glob';
+
 import { BASE_PATH, POSTS_PATH } from './config';
 import { PostAbstract } from './types';
-
-import { sync } from 'glob';
 
 const getPostPaths = (category?: string) => {
   const postPaths: string[] = sync(
