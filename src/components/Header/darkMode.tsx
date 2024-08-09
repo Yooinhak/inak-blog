@@ -4,9 +4,7 @@ import { useTheme } from 'next-themes';
 import { useState, useEffect } from 'react';
 import { BsFillSunFill, BsFillMoonFill } from 'react-icons/bs';
 
-interface IDarkMode {}
-
-function DarkMode({}: IDarkMode) {
+function DarkMode({}) {
   const [mounted, setMounted] = useState(false);
   const { systemTheme, theme, setTheme } = useTheme();
 

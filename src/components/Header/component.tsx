@@ -6,12 +6,7 @@ import {
   DisclosurePanel,
 } from '@headlessui/react';
 import Link from 'next/link';
-import { useRouter, usePathname } from 'next/navigation';
-import { useState } from 'react';
-
-import HamburgerMenu from '@components/FancyIcon/HamburgerMenu';
-
-import DarkMode from './darkMode';
+import { usePathname } from 'next/navigation';
 
 const navigation = [
   { name: 'Posts', href: '/posts' },

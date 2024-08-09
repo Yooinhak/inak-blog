@@ -1,5 +1,3 @@
-import { combineClassNames } from 'utils/stringManagement/className';
-
 const Component = () => {
   const defaultStyle =
     'block h-1 bg-blue-500 rounded transition-all duration-400 ease-in-out absolute';

@@ -1,6 +1,6 @@
 export const combineClassNames = (
-  prefix: String = '',
-  classNames: String[],
+  prefix: string = '',
+  classNames: string[],
 ): string => {
   return classNames.map(className => `${prefix}${className}`).join(' ');
 };

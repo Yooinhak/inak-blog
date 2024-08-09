@@ -1,4 +1,3 @@
-import { AppProps } from 'next/app';
 import Link from 'next/link';
 import { useMemo } from 'react';
 

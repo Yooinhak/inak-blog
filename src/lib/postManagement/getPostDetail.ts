@@ -20,6 +20,7 @@ export const getPostDetail = (category: string, slug: string): PostDetail => {
     );
     return { ...postDetailData, formattedCreatedDate, content };
   } catch (err) {
+    console.log(err);
     notFound();
   }
 };
