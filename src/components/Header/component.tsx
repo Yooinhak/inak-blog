@@ -30,16 +30,18 @@ const Component = () => {
   };
 
   return (
-    <Disclosure as="nav" className="bg-gradient-to-r from-primary-500 to-primary-200 fixed top-0 left-0 w-full">
+    <Disclosure
+      as="nav"
+      className="bg-gradient-to-r from-primary-500 to-primary-200 fixed top-0 left-0 w-full"
+    >
       {/* <DarkMode /> */}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <Link
-                className="bg-gray-500 cursor-pointer"
-                href={'/'}
-              >LOGO</Link>
+              <Link className="bg-gray-500 cursor-pointer" href={'/'}>
+                LOGO
+              </Link>
             </div>
 
             <div className="hidden md:block">
@@ -85,9 +87,7 @@ const Component = () => {
               href={item.href}
               aria-current={isCurrentPage(item.href) ? 'page' : undefined}
               className={classNames(
-                isCurrentPage(item.href)
-                  ? 'bg-primary-100'
-                  : 'text-gray-30',
+                isCurrentPage(item.href) ? 'bg-primary-100' : 'text-gray-30',
                 'block rounded-md px-3 py-2 hover:bg-primary-200 hover:text-white',
               )}
             >
