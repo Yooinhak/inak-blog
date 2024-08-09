@@ -1,6 +1,6 @@
-import './global.css';
-
 import type { Metadata } from 'next';
+
+import './global.css';
 
 import Header from '@components/Header';
 import { default as ThemeProvider } from '@themes/Provider';
