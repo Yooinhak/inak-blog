@@ -4313,7 +4313,7 @@ __metadata:
     vfile-matter: "npm:^5.0.0"
   peerDependencies:
     react: ">=16"
-  checksum: 10c0/f9c85fe18769c2b01717e7a12d55da7fa3a2c6eb21a22853ac70cb1c486e3d5664e43116dd589d69851d4c946c4b56ae6f1bb53ca07830859b1a5bce2e4888a9
+  checksum: 10c0/bf96d57bf978c477b6b4e0d330889d3293f99c16f82e92b960a676cb80cd656f5d4427717ec3377323d604330eddd8fcb05a74740c10e03092a3b9888079a250
   languageName: node
   linkType: hard
 
