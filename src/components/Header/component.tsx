@@ -14,8 +14,8 @@ import HamburgerMenu from '@components/FancyIcon/HamburgerMenu';
 import DarkMode from './darkMode';
 
 const navigation = [
-  { name: 'Posts', href: '/posts', current: true },
-  { name: 'About', href: '/about', current: false },
+  { name: 'Posts', href: '/posts' },
+  { name: 'About', href: '/about' },
 ];
 
 function classNames(...classes: string[]) {
@@ -48,7 +48,7 @@ const Component = () => {
                   <a
                     key={item.name}
                     href={item.href}
-                    aria-current={item.current ? 'page' : undefined}
+                    aria-current={isCurrentPage(item.href) ? 'page' : undefined}
                     className={classNames(
                       isCurrentPage(item.href)
                         ? 'bg-gray-900 text-white'
@@ -66,7 +66,8 @@ const Component = () => {
           <div className="-mr-2 flex md:hidden">
             {/* Mobile menu button */}
             <DisclosureButton className="group">
-              <HamburgerMenu />
+              {/* <HamburgerMenu /> */}
+              <div>hamburger Menu!</div>
             </DisclosureButton>
           </div>
         </div>
@@ -74,7 +75,7 @@ const Component = () => {
 
       <DisclosurePanel
         transition
-        className="md:hidden origin-top transition duration-200 ease-out data-[closed]:-translate-y-6 data-[closed]:opacity-0"
+        className="md:hidden absolute top-20 right-4 border-2 bg-gray-50 transition duration-200 ease-out data-[closed]:-translate-y-6 data-[closed]:opacity-0"
       >
         <div className="space-y-1 px-2 pb-3 pt-2 sm:px-3">
           {navigation.map(item => (
@@ -82,12 +83,12 @@ const Component = () => {
               key={item.name}
               as="a"
               href={item.href}
-              aria-current={item.current ? 'page' : undefined}
+              aria-current={isCurrentPage(item.href) ? 'page' : undefined}
               className={classNames(
-                item.current
-                  ? 'bg-gray-900 text-white'
-                  : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                'block rounded-md px-3 py-2 text-base font-medium',
+                isCurrentPage(item.href)
+                  ? 'bg-primary-100'
+                  : 'text-gray-30',
+                'block rounded-md px-3 py-2 hover:bg-primary-200 hover:text-white',
               )}
             >
               {item.name}
