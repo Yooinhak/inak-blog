@@ -1,8 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-
 import { useTheme } from 'next-themes';
+import { useState, useEffect } from 'react';
 import { BsFillSunFill, BsFillMoonFill } from 'react-icons/bs';
 
 function DarkMode({}) {

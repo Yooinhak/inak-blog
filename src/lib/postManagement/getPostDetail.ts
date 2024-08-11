@@ -1,7 +1,6 @@
 import { format } from 'date-fns';
 import { readFileSync } from 'fs';
 import matter from 'gray-matter';
-
 import { notFound } from 'next/navigation';
 
 import { POSTS_PATH } from './config';

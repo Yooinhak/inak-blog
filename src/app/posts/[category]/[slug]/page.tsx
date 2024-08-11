@@ -1,6 +1,7 @@
+import { MDXRemote } from 'next-mdx-remote/rsc';
+
 import { getPostDetail } from '@lib/postManagement';
 import { PostDetail } from '@lib/postManagement/types';
-import { MDXRemote } from 'next-mdx-remote/rsc';
 
 interface PageParams {
   params: {
