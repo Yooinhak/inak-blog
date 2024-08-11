@@ -47,7 +47,7 @@
   },
 
   "settings": {
-    // "import/external-module-folders": [".yarn"],
+    "import/external-module-folders": [".yarn"],
     "import/parsers": {
       "@typescript-eslint/parser": [".ts", ".tsx"]
     },

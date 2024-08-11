@@ -29,7 +29,7 @@ const RAW_RUNTIME_STATE =
         "packageDependencies": [\
           ["@headlessui/react", "virtual:9e51d21be3b1dffb78515aa0bd4394e6c945eb5b7de4e6b91c0476dbee1a77a828fcefacd440ed6967a4ef213a901441741b94db57b232a4134bbb41ab1deeed#npm:2.1.2"],\
           ["@types/glob", "npm:8.1.0"],\
-          ["@types/node", "npm:20.14.14"],\
+          ["@types/node", "npm:20.14.15"],\
           ["@types/react", "npm:18.3.3"],\
           ["@types/react-dom", "npm:18.3.0"],\
           ["@typescript-eslint/eslint-plugin", "virtual:9e51d21be3b1dffb78515aa0bd4394e6c945eb5b7de4e6b91c0476dbee1a77a828fcefacd440ed6967a4ef213a901441741b94db57b232a4134bbb41ab1deeed#npm:8.0.1"],\
@@ -888,7 +888,7 @@ const RAW_RUNTIME_STATE =
         "packageDependencies": [\
           ["@types/glob", "npm:8.1.0"],\
           ["@types/minimatch", "npm:5.1.2"],\
-          ["@types/node", "npm:22.1.0"]\
+          ["@types/node", "npm:22.2.0"]\
         ],\
         "linkType": "HARD"\
       }]\
@@ -950,18 +950,18 @@ const RAW_RUNTIME_STATE =
       }]\
     ]],\
     ["@types/node", [\
-      ["npm:20.14.14", {\
-        "packageLocation": "../../.yarn/berry/cache/@types-node-npm-20.14.14-16135fe752-10c0.zip/node_modules/@types/node/",\
+      ["npm:20.14.15", {\
+        "packageLocation": "../../.yarn/berry/cache/@types-node-npm-20.14.15-3e9c945d93-10c0.zip/node_modules/@types/node/",\
         "packageDependencies": [\
-          ["@types/node", "npm:20.14.14"],\
+          ["@types/node", "npm:20.14.15"],\
           ["undici-types", "npm:5.26.5"]\
         ],\
         "linkType": "HARD"\
       }],\
-      ["npm:22.1.0", {\
-        "packageLocation": "../../.yarn/berry/cache/@types-node-npm-22.1.0-3ca0e36ca8-10c0.zip/node_modules/@types/node/",\
+      ["npm:22.2.0", {\
+        "packageLocation": "../../.yarn/berry/cache/@types-node-npm-22.2.0-f59a1b32cb-10c0.zip/node_modules/@types/node/",\
         "packageDependencies": [\
-          ["@types/node", "npm:22.1.0"],\
+          ["@types/node", "npm:22.2.0"],\
           ["undici-types", "npm:6.13.0"]\
         ],\
         "linkType": "HARD"\
@@ -1808,7 +1808,7 @@ const RAW_RUNTIME_STATE =
         "packageDependencies": [\
           ["browserslist", "npm:4.23.3"],\
           ["caniuse-lite", "npm:1.0.30001651"],\
-          ["electron-to-chromium", "npm:1.5.5"],\
+          ["electron-to-chromium", "npm:1.5.6"],\
           ["node-releases", "npm:2.0.18"],\
           ["update-browserslist-db", "virtual:4e727c7b5b033f8d5ac7299f9860cb61f5802656f7b4fea2accd32d68dc1a767387a6d23f0724065d3c65e61cb31b9eec2438ae937ce36e7602b4586ede55af6#npm:1.1.0"]\
         ],\
@@ -2349,10 +2349,10 @@ const RAW_RUNTIME_STATE =
       }]\
     ]],\
     ["electron-to-chromium", [\
-      ["npm:1.5.5", {\
-        "packageLocation": "../../.yarn/berry/cache/electron-to-chromium-npm-1.5.5-ce59e1f3c6-10c0.zip/node_modules/electron-to-chromium/",\
+      ["npm:1.5.6", {\
+        "packageLocation": "../../.yarn/berry/cache/electron-to-chromium-npm-1.5.6-25f7bf1a3c-10c0.zip/node_modules/electron-to-chromium/",\
         "packageDependencies": [\
-          ["electron-to-chromium", "npm:1.5.5"]\
+          ["electron-to-chromium", "npm:1.5.6"]\
         ],\
         "linkType": "HARD"\
       }]\
@@ -3904,7 +3904,7 @@ const RAW_RUNTIME_STATE =
           ["inak-blog", "workspace:."],\
           ["@headlessui/react", "virtual:9e51d21be3b1dffb78515aa0bd4394e6c945eb5b7de4e6b91c0476dbee1a77a828fcefacd440ed6967a4ef213a901441741b94db57b232a4134bbb41ab1deeed#npm:2.1.2"],\
           ["@types/glob", "npm:8.1.0"],\
-          ["@types/node", "npm:20.14.14"],\
+          ["@types/node", "npm:20.14.15"],\
           ["@types/react", "npm:18.3.3"],\
           ["@types/react-dom", "npm:18.3.0"],\
           ["@typescript-eslint/eslint-plugin", "virtual:9e51d21be3b1dffb78515aa0bd4394e6c945eb5b7de4e6b91c0476dbee1a77a828fcefacd440ed6967a4ef213a901441741b94db57b232a4134bbb41ab1deeed#npm:8.0.1"],\
