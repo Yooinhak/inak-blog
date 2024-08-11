@@ -44,15 +44,15 @@
         }
       }
     ]
-  }
+  },
 
-  // "settings": {
-  //   "import/external-module-folders": [".yarn"],
-  //   "import/parsers": {
-  //     "@typescript-eslint/parser": [".ts", ".tsx"]
-  //   },
-  //   "import/resolver": {
-  //     "typescript": "./tsconfig.json"
-  //   }
-  // }
+  "settings": {
+    // "import/external-module-folders": [".yarn"],
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts", ".tsx"]
+    },
+    "import/resolver": {
+      "typescript": "./tsconfig.json"
+    }
+  }
 }
