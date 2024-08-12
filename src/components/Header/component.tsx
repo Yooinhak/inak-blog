@@ -42,7 +42,7 @@ const Component = () => {
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-4">
                 {navigation.map(item => (
-                  <a
+                  <Link
                     key={item.name}
                     href={item.href}
                     aria-current={isCurrentPage(item.href) ? 'page' : undefined}
@@ -54,7 +54,7 @@ const Component = () => {
                     )}
                   >
                     {item.name}
-                  </a>
+                  </Link>
                 ))}
               </div>
             </div>
