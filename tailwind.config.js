@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-const colors = require('tailwindcss/colors')
+const colors = require('tailwindcss/colors');
 
 module.exports = {
   darkMode: ['class'],
@@ -15,7 +15,7 @@ module.exports = {
     extend: {},
     colors: {
       gray: colors.gray,
-      'primary': {
+      primary: {
         100: '#ECF6FE',
         200: '#D9ECFE',
         300: '#D9ECFE',
@@ -25,8 +25,8 @@ module.exports = {
         700: '#516FB6',
         800: '#334C92',
         900: '#1E3379',
-      }
-    }
+      },
+    },
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/typography')],
 };

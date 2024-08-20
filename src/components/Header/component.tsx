@@ -7,6 +7,7 @@ import {
 } from '@headlessui/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import DarkMode from './darkMode';
 
 const navigation = [
   { name: 'Posts', href: '/posts' },
