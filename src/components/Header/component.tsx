@@ -37,7 +37,13 @@ const Component = () => {
           <div className="flex items-center">
             <div className="flex-shrink-0">
               <Link href={'/'}>
-                <Image src={'/images/logo.png'} alt={''} sizes={'100vw'} width={60} height={30} />               
+                <Image
+                  src={'/images/logo.png'}
+                  alt={''}
+                  sizes={'100vw'}
+                  width={60}
+                  height={30}
+                />
               </Link>
             </div>
 
