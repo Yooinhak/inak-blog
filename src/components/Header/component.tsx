@@ -29,7 +29,7 @@ const Component = () => {
   return (
     <Disclosure
       as="nav"
-      className="border-b-2 border-gray-30 bg-gray-0 fixed top-0 left-0 w-full"
+      className="border-b-2 border-gray-30 bg-gray-0 fixed top-0 left-0 w-full z-50"
     >
       {/* <DarkMode /> */}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
