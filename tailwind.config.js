@@ -38,6 +38,9 @@ module.exports = {
         800: '#334C92',
         900: '#1E3379',
       },
+      
+      postCardBackgroundFrom: 'rgba(161, 196, 253, 0.4)',
+      postCardBackgroundTo: 'rgba(194, 233, 251, 0.4)'
     },
     extend: {
       typography: {

@@ -18,7 +18,7 @@ const BlogCard: React.FC<BlogCardProps> = ({
   return (
     <div>
       {type === 'type1' && (
-        <div className="max-w-sm mx-auto bg-gradient-to-r from-[#A1C4FD]/30 to-[#C2E9FB]/30 backdrop-blur-xl rounded-xl shadow-lg p-4 hover:scale-105 transition-transform">
+        <div className="max-w-sm mx-auto bg-gradient-to-r from-postCardBackgroundFrom to-postCardBackgroundTo rounded-xl shadow-[0_8px_32px_0_rgba(_31,38,135,0.37_)] backdrop-blur-[_0.5px_] p-4 hover:scale-105 transition-transform border border-solid border-[rgba(_255,255,255,0.18_)]">
           <img
             src={thumbnailImage}
             alt="Thumbnail"

@@ -31,10 +31,13 @@ const Component = () => {
       as="nav"
       className="border-b-2 border-gray-30 bg-gray-0 fixed top-0 left-0 w-full z-50"
     >
-      {/* <DarkMode /> */}
+      
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      
         <div className="flex h-16 items-center justify-between">
+        
           <div className="flex items-center">
+
             <div className="flex-shrink-0">
               <Link href={'/'}>
                 <Image
@@ -48,6 +51,7 @@ const Component = () => {
             </div>
 
             <div className="hidden md:block">
+            
               <div className="ml-10 flex items-baseline space-x-4">
                 {navigation.map(item => (
                   <Link
@@ -68,7 +72,10 @@ const Component = () => {
             </div>
           </div>
 
+          <DarkMode />
+
           <div className="-mr-2 flex md:hidden">
+            
             {/* Mobile menu button */}
             <DisclosureButton className="group">
               {/* <HamburgerMenu /> */}
