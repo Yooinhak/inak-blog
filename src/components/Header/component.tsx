@@ -5,6 +5,7 @@ import {
   DisclosureButton,
   DisclosurePanel,
 } from '@headlessui/react';
+import { useTheme } from 'next-themes';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -21,6 +22,8 @@ function classNames(...classes: string[]) {
 
 const Component = () => {
   const pathname = usePathname();
+  const { theme } = useTheme();
+  console.log(theme);
 
   const isCurrentPage = (url: string) => {
     return pathname.startsWith(url);
@@ -29,7 +32,7 @@ const Component = () => {
   return (
     <Disclosure
       as="nav"
-      className="border-b-2 border-gray-30 bg-gray-0 fixed top-0 left-0 w-full z-50"
+      className="border-b-2 border-gray-30 bg-gray-0 fixed top-0 left-0 w-full z-50 dark:bg-gray-900 dark:border-gray-700"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
@@ -37,7 +40,11 @@ const Component = () => {
             <div className="flex-shrink-0">
               <Link href={'/'}>
                 <Image
-                  src={'/images/logo.png'}
+                  src={
+                    theme === 'dark'
+                      ? '/images/logo_dark.png'
+                      : '/images/logo.png'
+                  }
                   alt={''}
                   sizes={'100vw'}
                   width={60}
