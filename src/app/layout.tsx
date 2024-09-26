@@ -17,10 +17,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="font-pretendard flex min-h-screen flex-col">
+      <body className="font-pretendard flex min-h-screen flex-col dark:bg-gray-900">
         <ThemeProvider>
           <Header />
-          <main className="pt-16">{children}</main>
+          <main className="pt-16 mx-auto">{children}</main>
         </ThemeProvider>
       </body>
     </html>

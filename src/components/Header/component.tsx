@@ -5,8 +5,11 @@ import {
   DisclosureButton,
   DisclosurePanel,
 } from '@headlessui/react';
+import { useTheme } from 'next-themes';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import DarkMode from './darkMode';
 
 const navigation = [
   { name: 'Posts', href: '/posts' },
@@ -19,6 +22,8 @@ function classNames(...classes: string[]) {
 
 const Component = () => {
   const pathname = usePathname();
+  const { theme } = useTheme();
+  console.log(theme);
 
   const isCurrentPage = (url: string) => {
     return pathname.startsWith(url);
@@ -27,15 +32,24 @@ const Component = () => {
   return (
     <Disclosure
       as="nav"
-      className="bg-gradient-to-r from-primary-500 to-primary-200 fixed top-0 left-0 w-full"
+      className="border-b-2 border-gray-30 bg-gray-0 fixed top-0 left-0 w-full z-50 dark:bg-gray-900 dark:border-gray-700"
     >
-      {/* <DarkMode /> */}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <Link className="bg-gray-500 cursor-pointer" href={'/'}>
-                LOGO
+              <Link href={'/'}>
+                <Image
+                  src={
+                    theme === 'dark'
+                      ? '/images/logo_dark.png'
+                      : '/images/logo.png'
+                  }
+                  alt={''}
+                  sizes={'100vw'}
+                  width={60}
+                  height={30}
+                />
               </Link>
             </div>
 
@@ -48,8 +62,8 @@ const Component = () => {
                     aria-current={isCurrentPage(item.href) ? 'page' : undefined}
                     className={classNames(
                       isCurrentPage(item.href)
-                        ? 'bg-gray-900 text-white'
-                        : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                        ? 'bg-gradient-to-tr from-primary-500 to-primary-300 text-gray-0'
+                        : 'text-gray-300 hover:bg-gradient-to-tr hover:from-primary-500 hover:to-primary-300 hover:text-gray-0',
                       'rounded-md px-3 py-2 text-sm font-medium',
                     )}
                   >
@@ -59,6 +73,8 @@ const Component = () => {
               </div>
             </div>
           </div>
+
+          <DarkMode />
 
           <div className="-mr-2 flex md:hidden">
             {/* Mobile menu button */}

@@ -3,6 +3,8 @@ import { useMemo } from 'react';
 
 import { getPostList } from '@lib/postManagement';
 import { PostAbstract } from '@lib/postManagement/types';
+import Chip from '@components/Chip';
+import PostCard from '@components/PostCard';
 
 interface SearchParams {
   searchParams: {
@@ -42,29 +44,42 @@ const Page = ({ searchParams }: SearchParams) => {
   }, [postList, category]);
 
   return (
-    <div className="flex flex-col gap-4 p-4">
-      <div className="flex gap-2">
-        {postCategoryOptions.map((categoryOption, categoryOptionIndex) => (
-          <Link
-            key={`${categoryOption.value}_${categoryOptionIndex}`}
-            href={{
-              pathname: 'posts',
-              query: { category: categoryOption.value },
-            }}
-          >
-            {`${categoryOptionIndex + 1}. ${categoryOption.label}`}
-          </Link>
-        ))}
-      </div>
+    <div className="flex justify-center">
+      <div className="w-full max-w-7xl flex flex-col gap-4 p-4 items-center">
+        <div className="flex gap-4 py-5">
+          {postCategoryOptions.map((categoryOption, categoryOptionIndex) => (
+            <Link
+              key={`${categoryOption.value}_${categoryOptionIndex}`}
+              href={{
+                pathname: 'posts',
+                query: { category: categoryOption.value },
+              }}
+            >
+              <Chip
+                label={`${categoryOptionIndex + 1}. ${categoryOption.label}`}
+                type={'neomorphism'}
+                selected={category === categoryOption.value}
+              />
+            </Link>
+          ))}
+        </div>
 
-      <div className="flex flex-col">
-        {postListFilteredByCategry.map(postItem => (
-          <Link
-            className="cursor-pointer"
-            key={`${postItem.category}_${postItem.slug}`}
-            href={postItem.url}
-          >{`${postItem.category}_${postItem.slug}`}</Link>
-        ))}
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {postListFilteredByCategry.map(postItem => (
+            <Link
+              className="cursor-pointer"
+              key={`${postItem.category}_${postItem.slug}`}
+              href={postItem.url}
+            >
+              <PostCard
+                thumbnailImage="/test/친칠라2.png"
+                title={postItem.slug}
+                category={postItem.category}
+                description=""
+              />
+            </Link>
+          ))}
+        </div>
       </div>
     </div>
   );
