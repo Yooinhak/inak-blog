@@ -2,7 +2,6 @@
 
 import { useTheme } from 'next-themes';
 import { useState, useEffect } from 'react';
-import { BsFillSunFill, BsFillMoonFill } from 'react-icons/bs';
 
 function DarkMode({}) {
   const [mounted, setMounted] = useState(false);
@@ -16,20 +15,24 @@ function DarkMode({}) {
     return null;
   }
 
-  const onClick = (mode: string) => () => {
-    setTheme(mode);
-  };
-
   const currentTheme = theme === 'system' ? systemTheme : theme;
 
+  const handleThemeChange = () => {
+    if (currentTheme === 'dark') {
+      setTheme('light');
+    } else {
+      setTheme('dark');
+    }
+  };
+
   return (
-    <div className="bg-darkModeBg cursor-pointer rounded-[50%] p-1">
-      {/* <div onClick={onClick('system')}>test123</div> */}
-      {currentTheme === 'dark' ? (
-        <BsFillMoonFill onClick={onClick('light')} />
-      ) : (
-        <BsFillSunFill onClick={onClick('dark')} />
-      )}
+    <div
+      className={`w-[_62px_] h-8 rounded-3xl cursor-pointer relative transition-all ease-in-out duration-500 ${currentTheme === 'light' ? `bg-[#c9f8ff]` : `bg-[#6148de]`}`}
+      onClick={handleThemeChange}
+    >
+      <div
+        className={`absolute w-[25px] h-[25px] top-[3.66px] transition-transform rounded-full ${currentTheme === 'light' ? `bg-[#ffda16] shadow-[0px_0px_5px_#ffda16] translate-x-[3.66px]` : `bg-[#fff] translate-x-[33.34px]`}`}
+      ></div>
     </div>
   );
 }

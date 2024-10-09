@@ -23,7 +23,6 @@ function classNames(...classes: string[]) {
 const Component = () => {
   const pathname = usePathname();
   const { theme } = useTheme();
-  console.log(theme);
 
   const isCurrentPage = (url: string) => {
     return pathname.startsWith(url);
