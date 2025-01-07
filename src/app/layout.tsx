@@ -27,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="kr" className={`${pretendard.variable}`}>
       <body
-        className={`font-pretendard flex min-h-screen flex-col dark:bg-gray-900 ${pretendard.className}`}
+        className={`flex min-h-screen flex-col dark:bg-gray-900 ${pretendard.className}`}
       >
         <ThemeProvider>
           <Header />
