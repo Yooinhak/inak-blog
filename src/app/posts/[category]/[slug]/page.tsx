@@ -7,6 +7,7 @@ import rehypePrettyCode from 'rehype-pretty-code';
 import remarkGfm from 'remark-gfm';
 import rehypeSlug from 'rehype-slug';
 import remarkBreaks from 'remark-breaks';
+import Image from 'next/image';
 
 interface PageParams {
   params: {
@@ -20,8 +21,18 @@ const Page = ({ params }: PageParams) => {
   const postDetail: PostDetail = getPostDetail(category, slug);
 
   return (
-    <div className={'prose dark:prose-invert'}>
-      <div>{postDetail.title}</div>
+    <div className={'prose dark:prose-invert mx-auto w-full px-5'}>
+      <div className="relative w-auto h-full max-h-80">
+        <Image
+          src={'/test/친칠라2.png'}
+          alt={'preview image'}
+          fill
+          objectFit={'cover'}
+          className={'mx-0'}
+        />
+      </div>
+
+      <div className="mt-12">{postDetail.title}</div>
       <div>{postDetail.formattedCreatedDate}</div>
 
       <article>

@@ -31,7 +31,7 @@ const Component = () => {
   return (
     <Disclosure
       as="nav"
-      className="border-b-2 border-gray-30 bg-gray-0 fixed top-0 left-0 w-full z-50 dark:bg-gray-900 dark:border-gray-700"
+      className="fixed top-0 left-0 w-full backdrop-blur-sm border-b border-gray-30"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">

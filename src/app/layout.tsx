@@ -27,11 +27,11 @@ export default function RootLayout({
   return (
     <html lang="kr" className={`${pretendard.variable}`}>
       <body
-        className={`flex min-h-screen flex-col dark:bg-gray-900 ${pretendard.className}`}
+        className={`flex min-h-screen flex-col bg-repeat-y lg:bg-cover bg-[url('/images/bg-light-blur.png')] dark:bg-[url('/images/bg-dark-blur.png')] ${pretendard.className}`}
       >
         <ThemeProvider>
           <Header />
-          <main className="pt-16 mx-auto">{children}</main>
+          <main className="pt-16">{children}</main>
         </ThemeProvider>
       </body>
     </html>
