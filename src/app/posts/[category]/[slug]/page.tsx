@@ -22,17 +22,16 @@ const Page = ({ params }: PageParams) => {
 
   return (
     <div className={'prose dark:prose-invert mx-auto w-full px-5'}>
-      <div className="relative w-auto h-full max-h-80">
-        <Image
-          src={'/test/친칠라2.png'}
-          alt={'preview image'}
-          fill
-          objectFit={'cover'}
-          className={'mx-0'}
-        />
-      </div>
+      <Image
+        src={'/test/친칠라2.png'}
+        alt={'preview image'}
+        className={'rounded-lg w-full my-4 max-h-80 object-cover'}
+        width={0}
+        height={0}
+        sizes={'100%'}
+      />
 
-      <div className="mt-12">{postDetail.title}</div>
+      <div>{postDetail.title}</div>
       <div>{postDetail.formattedCreatedDate}</div>
 
       <article>

@@ -13,7 +13,7 @@ import DarkMode from './darkMode';
 
 const navigation = [
   { name: 'Posts', href: '/posts' },
-  { name: 'About', href: '/about' },
+  // { name: 'About', href: '/about' },
 ];
 
 function classNames(...classes: string[]) {
@@ -31,7 +31,7 @@ const Component = () => {
   return (
     <Disclosure
       as="nav"
-      className="fixed top-0 left-0 w-full backdrop-blur-sm border-b border-gray-30"
+      className="sticky top-0 left-0 w-full backdrop-blur-sm border-b border-gray-30 z-50"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">

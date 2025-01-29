@@ -3,6 +3,7 @@ import './global.css';
 import type { Metadata } from 'next';
 
 import Header from '@components/Header';
+import Footer from '@components/Footer';
 import { default as ThemeProvider } from '@themes/Provider';
 
 import localFont from 'next/font/local';
@@ -31,7 +32,8 @@ export default function RootLayout({
       >
         <ThemeProvider>
           <Header />
-          <main className="pt-16">{children}</main>
+          <main className="min-h-[calc(100vh_-_129px)]">{children}</main>
+          <Footer />
         </ThemeProvider>
       </body>
     </html>
