@@ -28,8 +28,13 @@ export default function RootLayout({
   return (
     <html lang="kr" className={`${pretendard.variable}`}>
       <body
-        className={`flex min-h-screen flex-col bg-repeat-y lg:bg-cover bg-[url('/images/bg-light-blur.png')] dark:bg-[url('/images/bg-dark-blur.png')] ${pretendard.className}`}
+        className={`relative flex min-h-screen flex-col ${pretendard.className}`}
       >
+        <div
+          className="absolute inset-0 w-full h-full bg-gradient-to-r from-[#A1C4FD] via-[#C2E9FB] to-[#FF758C]
+                bg-[length:300%_300%] animate-animateBG opacity-10 blur-3xl z-[-1] dark:from-[#6c84a0] dark:via-[#7b8c99] dark:to-[#ff4785]"
+        />
+
         <ThemeProvider>
           <Header />
           <main className="min-h-[calc(100vh_-_129px)]">{children}</main>
