@@ -9,7 +9,7 @@ import { default as ThemeProvider } from '@themes/Provider';
 import localFont from 'next/font/local';
 
 export const metadata: Metadata = {
-  metadataBase: new URL(''),
+  metadataBase: new URL('https://www.inak-blog.com'),
   title: '이낙 개발 블로그',
   description: '이낙 개발 블로그',
   openGraph: {
