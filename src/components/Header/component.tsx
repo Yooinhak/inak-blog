@@ -13,7 +13,7 @@ import DarkMode from './darkMode';
 
 const navigation = [
   { name: 'Posts', href: '/posts' },
-  { name: 'About', href: '/about' },
+  // { name: 'About', href: '/about' },
 ];
 
 function classNames(...classes: string[]) {
@@ -23,7 +23,6 @@ function classNames(...classes: string[]) {
 const Component = () => {
   const pathname = usePathname();
   const { theme } = useTheme();
-  console.log(theme);
 
   const isCurrentPage = (url: string) => {
     return pathname.startsWith(url);
@@ -32,7 +31,7 @@ const Component = () => {
   return (
     <Disclosure
       as="nav"
-      className="border-b-2 border-gray-30 bg-gray-0 fixed top-0 left-0 w-full z-50 dark:bg-gray-900 dark:border-gray-700"
+      className="sticky top-0 left-0 w-full backdrop-blur-sm border-b border-gray-30 z-50"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
