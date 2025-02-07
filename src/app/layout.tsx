@@ -1,6 +1,8 @@
 import './global.css';
 
 import type { Metadata } from 'next';
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 import Header from '@components/Header';
 import Footer from '@components/Footer';
@@ -54,6 +56,9 @@ export default function RootLayout({
           <main className="min-h-[calc(100vh_-_129px)]">{children}</main>
           <Footer />
         </ThemeProvider>
+
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
