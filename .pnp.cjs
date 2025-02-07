@@ -35,6 +35,8 @@ const RAW_RUNTIME_STATE =
           ["@types/react-dom", "npm:18.3.0"],\
           ["@typescript-eslint/eslint-plugin", "virtual:9e51d21be3b1dffb78515aa0bd4394e6c945eb5b7de4e6b91c0476dbee1a77a828fcefacd440ed6967a4ef213a901441741b94db57b232a4134bbb41ab1deeed#npm:8.8.0"],\
           ["@typescript-eslint/parser", "virtual:9e51d21be3b1dffb78515aa0bd4394e6c945eb5b7de4e6b91c0476dbee1a77a828fcefacd440ed6967a4ef213a901441741b94db57b232a4134bbb41ab1deeed#npm:7.18.0"],\
+          ["@vercel/analytics", "virtual:9e51d21be3b1dffb78515aa0bd4394e6c945eb5b7de4e6b91c0476dbee1a77a828fcefacd440ed6967a4ef213a901441741b94db57b232a4134bbb41ab1deeed#npm:1.4.1"],\
+          ["@vercel/speed-insights", "virtual:9e51d21be3b1dffb78515aa0bd4394e6c945eb5b7de4e6b91c0476dbee1a77a828fcefacd440ed6967a4ef213a901441741b94db57b232a4134bbb41ab1deeed#npm:1.1.0"],\
           ["autoprefixer", "virtual:9e51d21be3b1dffb78515aa0bd4394e6c945eb5b7de4e6b91c0476dbee1a77a828fcefacd440ed6967a4ef213a901441741b94db57b232a4134bbb41ab1deeed#npm:10.4.20"],\
           ["date-fns", "npm:3.6.0"],\
           ["eslint", "npm:8.57.1"],\
@@ -1483,6 +1485,94 @@ const RAW_RUNTIME_STATE =
         "packageLocation": "../../.yarn/berry/cache/@ungap-structured-clone-npm-1.2.0-648f0b82e0-10c0.zip/node_modules/@ungap/structured-clone/",\
         "packageDependencies": [\
           ["@ungap/structured-clone", "npm:1.2.0"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["@vercel/analytics", [\
+      ["npm:1.4.1", {\
+        "packageLocation": "../../.yarn/berry/cache/@vercel-analytics-npm-1.4.1-3334ada626-10c0.zip/node_modules/@vercel/analytics/",\
+        "packageDependencies": [\
+          ["@vercel/analytics", "npm:1.4.1"]\
+        ],\
+        "linkType": "SOFT"\
+      }],\
+      ["virtual:9e51d21be3b1dffb78515aa0bd4394e6c945eb5b7de4e6b91c0476dbee1a77a828fcefacd440ed6967a4ef213a901441741b94db57b232a4134bbb41ab1deeed#npm:1.4.1", {\
+        "packageLocation": "./.yarn/__virtual__/@vercel-analytics-virtual-3ef504413a/3/.yarn/berry/cache/@vercel-analytics-npm-1.4.1-3334ada626-10c0.zip/node_modules/@vercel/analytics/",\
+        "packageDependencies": [\
+          ["@vercel/analytics", "virtual:9e51d21be3b1dffb78515aa0bd4394e6c945eb5b7de4e6b91c0476dbee1a77a828fcefacd440ed6967a4ef213a901441741b94db57b232a4134bbb41ab1deeed#npm:1.4.1"],\
+          ["@remix-run/react", null],\
+          ["@sveltejs/kit", null],\
+          ["@types/next", null],\
+          ["@types/react", "npm:18.3.11"],\
+          ["@types/remix-run__react", null],\
+          ["@types/svelte", null],\
+          ["@types/sveltejs__kit", null],\
+          ["@types/vue", null],\
+          ["@types/vue-router", null],\
+          ["next", "virtual:9e51d21be3b1dffb78515aa0bd4394e6c945eb5b7de4e6b91c0476dbee1a77a828fcefacd440ed6967a4ef213a901441741b94db57b232a4134bbb41ab1deeed#npm:14.2.3"],\
+          ["react", "npm:18.3.1"],\
+          ["svelte", null],\
+          ["vue", null],\
+          ["vue-router", null]\
+        ],\
+        "packagePeers": [\
+          "@remix-run/react",\
+          "@sveltejs/kit",\
+          "@types/next",\
+          "@types/react",\
+          "@types/remix-run__react",\
+          "@types/svelte",\
+          "@types/sveltejs__kit",\
+          "@types/vue-router",\
+          "@types/vue",\
+          "next",\
+          "react",\
+          "svelte",\
+          "vue-router",\
+          "vue"\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["@vercel/speed-insights", [\
+      ["npm:1.1.0", {\
+        "packageLocation": "./.yarn/unplugged/@vercel-speed-insights-virtual-215f73de6f/node_modules/@vercel/speed-insights/",\
+        "packageDependencies": [\
+          ["@vercel/speed-insights", "npm:1.1.0"]\
+        ],\
+        "linkType": "SOFT"\
+      }],\
+      ["virtual:9e51d21be3b1dffb78515aa0bd4394e6c945eb5b7de4e6b91c0476dbee1a77a828fcefacd440ed6967a4ef213a901441741b94db57b232a4134bbb41ab1deeed#npm:1.1.0", {\
+        "packageLocation": "./.yarn/unplugged/@vercel-speed-insights-virtual-215f73de6f/node_modules/@vercel/speed-insights/",\
+        "packageDependencies": [\
+          ["@vercel/speed-insights", "virtual:9e51d21be3b1dffb78515aa0bd4394e6c945eb5b7de4e6b91c0476dbee1a77a828fcefacd440ed6967a4ef213a901441741b94db57b232a4134bbb41ab1deeed#npm:1.1.0"],\
+          ["@sveltejs/kit", null],\
+          ["@types/next", null],\
+          ["@types/react", "npm:18.3.11"],\
+          ["@types/svelte", null],\
+          ["@types/sveltejs__kit", null],\
+          ["@types/vue", null],\
+          ["@types/vue-router", null],\
+          ["next", "virtual:9e51d21be3b1dffb78515aa0bd4394e6c945eb5b7de4e6b91c0476dbee1a77a828fcefacd440ed6967a4ef213a901441741b94db57b232a4134bbb41ab1deeed#npm:14.2.3"],\
+          ["react", "npm:18.3.1"],\
+          ["svelte", null],\
+          ["vue", null],\
+          ["vue-router", null]\
+        ],\
+        "packagePeers": [\
+          "@sveltejs/kit",\
+          "@types/next",\
+          "@types/react",\
+          "@types/svelte",\
+          "@types/sveltejs__kit",\
+          "@types/vue-router",\
+          "@types/vue",\
+          "next",\
+          "react",\
+          "svelte",\
+          "vue-router",\
+          "vue"\
         ],\
         "linkType": "HARD"\
       }]\
@@ -4172,6 +4262,8 @@ const RAW_RUNTIME_STATE =
           ["@types/react-dom", "npm:18.3.0"],\
           ["@typescript-eslint/eslint-plugin", "virtual:9e51d21be3b1dffb78515aa0bd4394e6c945eb5b7de4e6b91c0476dbee1a77a828fcefacd440ed6967a4ef213a901441741b94db57b232a4134bbb41ab1deeed#npm:8.8.0"],\
           ["@typescript-eslint/parser", "virtual:9e51d21be3b1dffb78515aa0bd4394e6c945eb5b7de4e6b91c0476dbee1a77a828fcefacd440ed6967a4ef213a901441741b94db57b232a4134bbb41ab1deeed#npm:7.18.0"],\
+          ["@vercel/analytics", "virtual:9e51d21be3b1dffb78515aa0bd4394e6c945eb5b7de4e6b91c0476dbee1a77a828fcefacd440ed6967a4ef213a901441741b94db57b232a4134bbb41ab1deeed#npm:1.4.1"],\
+          ["@vercel/speed-insights", "virtual:9e51d21be3b1dffb78515aa0bd4394e6c945eb5b7de4e6b91c0476dbee1a77a828fcefacd440ed6967a4ef213a901441741b94db57b232a4134bbb41ab1deeed#npm:1.1.0"],\
           ["autoprefixer", "virtual:9e51d21be3b1dffb78515aa0bd4394e6c945eb5b7de4e6b91c0476dbee1a77a828fcefacd440ed6967a4ef213a901441741b94db57b232a4134bbb41ab1deeed#npm:10.4.20"],\
           ["date-fns", "npm:3.6.0"],\
           ["eslint", "npm:8.57.1"],\
