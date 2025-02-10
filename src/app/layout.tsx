@@ -18,14 +18,14 @@ export const metadata: Metadata = {
     title: '이낙 개발 블로그',
     description: '이낙 개발 블로그입니다.',
     siteName: '이낙 개발 블로그',
-    // images: [blogThumbnailURL],
+    images: ['/images/logo.png'],
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
     title: '이낙 개발 블로그',
     description: '이낙 개발 블로그입니다.',
-    // images: [blogThumbnailURL],
+    images: ['/images/logo.png'],
   },
 };
 
