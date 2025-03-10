@@ -7,10 +7,7 @@ const ThreeScene = dynamic(() => import('@components/ThreeScene'), {
 export default function Home() {
   return (
     <div className="flex">
-      <div>
-        <ThreeScene />
-      </div>
-      <div>ljkfdsalfkjasdlkfjsa</div>
+      <ThreeScene />
     </div>
   );
 }
