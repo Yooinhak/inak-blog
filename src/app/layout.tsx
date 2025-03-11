@@ -47,7 +47,7 @@ export default function RootLayout({
         test 0.0.1
         <div
           className="absolute inset-0 w-full h-full bg-gradient-to-r from-[#A1C4FD] via-[#C2E9FB] to-[#FF758C]
-                bg-[length:300%_300%] animate-animateBG opacity-30 blur-3xl z-[-1] dark:from-[#6c84a0] dark:via-[#7b8c99] dark:to-[#ff4785]"
+                bg-[length:300%_300%] animate-animateBG opacity-30 blur-3xl z-[-1] dark:from-[#1a365d] dark:via-[#2d3748] dark:to-[#553c9a]"
         />
         <ThemeProvider>
           <Header />
