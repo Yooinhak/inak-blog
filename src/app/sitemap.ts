@@ -9,6 +9,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: 'https://www.inak-blog.com',
       lastModified: new Date(),
     },
-    ...postList,
   ];
 }
