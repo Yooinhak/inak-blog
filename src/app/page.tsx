@@ -1,13 +1,3 @@
-import dynamic from 'next/dynamic';
-
-const ThreeScene = dynamic(() => import('@components/ThreeScene'), {
-  ssr: false,
-});
-
-export default function Home() {
-  return (
-    <div className="flex">
-      <ThreeScene />
-    </div>
-  );
+export default function Main() {
+  return <div className="">안녕하세용</div>;
 }

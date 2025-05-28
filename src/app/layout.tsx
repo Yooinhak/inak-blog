@@ -1,14 +1,9 @@
-import './global.css';
-
 import type { Metadata } from 'next';
-import { Analytics } from '@vercel/analytics/react';
-import { SpeedInsights } from '@vercel/speed-insights/next';
-
-import Header from '@components/Header';
-import Footer from '@components/Footer';
-import { default as ThemeProvider } from '@themes/Provider';
-
 import localFont from 'next/font/local';
+
+import { ThemeProvider } from '@components/ThemeProvider';
+
+import './globals.css';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.inak-blog.com'),
@@ -43,19 +38,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="kr" className={`${pretendard.variable}`}>
-      <body className={`relative flex flex-col ${pretendard.className}`}>
-        test 0.0.1
-        <div
-          className="absolute inset-0 w-full h-full bg-gradient-to-r from-[#A1C4FD] via-[#C2E9FB] to-[#FF758C]
-                bg-[length:300%_300%] animate-animateBG opacity-30 blur-3xl z-[-1] dark:from-[#1a365d] dark:via-[#2d3748] dark:to-[#553c9a]"
-        />
+      <body className={`antialiased ${pretendard.className}`}>
         <ThemeProvider>
-          <Header />
-          <main className="min-h-[calc(100vh_-_129px)]">{children}</main>
-          <Footer />
+          <main>{children}</main>
         </ThemeProvider>
-        <Analytics />
-        <SpeedInsights />
       </body>
     </html>
   );
