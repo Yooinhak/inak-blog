@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 
+import Header from '@components/Header';
 import { ThemeProvider } from '@components/ThemeProvider';
 
 import './globals.css';
@@ -40,6 +41,7 @@ export default function RootLayout({
     <html lang="kr" className={`${pretendard.variable}`}>
       <body className={`antialiased ${pretendard.className}`}>
         <ThemeProvider>
+          <Header />
           <main>{children}</main>
         </ThemeProvider>
       </body>
