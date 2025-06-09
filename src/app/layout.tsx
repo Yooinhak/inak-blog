@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 
+import Footer from '@components/Footer';
 import Header from '@components/Header';
 import { ThemeProvider } from '@components/ThemeProvider';
 
@@ -38,11 +39,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="kr" className={`${pretendard.variable}`}>
+    <html lang="kr" data-theme="winter" className={`${pretendard.variable}`}>
       <body className={`antialiased ${pretendard.className}`}>
         <ThemeProvider>
           <Header />
-          <main>{children}</main>
+          <main className="min-h-[calc(100vh_-_65px_-_52px)]">{children}</main>
+          <Footer />
         </ThemeProvider>
       </body>
     </html>
