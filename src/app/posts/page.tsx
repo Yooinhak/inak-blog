@@ -1,45 +1,30 @@
 import Link from 'next/link';
-import { useMemo } from 'react';
 
 import PostCard from '@components/PostCard';
 import { getPostList } from '@lib/postManagement';
 import { PostAbstract } from '@lib/postManagement/types';
 
-interface SearchParams {
-  searchParams: {
-    category?: string;
-  };
-}
+type SearchParams = Promise<{ category?: string }>;
 
-interface CategoryOptionItem {
+type CategoryOptionItem = {
   label: string;
   value?: string;
-}
+};
 
-const Page = ({ searchParams }: SearchParams) => {
-  const { category } = searchParams;
+const Page = async (props: { searchParams: SearchParams }) => {
+  const { category } = await props.searchParams;
   const postList: PostAbstract[] = getPostList();
 
-  const postCategoryOptions = useMemo(() => {
-    const allCategories = postList.map(post => post.category);
-
-    // 중복제거
-    return allCategories.reduce<CategoryOptionItem[]>(
+  const postCategoryOptions = postList
+    .map(post => post.category)
+    .reduce<CategoryOptionItem[]>(
       (acc, curr) => {
         return acc.some(a => a.value === curr) ? acc : [...acc, { label: curr, value: curr }];
       },
       [{ label: '전체', value: '' }],
     );
-  }, [postList]);
 
-  const postListFilteredByCategry = useMemo(() => {
-    if (!category) {
-      return postList;
-    } else {
-      return postList.filter(post => post.category === category);
-    }
-  }, [postList, category]);
-  console.log(postListFilteredByCategry);
+  const postListFilteredByCategry = category ? postList.filter(post => post.category === category) : postList;
 
   return (
     <div className="flex justify-center">
