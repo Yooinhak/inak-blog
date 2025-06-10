@@ -4,10 +4,18 @@ import { useTheme } from 'next-themes';
 import Image from 'next/image';
 import Link from 'next/link';
 
+import { menuItems } from '@config/menu';
+
 import DarkMode from './darkMode';
 
 const Header = () => {
   const { theme } = useTheme();
+
+  const menus = menuItems.map((menuItem, menuItemIndex) => (
+    <li key={`${menuItem.label}_${menuItemIndex}`}>
+      <Link href={menuItem.link}>{menuItem.label}</Link>
+    </li>
+  ));
 
   return (
     <div className="navbar bg-base-100 shadow-sm justify-center">
@@ -27,23 +35,7 @@ const Header = () => {
               </svg>
             </div>
             <ul tabIndex={0} className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
-              <li>
-                <a>Item 1</a>
-              </li>
-              <li>
-                <a>Parent</a>
-                <ul className="p-2">
-                  <li>
-                    <a>Submenu 1</a>
-                  </li>
-                  <li>
-                    <a>Submenu 2</a>
-                  </li>
-                </ul>
-              </li>
-              <li>
-                <a>Item 3</a>
-              </li>
+              {menus}
             </ul>
           </div>
 
@@ -58,17 +50,7 @@ const Header = () => {
         </div>
 
         <div className="navbar-center hidden lg:flex">
-          <ul className="menu menu-horizontal px-1">
-            <li>
-              <a>Post</a>
-            </li>
-            <li>
-              <a>About</a>
-            </li>
-            {/* <li>
-            <a>Item 3</a>
-          </li> */}
-          </ul>
+          <ul className="menu menu-horizontal px-1">{menus}</ul>
         </div>
 
         <div className="navbar-end">
