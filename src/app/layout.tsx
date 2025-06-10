@@ -39,7 +39,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="kr" data-theme="winter" className={`${pretendard.variable}`}>
+    <html lang="kr" className={`${pretendard.variable}`} suppressHydrationWarning>
       <body className={`antialiased ${pretendard.className}`}>
         <ThemeProvider>
           <Header />

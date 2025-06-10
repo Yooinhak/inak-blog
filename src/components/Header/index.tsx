@@ -3,6 +3,7 @@
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 import { menuItems } from '@config/menu';
 
@@ -10,6 +11,11 @@ import DarkMode from './darkMode';
 
 const Header = () => {
   const { theme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const menus = menuItems.map((menuItem, menuItemIndex) => (
     <li key={`${menuItem.label}_${menuItemIndex}`}>
@@ -30,8 +36,7 @@ const Header = () => {
                 viewBox="0 0 24 24"
                 stroke="currentColor"
               >
-                {' '}
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h8m-8 6h16" />{' '}
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h8m-8 6h16" />
               </svg>
             </div>
             <ul tabIndex={0} className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
@@ -40,12 +45,15 @@ const Header = () => {
           </div>
 
           <Link className="btn btn-link" href={'/'}>
-            <Image
-              src={theme === 'dim' ? '/images/logo_dark.png' : '/images/logo.png'}
-              alt={''}
-              width={60}
-              height={30}
-            />
+            {mounted && (
+              <Image
+                src={theme === 'dim' ? '/images/logo_dark.png' : '/images/logo.png'}
+                alt="logo"
+                width={60}
+                height={30}
+                priority
+              />
+            )}
           </Link>
         </div>
 
