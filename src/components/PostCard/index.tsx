@@ -11,10 +11,17 @@ type BlogCardProps = {
 
 const PostCard: React.FC<BlogCardProps> = ({ thumbnailImage, title, category, description, alt }) => {
   return (
-    <div className="bg-base-100 w-full shadow-sm rounded-xl overflow-hidden flex flex-col">
-      <div className="relative aspect-[3/2] w-full">
-        {/* <Image src={thumbnailImage} alt={alt ?? `${title}`} fill objectFit={'cover'} /> */}
-        <img src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp" alt="Shoes" />
+    <div className="bg-base-300 w-full rounded-xl overflow-hidden flex flex-col shadow-xl dark:shadow-white/10 transition-shadow duration-200 hover:shadow-2xl">
+      <div className="p-4">
+        <div className="relative aspect-[3/2] w-full">
+          <Image
+            src={'/posts/react/default.svg'}
+            className="rounded-xl"
+            alt={alt ?? `${title}`}
+            fill
+            objectFit={'cover'}
+          />
+        </div>
       </div>
       <div className="p-4 flex flex-col justify-between grow">
         <h2 className="text-lg font-semibold mb-2">{title}</h2>

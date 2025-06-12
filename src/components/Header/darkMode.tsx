@@ -20,7 +20,7 @@ function DarkMode({}) {
 
   const handleThemeChange = () => {
     if (currentTheme === 'dim') {
-      setTheme('winter');
+      setTheme('nord');
     } else {
       setTheme('dim');
     }
@@ -28,7 +28,7 @@ function DarkMode({}) {
 
   return (
     <div
-      className={`w-[_62px_] h-8 rounded-3xl cursor-pointer relative transition-all ease-in-out duration-500 overflow-hidden ${currentTheme === 'winter' ? `bg-[#c9f8ff]` : `bg-[#6148de]`}`}
+      className={`w-[_62px_] h-8 rounded-3xl cursor-pointer relative transition-all ease-in-out duration-500 overflow-hidden ${currentTheme === 'nord' ? `bg-[#c9f8ff]` : `bg-[#6148de]`}`}
       onClick={handleThemeChange}
     >
       <Image
@@ -36,20 +36,20 @@ function DarkMode({}) {
         width={18}
         height={12}
         alt={'clouds'}
-        className={`absolute top-[17px] z-[2] transition-transform ${currentTheme === 'winter' ? `translate-x-[18px]` : `translate-x-[-30.34px]`}`}
+        className={`absolute top-[17px] z-[2] transition-transform ${currentTheme === 'nord' ? `translate-x-[18px]` : `translate-x-[-30.34px]`}`}
       />
       <Image
         src={'/images/stars.svg'}
         width={26}
         height={0}
         alt={'clouds'}
-        className={`absolute top-[3.5px] left-2 z-[3] transition-transform ${currentTheme === 'winter' ? `translate-y-[40px]` : `translate-y-1`}`}
+        className={`absolute top-[3.5px] left-2 z-[3] transition-transform ${currentTheme === 'nord' ? `translate-y-[40px]` : `translate-y-1`}`}
       />
       <div
-        className={`absolute w-[21px] h-[21px] top-[5.5px] rounded-full transition-all ${currentTheme === 'winter' ? `z-0 translate-x-[5.66px]` : `z-[2] bg-[#6148de] translate-x-[30.34px]`}`}
+        className={`absolute w-[21px] h-[21px] top-[5.5px] rounded-full transition-all ${currentTheme === 'nord' ? `z-0 translate-x-[5.66px]` : `z-[2] bg-[#6148de] translate-x-[30.34px]`}`}
       />
       <div
-        className={`absolute w-[25px] h-[25px] top-[3.5px] transition-transform rounded-full ${currentTheme === 'winter' ? `bg-[#ffda16] shadow-[0px_0px_5px_#ffda16] translate-x-[3.66px]` : `bg-[#fff] translate-x-[33.34px]`}`}
+        className={`absolute w-[25px] h-[25px] top-[3.5px] transition-transform rounded-full ${currentTheme === 'nord' ? `bg-[#ffda16] shadow-[0px_0px_5px_#ffda16] translate-x-[3.66px]` : `bg-[#fff] translate-x-[33.34px]`}`}
       />
     </div>
   );
