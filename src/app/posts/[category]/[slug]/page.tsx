@@ -17,7 +17,7 @@ const Page = async ({ params }: PageParams) => {
   const postDetail: PostDetail = getPostDetail(category, slug);
 
   return (
-    <div className={'prose dark:prose-invert w-full max-w-7xl mx-auto px-5'}>
+    <div className={'prose dark:prose-invert w-full max-w-3xl mx-auto px-5'}>
       <Image
         src={'/posts/react/default.svg'}
         alt={'preview image'}
