@@ -44,7 +44,19 @@ const Page = async ({ params }: PageParams) => {
                * rehypePrettyCode: 코드 블록을 아름답게 꾸며줍니다.
                * rehypeSlug: 변환된 html 각 heading에 id를 부여해줍니다. 추후 ToC를 만들 때 활용됩니다.
                */
-              rehypePlugins: [rehypePrettyCode, rehypeSlug],
+              rehypePlugins: [
+                [
+                  rehypePrettyCode,
+                  {
+                    // theme: {
+                    //   dark: 'github-dark-dimmed',
+                    //   light: 'github-light',
+                    // },
+                    theme: 'github-dark-dimmed',
+                  },
+                ],
+                rehypeSlug,
+              ],
             },
           }}
         />
