@@ -9,10 +9,10 @@ export default function Home() {
     <section className="hero min-h-[calc(100vh_-_65px_-_52px)] bg-base-100">
       <div className="hero-content text-center flex flex-col gap-6 max-w-3xl w-full glass p-10 rounded-box">
         <h1 className="text-4xl sm:text-5xl font-extrabold text-base-content leading-tight">
-          Frontend Developer, 인학
+          Frontend Developer, Inak
         </h1>
 
-        <p className="text-lg sm:text-xl font-medium text-base-content flex gap-2 items-center">
+        <section className="text-lg sm:text-xl font-medium text-base-content flex gap-2 items-center">
           Building
           <RotatingText
             texts={['accessible UIs', 'scalable systems', 'beautiful interfaces', 'performant apps', 'React projects']}
@@ -27,12 +27,12 @@ export default function Home() {
             rotationInterval={2000}
           />
           with care.
-        </p>
+        </section>
 
         <p className="text-base-content text-sm sm:text-base opacity-80">
-          좋은 UI는 기술과 디테일의 만남에서 시작된다고 믿습니다.
+          복잡한 문제를 단순하게 풀어내는 것을 좋아합니다.
           <br />
-          인학은 사용자를 생각하며 코드를 짭니다.
+          사용자 중심의 웹 경험을 만들기 위해 고민하고 실천합니다.
         </p>
 
         <div className="flex flex-col sm:flex-row justify-center gap-4 pt-2">

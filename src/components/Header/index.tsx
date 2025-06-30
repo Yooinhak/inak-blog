@@ -24,7 +24,7 @@ const Header = () => {
   ));
 
   return (
-    <div className="navbar bg-base-100 shadow-sm justify-center">
+    <nav className="navbar bg-base-100 shadow-sm justify-center">
       <div className="flex w-full max-w-[1200px]">
         <div className="navbar-start">
           <div className="dropdown">
@@ -65,7 +65,7 @@ const Header = () => {
           <DarkMode />
         </div>
       </div>
-    </div>
+    </nav>
   );
 };
 
