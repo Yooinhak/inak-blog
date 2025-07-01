@@ -3,12 +3,7 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback } from 'react';
 
-type CategoryOptionItem = {
-  label: string;
-  value?: string;
-};
-
-export default function CategoryFilter({ postCategoryOptions }: { postCategoryOptions: CategoryOptionItem[] }) {
+export default function CategoryFilter({ categories }: { categories: string[] }) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const selectedCategory = searchParams.get('category') || '';
@@ -37,8 +32,8 @@ export default function CategoryFilter({ postCategoryOptions }: { postCategoryOp
       </button>
 
       {/* 카테고리 라디오 */}
-      {postCategoryOptions.map((option, index) => {
-        const isSelected = selectedCategory === (option.value || '');
+      {categories.map((option, index) => {
+        const isSelected = selectedCategory === (option || '');
         return (
           <label
             key={index}
@@ -47,12 +42,12 @@ export default function CategoryFilter({ postCategoryOptions }: { postCategoryOp
             <input
               type="radio"
               name="category"
-              value={option.value}
+              value={option}
               checked={isSelected}
-              onChange={() => handleCategoryChange(option.value || '')}
+              onChange={() => handleCategoryChange(option || '')}
               className="hidden"
             />
-            {option.label}
+            {option}
           </label>
         );
       })}
