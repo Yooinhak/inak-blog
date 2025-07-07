@@ -1,7 +1,10 @@
+import { format } from 'date-fns';
+import { readFileSync } from 'fs';
 import { sync } from 'glob';
+import matter from 'gray-matter';
 
 import { BASE_PATH, POSTS_PATH } from './config';
-import { PostAbstract } from './types';
+import { PostAbstract, PostDetailData } from './types';
 
 const getPostPaths = (category?: string) => {
   const postPaths: string[] = sync(`${POSTS_PATH}/${category || '**'}/**/*.mdx`);
@@ -26,9 +29,16 @@ export const getPostList = (category?: string): PostAbstract[] => {
   const posts = paths.map(postPath => {
     const filePath = postPath.slice(postPath.indexOf(BASE_PATH)).replace(`${BASE_PATH}/`, '').replace('.mdx', '');
 
-    const [category, slug] = filePath.split('/');
-    const url = `/posts/${category}/${slug}`;
-    return { url, category, slug };
+    const [category, id] = filePath.split('/');
+
+    // 디테일 불러오기
+    const file = readFileSync(`${POSTS_PATH}/${category}/${id}.mdx`);
+    const { data } = matter(file);
+    const detailData = data as PostDetailData;
+    const date = format(detailData.date, 'yyyy-MM-dd');
+
+    const url = `/posts/${category}/${id}`;
+    return { id, category, title: detailData.title, url, date };
   });
   return posts;
 };

@@ -1,7 +1,6 @@
 export interface PostDetailData {
   title: string;
-  createdDate: Date;
-  thumbnailImage: string;
+  date: Date;
 }
 
 export interface PostDetail extends PostDetailData {
@@ -10,7 +9,9 @@ export interface PostDetail extends PostDetailData {
 }
 
 export interface PostAbstract {
-  url: string;
+  id: string;
   category: string;
-  slug: string;
+  title: string;
+  url: string;
+  date: string;
 }

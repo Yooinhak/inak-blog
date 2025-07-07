@@ -17,13 +17,7 @@ const Page = async (props: { searchParams: SearchParams }) => {
 
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 w-full">
         {postList.map((postItem, postItemIndex) => (
-          <PostCard
-            key={`${postItem.category}_${postItem.slug}_${postItemIndex}`}
-            thumbnailImage="/images/logo.png"
-            title={postItem.slug}
-            category={postItem.category}
-            url={postItem.url}
-          />
+          <PostCard key={`${postItem.category}_${postItem.id}_${postItemIndex}`} post={postItem} />
         ))}
       </section>
     </div>
