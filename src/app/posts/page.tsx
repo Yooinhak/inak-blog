@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import CategoryFilter from '@components/CategoryFilter';
 import PostCard from '@components/PostCard';
 import { getPostList } from '@lib/postManagement';
@@ -16,9 +17,9 @@ const Page = async (props: { searchParams: SearchParams }) => {
       <CategoryFilter categories={categories} />
 
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 w-full">
-        {postList.map((postItem, postItemIndex) => (
+        {/* {postList.map((postItem, postItemIndex) => (
           <PostCard key={`${postItem.category}_${postItem.id}_${postItemIndex}`} post={postItem} />
-        ))}
+        ))} */}
       </section>
     </div>
   );

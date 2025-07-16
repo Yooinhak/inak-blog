@@ -7,8 +7,8 @@ import matter from 'gray-matter';
 import { POSTS_PATH } from './config';
 import { PostDetail, PostDetailData } from './types';
 
-export const getPostDetail = (category: string, slug: string): PostDetail => {
-  const filePath = `${POSTS_PATH}/${category}/${slug}.mdx`;
+export const getPostDetail = (category: string, id: string): PostDetail => {
+  const filePath = `${POSTS_PATH}/${category}/${id}.mdx`;
 
   try {
     const file = readFileSync(filePath, 'utf-8');

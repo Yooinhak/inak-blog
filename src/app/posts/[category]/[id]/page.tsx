@@ -9,12 +9,12 @@ import remarkBreaks from 'remark-breaks';
 import remarkGfm from 'remark-gfm';
 
 interface PageParams {
-  params: Promise<{ category: string; slug: string }>;
+  params: Promise<{ category: string; id: string }>;
 }
 
 const Page = async ({ params }: PageParams) => {
-  const { category, slug } = await params;
-  const postDetail: PostDetail = getPostDetail(category, slug);
+  const { category, id } = await params;
+  const postDetail: PostDetail = getPostDetail(category, id);
 
   return (
     <div className={'prose dark:prose-invert w-full max-w-3xl mx-auto px-5'}>
