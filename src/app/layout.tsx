@@ -8,7 +8,7 @@ import { ThemeProvider } from '@components/ThemeProvider';
 import './globals.css';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://www.inak-blog.com'),
+  metadataBase: new URL('https://www.inak.dev'),
   title: '이낙 개발 블로그',
   description: '이낙 개발 블로그',
   openGraph: {
