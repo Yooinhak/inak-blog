@@ -1,12 +1,13 @@
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import Image from 'next/image';
 
-import { getPostDetail } from '@lib/postManagement';
-import { PostDetail } from '@lib/postManagement/types';
 import rehypePrettyCode from 'rehype-pretty-code';
 import rehypeSlug from 'rehype-slug';
 import remarkBreaks from 'remark-breaks';
 import remarkGfm from 'remark-gfm';
+
+import { getPostDetail } from '@lib/postManagement';
+import { PostDetail } from '@lib/postManagement/types';
 
 interface PageParams {
   params: Promise<{ category: string; id: string }>;
@@ -18,7 +19,7 @@ const Page = async ({ params }: PageParams) => {
 
   return (
     <div className="w-full px-4 py-10">
-      <div className="mx-auto w-full max-w-3xl rounded-3xl border border-white/40 bg-base-100/70 p-6 shadow-[0_20px_60px_-40px_rgba(15,23,42,0.6)] backdrop-blur-xl dark:border-white/10 dark:bg-base-100/15">
+      <div className="mx-auto w-full max-w-7xl rounded-3xl border border-white/40 bg-base-100/70 p-6 shadow-[0_20px_60px_-40px_rgba(15,23,42,0.6)] backdrop-blur-xl dark:border-white/10 dark:bg-base-100/15">
         <div className={'prose dark:prose-invert w-full max-w-none'}>
           <Image
             src={'/posts/react/default.svg'}
@@ -50,11 +51,10 @@ const Page = async ({ params }: PageParams) => {
                     [
                       rehypePrettyCode,
                       {
-                        // theme: {
-                        //   dark: 'github-dark-dimmed',
-                        //   light: 'github-light',
-                        // },
-                        theme: 'github-dark-dimmed',
+                        theme: {
+                          dark: 'github-dark-dimmed',
+                          light: 'github-light',
+                        },
                       },
                     ],
                     rehypeSlug,

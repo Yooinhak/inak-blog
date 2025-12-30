@@ -5,3 +5,15 @@
   themes: nord --default, dim --prefersdark;
 }
 @custom-variant dark (&:where([data-theme=dim], [data-theme=dim] *));
+
+@layer components {
+  [data-theme='dim'] .prose pre {
+    background-color: var(--shiki-dark-bg) !important;
+    color: var(--shiki-dark) !important;
+    border: 1px solid #374151 !important;
+  }
+
+  [data-theme='dim'] .prose pre code span {
+    color: var(--shiki-dark) !important;
+  }
+}

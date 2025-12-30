@@ -5,7 +5,7 @@ import * as React from 'react';
 
 export function ThemeProvider({ children, ...props }: React.ComponentProps<typeof NextThemesProvider>) {
   return (
-    <NextThemesProvider defaultTheme="nord" {...props}>
+    <NextThemesProvider attribute="data-theme" defaultTheme="nord" themes={['nord', 'dim']} {...props}>
       {children}
     </NextThemesProvider>
   );
