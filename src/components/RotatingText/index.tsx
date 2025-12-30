@@ -4,7 +4,7 @@ import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo
 
 import {
   AnimatePresence,
-  type AnimationControls,
+  AnimationControls,
   type Target,
   type TargetAndTransition,
   Transition,
