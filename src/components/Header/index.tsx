@@ -24,8 +24,8 @@ const Header = () => {
   ));
 
   return (
-    <nav className="navbar bg-base-100 shadow-sm justify-center">
-      <div className="flex w-full max-w-[1200px]">
+    <nav className="navbar sticky top-0 z-30 justify-center border-b border-white/30 bg-base-100/70 shadow-sm backdrop-blur-xl dark:border-white/10 dark:bg-base-100/10">
+      <div className="flex w-full max-w-[1200px] items-center">
         <div className="navbar-start">
           <div className="dropdown">
             <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -39,12 +39,15 @@ const Header = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h8m-8 6h16" />
               </svg>
             </div>
-            <ul tabIndex={0} className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
+            <ul
+              tabIndex={0}
+              className="menu menu-sm dropdown-content z-10 mt-3 w-52 rounded-box border border-white/30 bg-base-100/80 p-2 shadow-xl backdrop-blur-xl dark:border-white/10 dark:bg-base-100/20"
+            >
               {menus}
             </ul>
           </div>
 
-          <Link className="btn btn-link" href={'/'}>
+          <Link className="btn btn-ghost px-2" href={'/'}>
             {mounted && (
               <Image
                 src={theme === 'dim' ? '/images/logo_dark.png' : '/images/logo.png'}
@@ -58,7 +61,9 @@ const Header = () => {
         </div>
 
         <div className="navbar-center hidden lg:flex">
-          <ul className="menu menu-horizontal px-1">{menus}</ul>
+          <ul className="menu menu-horizontal rounded-full border border-white/30 bg-base-100/60 px-3 py-1 backdrop-blur-xl dark:border-white/10 dark:bg-base-100/20">
+            {menus}
+          </ul>
         </div>
 
         <div className="navbar-end">

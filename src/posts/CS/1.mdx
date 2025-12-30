@@ -1,0 +1,92 @@
+---
+title: "URL 입력 후 어떤 일이 벌어질까? — 웹 브라우저가 화면을 그리기까지의 모든 과정"
+date: 2025-07-24
+---
+
+## 1. URL 파싱
+
+브라우저는 입력된 URL을 파싱하여 프로토콜, 호스트, 포트 등을 식별합니다.
+
+```
+https://www.example.com:443/path?q=hello
+├── 프로토콜: https
+├── 호스트: www.example.com
+├── 포트: 443
+└── 경로/쿼리: /path?q=hello
+```
+
+## 2. DNS 조회
+
+브라우저는 도메인 이름(`www.example.com`)을 IP 주소로 변환하기 위해 DNS 조회를 수행합니다.
+
+- 브라우저 캐시
+- OS 캐시
+- 라우터 캐시
+- ISP DNS 서버
+- 루트 DNS 서버 (최후의 수단)
+
+## 3. TCP 연결 (3-way Handshake)
+
+IP 주소를 얻은 후, 클라이언트(브라우저)와 서버 간에 TCP 연결을 설정합니다.
+
+1.  **SYN**: 클라이언트 → 서버 (연결 요청)
+2.  **SYN-ACK**: 서버 → 클라이언트 (요청 수락)
+3.  **ACK**: 클라이언트 → 서버 (연결 확인)
+
+## 4. TLS 핸드셰이크
+
+HTTPS의 경우, TCP 연결 위에 TLS(Transport Layer Security) 계층이 추가되어 통신을 암호화합니다.
+
+- 서버가 SSL 인증서를 클라이언트에 전달합니다.
+- 클라이언트는 인증서를 검증하고, 대칭 암호화 키를 교환합니다.
+
+## 5. HTTP 요청
+
+연결이 설정되면 브라우저는 서버에 HTTP 요청 메시지를 보냅니다.
+
+```http
+GET / HTTP/1.1
+Host: www.example.com
+User-Agent: Chrome/124.0.0
+Accept: text/html
+```
+
+## 6. HTTP 응답
+
+서버는 요청을 처리하고 HTTP 응답 메시지를 반환합니다. 응답에는 상태 코드, 헤더, 그리고 본문(주로 HTML)이 포함됩니다.
+
+```http
+HTTP/1.1 200 OK
+Content-Type: text/html
+
+<html>...</html>
+```
+
+## 7. HTML 파싱 및 DOM 트리 생성
+
+브라우저는 응답으로 받은 HTML을 파싱하여 DOM(Document Object Model) 트리를 생성합니다.
+
+- 파싱 중 `<script>`, `<img>`, `<link>` 태그를 만나면 해당 리소스를 추가로 요청합니다.
+- `defer`나 `async` 속성이 없는 `<script>` 태그는 DOM 생성을 차단할 수 있습니다.
+
+## 8. CSS 파싱 및 CSSOM 생성
+
+HTML 파싱과 유사하게, CSS는 CSSOM(CSS Object Model) 트리로 파싱됩니다.
+
+- **Render Tree**: DOM과 CSSOM이 결합되어 생성됩니다. 렌더 트리는 화면에 표시될 요소들만 포함합니다.
+
+## 9. 렌더링
+
+브라우저는 렌더 트리를 기반으로 화면을 그립니다.
+
+- **Layout (Reflow)**: 각 요소의 위치와 크기를 계산합니다.
+- **Paint**: 요소를 실제 픽셀로 변환하고 색상과 같은 시각적 속성을 적용합니다.
+- **Composite**: 여러 레이어를 순서대로 합성하여 최종 화면을 구성합니다.
+
+## 10. JavaScript 실행
+
+HTML 파싱 및 렌더링 과정에서 JavaScript가 실행됩니다.
+
+- `<script>` 태그의 코드가 실행됩니다.
+- DOM을 조작하여 동적인 콘텐츠를 생성하거나 이벤트 리스너를 추가합니다.
+- SPA(Single Page Application) 프레임워크는 Hydration 과정을 통해 정적 HTML에 동적인 기능을 부여합니다.

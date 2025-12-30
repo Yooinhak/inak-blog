@@ -40,11 +40,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="kr" className={`${pretendard.variable}`} suppressHydrationWarning>
-      <body className={`antialiased ${pretendard.className}`}>
+      <body className={`antialiased ${pretendard.className} bg-[#eef2f6] text-base-content dark:bg-[#0b111a]`}>
         <ThemeProvider>
-          <Header />
-          <main className="min-h-[calc(100vh_-_65px_-_52px)]">{children}</main>
-          <Footer />
+          <div className="relative min-h-screen overflow-hidden">
+            <div className="pointer-events-none absolute -top-48 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-sky-200/50 blur-[140px] dark:bg-sky-500/20" />
+            <div className="pointer-events-none absolute -bottom-64 -left-28 h-[520px] w-[520px] rounded-full bg-emerald-200/40 blur-[160px] dark:bg-emerald-400/15" />
+            <div className="pointer-events-none absolute top-1/3 -right-32 h-[420px] w-[420px] rounded-full bg-amber-200/40 blur-[140px] dark:bg-amber-400/15" />
+
+            <div className="relative z-10">
+              <Header />
+              <main className="min-h-[calc(100vh_-_65px_-_52px)]">{children}</main>
+              <Footer />
+            </div>
+          </div>
         </ThemeProvider>
       </body>
     </html>

@@ -4,8 +4,8 @@ import RotatingText from '@components/RotatingText';
 
 export default function Home() {
   return (
-    <section className="hero min-h-[calc(100vh_-_65px_-_52px)] bg-base-100">
-      <div className="hero-content text-center flex flex-col gap-6 max-w-3xl w-full glass p-10 rounded-box">
+    <section className="hero min-h-[calc(100vh_-_65px_-_52px)] bg-transparent">
+      <div className="hero-content text-center flex flex-col gap-6 max-w-3xl w-full rounded-3xl border border-white/40 bg-base-100/70 p-10 shadow-[0_20px_60px_-40px_rgba(15,23,42,0.6)] backdrop-blur-xl dark:border-white/10 dark:bg-base-100/15">
         <h1 className="text-4xl sm:text-5xl font-extrabold text-base-content leading-tight">
           Frontend Developer, Inak
         </h1>

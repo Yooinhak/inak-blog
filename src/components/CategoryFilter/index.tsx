@@ -19,11 +19,11 @@ export default function CategoryFilter({ categories }: { categories: string[] })
   );
 
   return (
-    <form className="flex flex-wrap gap-2 items-center transition-all duration-300">
+    <form className="flex flex-wrap items-center gap-2 transition-all duration-300">
       {/* 초기화 버튼 */}
       <button
         type="button"
-        className={`btn btn-square transition-all duration-300 ${
+        className={`flex h-9 w-9 items-center justify-center rounded-full border border-white/40 bg-base-100/70 text-lg font-semibold text-base-content shadow-sm backdrop-blur transition-all duration-300 hover:-translate-y-0.5 dark:border-white/10 dark:bg-base-100/15 ${
           selectedCategory ? 'opacity-100 scale-100' : 'opacity-0 scale-0 w-0 p-0 m-0'
         }`}
         onClick={() => handleCategoryChange('')}
@@ -37,7 +37,11 @@ export default function CategoryFilter({ categories }: { categories: string[] })
         return (
           <label
             key={index}
-            className={`btn cursor-pointer transition-all duration-300 ${isSelected ? 'btn-primary' : ''}`}
+            className={`cursor-pointer rounded-full border px-4 py-2 text-sm font-semibold transition-all duration-300 ${
+              isSelected
+                ? 'border-primary/40 bg-primary text-primary-content shadow-md'
+                : 'border-white/40 bg-base-100/70 text-base-content shadow-sm backdrop-blur hover:-translate-y-0.5 dark:border-white/10 dark:bg-base-100/15'
+            }`}
           >
             <input
               type="radio"

@@ -8,7 +8,7 @@ const PostCard = ({ post }: { post: PostAbstract }) => {
   return (
     <Link
       href={post.url}
-      className="bg-base-300 w-full p-4 rounded-xl overflow-hidden flex flex-col shadow-xl dark:shadow-white/10 transition-shadow duration-200 hover:shadow-2xl"
+      className="w-full rounded-2xl border border-white/40 bg-base-100/70 p-4 shadow-[0_20px_60px_-40px_rgba(15,23,42,0.6)] backdrop-blur-xl transition duration-200 hover:-translate-y-1 hover:shadow-xl dark:border-white/10 dark:bg-base-100/15"
     >
       {/* 썸네일 */}
       <div className="relative aspect-[3/2] w-full mb-3">
