@@ -4,7 +4,6 @@ import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo
 
 import {
   AnimatePresence,
-  AnimationControls,
   type Target,
   type TargetAndTransition,
   Transition,
@@ -31,7 +30,7 @@ export interface RotatingTextProps
   texts: string[];
   transition?: Transition;
   initial?: boolean | Target | VariantLabels;
-  animate?: boolean | VariantLabels | AnimationControls | TargetAndTransition;
+  animate?: boolean | VariantLabels | TargetAndTransition;
   exit?: Target | VariantLabels;
   animatePresenceMode?: 'sync' | 'wait';
   animatePresenceInitial?: boolean;
