@@ -1,0 +1,80 @@
+---
+title: "NativeWind shadow-sm 때문에 터진 NavigationContext 에러 해결기"
+date: 2025-02-07
+---
+
+## 1. 개요
+
+Expo + Expo Router + NativeWind 조합에서 다음과 같은 에러가 발생했습니다.
+
+```
+Error: Couldn't find a navigation context. Have you wrapped your app with 'NavigationContainer'?
+```
+
+처음엔 네비게이션 설정 문제처럼 보였지만, 실제 원인은 **NativeWind의 `shadow-sm` 유틸리티**였습니다.  
+이 글은 같은 문제로 삽질하는 분들을 위해 **원인과 해결법을 간단히 정리**한 글입니다.
+
+---
+
+## 2. 증상 요약
+
+- 특정 화면(`app/create.tsx`)에서 렌더링 중 NavigationContext 에러 발생
+- `NavigationContainer` 관련 설정을 모두 확인했는데도 동일
+- SplashScreen 에러가 같이 뜨기도 했음
+
+---
+
+## 3. 원인: NativeWind shadow 유틸리티 충돌
+
+Expo issue와 커뮤니티 경험담을 살펴보니, **NativeWind의 shadow 렌더링이 React Navigation 초기화와 충돌**하는 케이스가 있었습니다.
+
+특히 `shadow-sm` 같은 유틸리티가 **NavigationContext가 준비되기 전에 렌더 단계에서 문제를 유발**할 수 있습니다.
+
+---
+
+## 4. 해결 방법
+
+### 4-1. shadow-sm 제거
+
+문제가 있던 부분에서 `shadow-sm`만 제거했더니 즉시 해결되었습니다.
+
+```tsx
+className={`flex-1 py-3 rounded-xl items-center ${
+  value === f.id
+    ? "bg-card border border-border-soft"
+    : ""
+}`}
+```
+
+### 4-2. 그래도 안 되면 체크할 것
+
+shadow 외에도 아래 유틸리티들이 **렌더링 단계에서 영향을 줄 수 있음**
+
+- `transform` 계열
+- `border` 계열
+- 복잡한 `shadow-*` 조합
+
+한 번에 다 지우기보다는, 문제 화면에서 **하나씩 제거하며 원인을 좁히는 방식**이 효과적입니다.
+
+---
+
+## 5. 실제 해결 포인트 요약
+
+- 문제가 발생한 시점: 화면 렌더링 직후
+- 원인: NativeWind `shadow-sm`
+- 해결: 해당 유틸리티 제거
+
+---
+
+## 6. 결론
+
+NavigationContext 에러는 대개 네비게이션 설정 문제로 생각하기 쉽지만,  
+**UI 유틸리티(특히 shadow)가 원인일 수 있다**는 점을 꼭 기억해야 합니다.
+
+저처럼 몇 시간을 허비하지 않으려면:
+
+- NavigationContainer만 의심하지 말기
+- NativeWind 유틸리티를 하나씩 분리해보기
+- shadow 계열부터 먼저 체크하기
+
+같은 문제를 겪는 분들에게 도움이 되길 바랍니다.

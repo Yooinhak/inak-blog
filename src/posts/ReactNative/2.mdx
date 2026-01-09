@@ -1,0 +1,132 @@
+---
+title: "React Native + Supabase 구글 로그인 완벽 가이드: 설정부터 빌드 이슈 해결까지"
+date: 2026-01-09
+tags: ["React Native", "Expo", "Supabase", "OAuth", "Troubleshooting"]
+---
+
+# React Native + Supabase 구글 로그인 완벽 가이드
+
+모바일 앱 개발에서 **OAuth(구글 로그인)**를 구현하는 것은 웹과는 차원이 다른 복잡함을 동반합니다. 단순히 URL을 이동하는 것을 넘어, 외부 브라우저에서 인증을 마친 뒤 다시 **내 앱으로 정확히 돌아오는 '딥링크(Deep Link)' 과정**이 필수적이기 때문입니다.
+
+본 포스팅에서는 React Native(Expo) 환경에서 Supabase를 활용해 구글 로그인을 구현하고, 실제 기기 빌드 과정에서 마주칠 수 있는 치명적인 에러를 해결하는 과정을 정리합니다.
+
+---
+
+## 1. 기술 스택 구성
+
+| 영역 | 선택 기술 | 이유 |
+| :--- | :--- | :--- |
+| **Framework** | **Expo (React Native)** | 빠른 생산성 및 강력한 라이브러리 생태계 |
+| **Auth / Backend** | **Supabase** | Firebase 대비 높은 자유도와 PostgreSQL 기반의 강력한 인증 기능 |
+| **Authentication** | **Google OAuth** | 가장 대중적이고 사용자 접근성이 높은 인증 방식 |
+| **Browser** | **expo-web-browser** | 앱 내에서 안전한 인증 세션을 열기 위한 표준 라이브러리 |
+| **Linking** | **expo-linking** | 인증 완료 후 앱으로 복귀하기 위한 딥링크 제어 |
+
+---
+
+## 2. 핵심 설정: 딥링크(Deep Link)
+
+모바일 앱은 `localhost`가 없습니다. 인증 후 앱으로 돌아오기 위해서는 나만의 주소(Scheme)가 필요합니다.
+
+### 2.1 app.json 설정
+앱이 특정한 URL 스킴에 반응하도록 설정을 추가해야 합니다.
+
+```json
+{
+  "expo": {
+    "scheme": "day-rise",
+    "ios": {
+      "bundleIdentifier": "com.yourname.dayrise"
+    },
+    "android": {
+      "package": "com.yourname.dayrise"
+    }
+  }
+}
+```
+
+### 2.2 Supabase 대시보드 설정
+Redirect URLs: `day-rise://google-auth`를 반드시 추가해야 합니다.
+
+이 설정이 없으면 인증 후 앱이 아닌 브라우저에 멈춰있게 됩니다.
+
+---
+
+## 3. 구글 로그인 로직 구현
+단순한 링크 이동이 아닌, PKCE(Proof Key for Code Exchange) 흐름을 사용하여 보안성을 높인 구현 코드입니다.
+
+```ts
+import { supabase } from "@/lib/supabase";
+import * as Linking from "expo-linking";
+import * as WebBrowser from "expo-web-browser";
+
+async function signInWithGoogle() {
+  // 1. 환경에 맞는 리다이렉트 URI 생성 (Deep Link)
+  const redirectUrl = Linking.createURL("google-auth");
+
+  // 2. Supabase OAuth URL 요청
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: redirectUrl,
+      skipBrowserRedirect: true,
+    },
+  });
+
+  if (error) return console.log("Error:", error.message);
+
+  // 3. 앱 내 브라우저에서 로그인 세션 실행
+  if (data?.url) {
+    const result = await WebBrowser.openAuthSessionAsync(data.url, redirectUrl);
+
+    if (result.type === "success" && result.url) {
+      // 4. 돌아온 URL에서 인증 코드(Code)를 추출하여 세션으로 교환
+      const { queryParams } = Linking.parse(result.url);
+      const code = queryParams?.code;
+
+      if (code) {
+        await supabase.auth.exchangeCodeForSession(code);
+      }
+    }
+  }
+}
+```
+
+---
+
+## 4. 트러블슈팅: "No script url provided" 에러
+빌드 후 USB를 뽑거나 네트워크를 변경했을 때 앱이 실행되지 않는 문제는 많은 초보 개발자가 당황하는 지점입니다.
+
+```
+Error: "No script url provided. make sure the packager is running..."
+```
+
+### 원인 분석
+이 에러는 앱이 디버그(Debug) 모드로 빌드되었기 때문입니다. 디버그 모드의 앱은 로직 코드가 앱 내부에 있는 것이 아니라, 내 컴퓨터(Metro 서버)에서 실시간으로 코드를 스트리밍 받습니다.
+
+### 해결 방법: 릴리즈(Release) 모드 빌드
+컴퓨터 연결 없이도 작동하는 '진짜 앱'을 만들려면 자바스크립트 번들을 앱 내부에 포함시키는 릴리즈 빌드가 필요합니다.
+
+```bash
+# iOS 기기에 릴리즈 모드로 직접 설치
+npx expo run:ios --device "유인학의 iPhone" --configuration Release
+```
+
+---
+
+## 5. 개발 생산성을 높이는 체크리스트
+딥링크 일관성: app.json의 scheme, 코드 내 redirectTo, Supabase 대시보드 주소가 모두 일치해야 합니다.
+
+Google Cloud Console: Web Client ID를 생성하여 Supabase에 등록했는지 확인하세요.
+
+빌드 모드 확인: 외부 테스트를 할 때는 반드시 --configuration Release 옵션을 사용하세요.
+
+---
+
+## 6. 결론
+React Native에서 Supabase와 구글 로그인을 연동하는 과정은 단순한 코드 작성을 넘어 네트워크 환경과 빌드 아키텍처에 대한 이해가 필요합니다. 초기 설계에 신경 쓴다면, 앞으로의 프로젝트는 더 가볍고 빠르게 나아갈 것입니다.
+
+"빠르게 만들되, 오래 버틸 수 있게 짜라."
+
+
+---
