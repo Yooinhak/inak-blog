@@ -1,0 +1,190 @@
+---
+title: "Framer Motion으로 글자가 춤추는 텍스트 로테이션 애니메이션 만들기"
+date: 2026-02-20
+tags: ["Framer Motion", "React", "Animation", "TypeScript", "UI"]
+---
+
+# Framer Motion으로 글자가 춤추는 텍스트 로테이션 애니메이션 만들기
+
+랜딩 페이지에서 가장 눈길을 끄는 요소 중 하나는 **텍스트가 자연스럽게 전환되는 애니메이션**입니다. 단순히 fade in/out이 아닌, 글자 하나하나가 순차적으로 등장하며 바뀌는 효과를 Framer Motion으로 구현한 과정을 공유합니다.
+
+---
+
+## 1. 완성된 모습
+
+```
+Building [accessible UIs] with care.
+Building [scalable systems] with care.
+Building [beautiful interfaces] with care.
+```
+
+대괄호 안의 텍스트가 2초마다 자동으로 전환되며, 각 글자가 아래에서 위로 올라오는 spring 애니메이션이 적용됩니다.
+
+---
+
+## 2. 설계 방향
+
+구현 전에 몇 가지 요구사항을 정리했습니다.
+
+- 글자(character) 단위로 분리해서 stagger 애니메이션 적용
+- 자동 로테이션 + 수동 제어(next/previous/jumpTo) 지원
+- `forwardRef`로 외부에서 애니메이션 제어 가능
+- splitBy 옵션으로 글자/단어/줄 단위 선택 가능
+- TypeScript로 타입 안전성 확보
+
+---
+
+## 3. 핵심 구현
+
+### 3-1. 텍스트를 글자 단위로 분리
+
+Unicode를 올바르게 처리하기 위해 `Intl.Segmenter`를 우선 사용하고, 지원하지 않는 환경에서는 `Array.from`으로 폴백합니다.
+
+```typescript
+const splitIntoCharacters = (text: string): string[] => {
+  if (typeof Intl !== 'undefined' && Intl.Segmenter) {
+    const segmenter = new Intl.Segmenter('en', { granularity: 'grapheme' });
+    return Array.from(segmenter.segment(text), segment => segment.segment);
+  }
+  return Array.from(text);
+};
+```
+
+이모지나 한글 같은 다중 바이트 문자도 정확히 한 글자씩 분리됩니다.
+
+### 3-2. Stagger 딜레이 계산
+
+글자가 순서대로 등장하는 효과의 핵심은 각 글자에 미세하게 다른 딜레이를 주는 것입니다.
+
+```typescript
+const getStaggerDelay = (index: number, totalChars: number): number => {
+  if (staggerFrom === 'first') return index * staggerDuration;
+  if (staggerFrom === 'last') return (total - 1 - index) * staggerDuration;
+  if (staggerFrom === 'center') {
+    const center = Math.floor(total / 2);
+    return Math.abs(center - index) * staggerDuration;
+  }
+  if (staggerFrom === 'random') {
+    const randomIndex = Math.floor(Math.random() * total);
+    return Math.abs(randomIndex - index) * staggerDuration;
+  }
+  return Math.abs(staggerFrom - index) * staggerDuration;
+};
+```
+
+`staggerFrom` 옵션으로 애니메이션의 시작점을 자유롭게 변경할 수 있습니다.
+
+- `first` → 첫 글자부터 순서대로
+- `last` → 마지막 글자부터 역순으로
+- `center` → 가운데에서 바깥으로 퍼지듯
+- `random` → 무작위 순서로 등장
+
+### 3-3. AnimatePresence로 전환 관리
+
+```tsx
+<AnimatePresence mode="wait">
+  <motion.div key={currentTextIndex}>
+    {elements.map((wordObj, wordIndex) => (
+      <span className="inline-flex overflow-hidden">
+        {wordObj.characters.map((char, charIndex) => (
+          <motion.span
+            initial={{ y: '100%' }}
+            animate={{ y: 0 }}
+            exit={{ y: '-120%' }}
+            transition={{
+              type: 'spring',
+              damping: 30,
+              stiffness: 400,
+              delay: getStaggerDelay(charIndex, totalChars),
+            }}
+          >
+            {char}
+          </motion.span>
+        ))}
+      </span>
+    ))}
+  </motion.div>
+</AnimatePresence>
+```
+
+`AnimatePresence`가 `key` 변화를 감지해 이전 텍스트는 위로 사라지고, 새 텍스트는 아래에서 올라옵니다. 각 글자의 `overflow: hidden` 래퍼가 애니메이션 도중 글자가 영역 밖으로 보이지 않도록 합니다.
+
+---
+
+## 4. 자동 로테이션
+
+`useEffect`와 `setInterval`로 자동 전환을 구현합니다.
+
+```typescript
+useEffect(() => {
+  if (!auto) return;
+  const intervalId = setInterval(next, rotationInterval);
+  return () => clearInterval(intervalId);
+}, [next, rotationInterval, auto]);
+```
+
+`auto` prop으로 자동 로테이션을 on/off 할 수 있고, `rotationInterval`로 전환 간격을 밀리초 단위로 조절합니다.
+
+---
+
+## 5. 외부 제어: useImperativeHandle
+
+`forwardRef` + `useImperativeHandle`로 부모 컴포넌트에서 애니메이션을 직접 제어할 수 있습니다.
+
+```typescript
+useImperativeHandle(ref, () => ({
+  next,        // 다음 텍스트로
+  previous,    // 이전 텍스트로
+  jumpTo,      // 특정 인덱스로 이동
+  reset,       // 첫 번째 텍스트로 리셋
+}));
+```
+
+사용 예시:
+
+```tsx
+const textRef = useRef<RotatingTextRef>(null);
+
+<button onClick={() => textRef.current?.next()}>다음</button>
+<RotatingText ref={textRef} texts={['Hello', 'World']} />
+```
+
+---
+
+## 6. 접근성(Accessibility) 고려
+
+화면 리더 사용자를 위해 `sr-only` 클래스로 현재 텍스트를 숨겨진 상태로 제공하고, 시각적 애니메이션 요소에는 `aria-hidden`을 적용합니다.
+
+```tsx
+<span className="sr-only">{texts[currentTextIndex]}</span>
+<motion.div aria-hidden="true">
+  {/* 애니메이션 요소 */}
+</motion.div>
+```
+
+---
+
+## 7. 사용 예시
+
+```tsx
+<RotatingText
+  texts={['accessible UIs', 'scalable systems', 'beautiful interfaces']}
+  mainClassName="inline-block px-2 bg-base-200 rounded-md overflow-hidden"
+  staggerFrom="last"
+  initial={{ y: '100%' }}
+  animate={{ y: 0 }}
+  exit={{ y: '-120%' }}
+  staggerDuration={0.03}
+  splitLevelClassName="overflow-hidden"
+  transition={{ type: 'spring', damping: 30, stiffness: 400 }}
+  rotationInterval={2000}
+/>
+```
+
+---
+
+## 마무리
+
+텍스트 애니메이션은 작은 디테일이지만, 랜딩 페이지의 첫인상을 크게 좌우합니다. Framer Motion의 `AnimatePresence`와 spring 물리엔진 덕분에 자연스러운 모션을 비교적 적은 코드로 구현할 수 있었습니다.
+
+핵심은 **글자를 개별 요소로 분리**하고, **stagger 딜레이로 순차 등장 효과**를 만드는 것입니다. 이 패턴을 응용하면 타이핑 효과, 물결 애니메이션 등 다양한 변형을 만들 수 있습니다.

@@ -1,0 +1,224 @@
+---
+title: "Next.js + DaisyUI + next-themes로 완벽한 다크모드 구현하기"
+date: 2026-03-02
+tags: ["Next.js", "DaisyUI", "Dark Mode", "next-themes", "Tailwind CSS"]
+---
+
+# Next.js + DaisyUI + next-themes로 완벽한 다크모드 구현하기
+
+다크모드는 이제 선택이 아닌 필수입니다. 사용자 경험과 접근성 측면에서 반드시 지원해야 하는 기능이 되었죠. 하지만 Next.js의 서버 컴포넌트 환경에서 테마를 전환하는 것은 생각보다 까다로운 문제들이 있습니다.
+
+이 글에서는 **DaisyUI의 테마 시스템**과 **next-themes**를 조합해 깜빡임 없는 다크모드를 구현한 경험을 공유합니다.
+
+---
+
+## 1. 기술 스택 선택
+
+| 라이브러리 | 역할 | 선택 이유 |
+| :--- | :--- | :--- |
+| **DaisyUI** | UI 컴포넌트 + 테마 | `data-theme` 기반 테마 전환으로 CSS 변수만 바뀜 |
+| **next-themes** | 테마 상태 관리 | SSR 호환, localStorage 동기화, 시스템 테마 감지 |
+| **Tailwind CSS** | 스타일링 | DaisyUI와 자연스러운 통합 |
+
+---
+
+## 2. DaisyUI 테마 설정
+
+DaisyUI는 `data-theme` 속성으로 테마를 전환합니다. CSS 파일에서 사용할 테마를 선언합니다.
+
+```css
+/* globals.css */
+@plugin "daisyui" {
+  themes: nord --default, dim --prefersdark;
+}
+```
+
+- `nord` → 라이트 테마 (기본값)
+- `dim` → 다크 테마 (시스템 다크모드 시 자동 적용)
+
+---
+
+## 3. ThemeProvider 설정
+
+`next-themes`의 `ThemeProvider`를 클라이언트 컴포넌트로 감싸야 합니다. 주의할 점은 `attribute="data-theme"`을 지정하는 것입니다. DaisyUI가 이 속성을 기준으로 테마를 전환하기 때문입니다.
+
+```tsx
+// components/ThemeProvider/index.tsx
+'use client';
+
+import { ThemeProvider as Provider } from 'next-themes';
+
+const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <Provider attribute="data-theme" defaultTheme="nord">
+      {children}
+    </Provider>
+  );
+};
+```
+
+이 Provider를 루트 레이아웃에서 감싸줍니다.
+
+```tsx
+// app/layout.tsx
+export default function RootLayout({ children }) {
+  return (
+    <html lang="ko" suppressHydrationWarning>
+      <body>
+        <ThemeProvider>
+          <Header />
+          <main>{children}</main>
+          <Footer />
+        </ThemeProvider>
+      </body>
+    </html>
+  );
+}
+```
+
+`suppressHydrationWarning`은 서버/클라이언트 간 `data-theme` 값 차이로 발생하는 Hydration 경고를 방지합니다.
+
+---
+
+## 4. 다크모드 토글 버튼 만들기
+
+단순한 아이콘 토글이 아닌, **해와 달이 전환되는 애니메이션 토글**을 만들었습니다.
+
+```tsx
+'use client';
+
+import { useTheme } from 'next-themes';
+import { useEffect, useState } from 'react';
+
+function DarkMode() {
+  const [mounted, setMounted] = useState(false);
+  const { theme, setTheme } = useTheme();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
+
+  const isDark = theme === 'dim';
+
+  return (
+    <div
+      className={`w-16 h-8 rounded-3xl cursor-pointer relative
+        transition-all duration-500 overflow-hidden
+        ${isDark ? 'bg-[#6148de]' : 'bg-[#c9f8ff]'}`}
+      onClick={() => setTheme(isDark ? 'nord' : 'dim')}
+    >
+      {/* 구름 (라이트모드) */}
+      <img
+        src="/images/clouds.svg"
+        className={`absolute top-[17px] z-[2] transition-transform
+          ${isDark ? '-translate-x-8' : 'translate-x-[18px]'}`}
+      />
+      {/* 별 (다크모드) */}
+      <img
+        src="/images/stars.svg"
+        className={`absolute top-1 left-2 z-[3] transition-transform
+          ${isDark ? 'translate-y-1' : 'translate-y-10'}`}
+      />
+      {/* 해/달 원형 */}
+      <div className={`absolute w-6 h-6 top-1 rounded-full transition-all
+        ${isDark ? 'bg-white translate-x-8' : 'bg-[#ffda16] shadow-[0_0_5px_#ffda16] translate-x-1'}`}
+      />
+    </div>
+  );
+}
+```
+
+### 핵심 포인트: Hydration 문제 해결
+
+`mounted` 상태를 사용하는 이유가 중요합니다. 서버에서 렌더링할 때는 테마 정보를 모르기 때문에, 클라이언트에서 마운트된 후에만 테마 관련 UI를 렌더링합니다.
+
+```tsx
+const [mounted, setMounted] = useState(false);
+useEffect(() => { setMounted(true); }, []);
+if (!mounted) return null;
+```
+
+이 패턴을 빠뜨리면 서버와 클라이언트의 HTML이 달라져 **Hydration Error**가 발생합니다.
+
+---
+
+## 5. 코드 블록 다크모드 대응
+
+`rehype-pretty-code`로 생성된 코드 블록도 테마에 따라 전환되어야 합니다. CSS 변수를 활용합니다.
+
+```css
+/* 라이트 테마 (기본) */
+code span {
+  color: var(--shiki-light);
+  background-color: var(--shiki-light-bg);
+}
+
+/* 다크 테마 */
+[data-theme="dim"] code span {
+  color: var(--shiki-dark);
+  background-color: var(--shiki-dark-bg);
+}
+```
+
+`rehype-pretty-code`에 `theme` 옵션으로 라이트/다크 두 테마를 지정하면, 각 코드 토큰에 두 가지 색상 정보가 CSS 변수로 삽입됩니다.
+
+---
+
+## 6. Glass Morphism과 다크모드
+
+블로그 전체에 Glass Morphism 스타일을 적용했는데, 라이트/다크에서 모두 잘 보이려면 조건부 스타일링이 필요합니다.
+
+```tsx
+const glassCard = `
+  rounded-3xl
+  border border-white/40 bg-base-100/70
+  shadow-[0_20px_60px_-40px_rgba(15,23,42,0.6)]
+  backdrop-blur-xl
+  dark:border-white/10 dark:bg-base-100/15
+`;
+```
+
+Tailwind의 `dark:` 접두사로 다크모드 시 투명도와 테두리 밝기를 조절합니다. DaisyUI의 `base-100` 색상이 테마에 따라 자동으로 변하므로, 배경색은 자연스럽게 전환됩니다.
+
+---
+
+## 7. 로고 이미지 테마 대응
+
+다크 배경에서 밝은 로고가, 밝은 배경에서 어두운 로고가 표시되도록 테마에 따라 이미지를 전환합니다.
+
+```tsx
+const { theme } = useTheme();
+
+<Image
+  src={theme === 'dim' ? '/images/logo_dark.png' : '/images/logo.png'}
+  alt="logo"
+  width={60}
+  height={30}
+/>
+```
+
+---
+
+## 8. 흔히 겪는 문제와 해결
+
+### 화면 깜빡임 (FOUC)
+
+`next-themes`가 `<html>` 태그에 인라인 스크립트를 주입해 초기 테마를 빠르게 적용합니다. `suppressHydrationWarning`과 함께 사용하면 깜빡임이 거의 없습니다.
+
+### CSS 변수 우선순위
+
+DaisyUI 테마 변수가 Tailwind 유틸리티보다 먼저 로드되어야 합니다. `globals.css`에서 `@plugin "daisyui"`를 Tailwind import 뒤에 선언하세요.
+
+### 시스템 테마 변경 감지
+
+`next-themes`가 자동으로 `prefers-color-scheme` 미디어 쿼리를 감지합니다. 사용자가 시스템 설정을 변경하면 즉시 반영됩니다.
+
+---
+
+## 마무리
+
+다크모드 구현은 단순히 색상을 반전시키는 것이 아닙니다. Hydration 문제, 코드 블록 테마, 이미지 전환 등 고려해야 할 요소가 많습니다. DaisyUI + next-themes 조합은 이런 복잡함을 상당 부분 해소해주는 좋은 선택이었습니다.
+
+핵심은 **CSS 변수 기반 테마 시스템**을 일관되게 사용하는 것입니다. 이 원칙만 지키면 어떤 UI든 자연스럽게 테마 전환이 가능합니다.
