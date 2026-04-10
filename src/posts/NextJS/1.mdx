@@ -1,0 +1,218 @@
+---
+title: "Next.js App Router + MDX로 개인 블로그 만들기: 설계부터 배포까지"
+date: 2026-03-01
+tags: ["Next.js", "MDX", "Blog", "App Router", "SSR"]
+---
+
+# Next.js App Router + MDX로 개인 블로그 만들기
+
+개발자라면 누구나 한 번쯤 "내 블로그를 직접 만들어볼까?"라는 생각을 합니다. Velog, Tistory 같은 플랫폼도 훌륭하지만, **내가 원하는 디자인과 기능을 자유롭게 구현**할 수 있는 자체 블로그는 그 자체로 포트폴리오가 됩니다.
+
+이 글에서는 Next.js 16의 App Router와 MDX를 조합해 블로그를 구축한 과정을 공유합니다.
+
+---
+
+## 1. 왜 Next.js + MDX인가?
+
+### Next.js App Router의 장점
+
+App Router는 기존 Pages Router와 달리 **React Server Components(RSC)**를 기본으로 사용합니다. 블로그처럼 정적 콘텐츠가 많은 프로젝트에서 이점이 큽니다.
+
+- 서버 컴포넌트에서 파일 시스템 직접 접근 가능 (`fs.readFileSync`)
+- 클라이언트 번들 사이즈 최소화
+- 동적 라우팅이 폴더 구조로 직관적
+
+### MDX의 장점
+
+MDX는 Markdown 안에서 JSX 컴포넌트를 사용할 수 있게 해줍니다. 일반 Markdown보다 표현력이 풍부하면서도, CMS 없이 파일 기반으로 콘텐츠를 관리할 수 있습니다.
+
+---
+
+## 2. 프로젝트 구조 설계
+
+```
+src/
+├── app/
+│   ├── posts/
+│   │   ├── page.tsx              # 글 목록 페이지
+│   │   └── [category]/[id]/
+│   │       └── page.tsx          # 글 상세 페이지
+│   └── layout.tsx                # 루트 레이아웃
+├── posts/                        # MDX 파일 저장소
+│   ├── NextJS/
+│   │   └── 1.mdx
+│   └── ReactNative/
+│       └── 1.mdx
+└── lib/
+    └── postManagement/           # 포스트 유틸리티
+        ├── getPostList.ts
+        ├── getPostDetail.ts
+        └── types.ts
+```
+
+핵심은 **카테고리를 폴더 구조로 관리**하는 것입니다. `src/posts/[카테고리명]/[번호].mdx` 형태로 파일을 넣으면 자동으로 카테고리가 인식됩니다.
+
+---
+
+## 3. Frontmatter 파싱: gray-matter
+
+각 MDX 파일의 상단에는 YAML 형식의 메타데이터를 작성합니다.
+
+```yaml
+---
+title: "포스트 제목"
+date: 2026-03-01
+tags: ["Next.js", "MDX"]
+---
+```
+
+이를 파싱하기 위해 `gray-matter` 라이브러리를 사용합니다.
+
+```typescript
+import matter from 'gray-matter';
+import { readFileSync } from 'fs';
+
+const file = readFileSync(`${POSTS_PATH}/${category}/${id}.mdx`);
+const { data, content } = matter(file);
+// data → { title, date, tags }
+// content → 본문 마크다운 문자열
+```
+
+---
+
+## 4. MDX 렌더링 파이프라인
+
+`next-mdx-remote`를 사용해 서버 컴포넌트에서 MDX를 렌더링합니다. 여기에 다양한 플러그인을 조합하면 풍부한 표현이 가능합니다.
+
+```tsx
+import { MDXRemote } from 'next-mdx-remote/rsc';
+import remarkGfm from 'remark-gfm';
+import remarkBreaks from 'remark-breaks';
+import rehypePrettyCode from 'rehype-pretty-code';
+import rehypeSlug from 'rehype-slug';
+
+<MDXRemote
+  source={content}
+  options={{
+    mdxOptions: {
+      remarkPlugins: [remarkGfm, remarkBreaks],
+      rehypePlugins: [
+        [rehypePrettyCode, {
+          theme: {
+            dark: 'github-dark-dimmed',
+            light: 'github-light',
+          },
+        }],
+        rehypeSlug,
+      ],
+    },
+  }}
+/>
+```
+
+### 각 플러그인의 역할
+
+| 플러그인 | 역할 |
+| :--- | :--- |
+| **remarkGfm** | 테이블, 취소선 등 GitHub Flavored Markdown 지원 |
+| **remarkBreaks** | 한 줄 줄바꿈을 `<br>`로 변환 |
+| **rehypePrettyCode** | Shiki 기반 코드 하이라이팅, 라이트/다크 테마 지원 |
+| **rehypeSlug** | heading에 자동 id 부여 (목차 연동용) |
+
+---
+
+## 5. 동적 라우팅: [category]/[id]
+
+App Router에서는 폴더명에 대괄호를 사용해 동적 세그먼트를 만듭니다.
+
+```tsx
+// src/app/posts/[category]/[id]/page.tsx
+const Page = async ({ params }: { params: Promise<{ category: string; id: string }> }) => {
+  const { category, id } = await params;
+  const postDetail = getPostDetail(category, id);
+
+  return (
+    <article>
+      <h1>{postDetail.title}</h1>
+      <MDXRemote source={postDetail.content} />
+    </article>
+  );
+};
+```
+
+URL 구조가 `/posts/NextJS/1`처럼 깔끔하게 매핑되고, 파일 시스템의 폴더 구조와 1:1로 대응됩니다.
+
+---
+
+## 6. 포스트 목록 조회: glob 패턴 활용
+
+```typescript
+import { sync } from 'glob';
+
+const getPostPaths = (category?: string) => {
+  return sync(`${POSTS_PATH}/${category || '**'}/**/*.mdx`);
+};
+```
+
+`glob`의 `**` 패턴으로 모든 카테고리의 MDX 파일을 한 번에 찾고, 카테고리가 지정되면 해당 폴더만 검색합니다.
+
+---
+
+## 7. 카테고리 필터링
+
+URL 파라미터 기반으로 카테고리 필터를 구현했습니다. `?category=NextJS` 같은 쿼리스트링을 사용하며, 서버 컴포넌트에서 `searchParams`를 받아 처리합니다.
+
+```tsx
+const Page = async ({ searchParams }: { searchParams: Promise<{ category?: string }> }) => {
+  const { category } = await searchParams;
+  const postList = getPostList(category);
+  // ...
+};
+```
+
+클라이언트 사이드에서는 `useRouter`와 `useSearchParams`로 카테고리 변경 시 URL을 업데이트합니다.
+
+---
+
+## 8. 코드 블록 스타일링
+
+`rehype-pretty-code`가 생성하는 HTML에 맞춰 CSS를 커스터마이징했습니다. 특히 라이트/다크 테마 전환을 위해 CSS 변수를 활용합니다.
+
+```css
+code[data-theme*=' '],
+code[data-theme*=' '] span {
+  color: var(--shiki-light);
+  background-color: var(--shiki-light-bg);
+}
+
+.dark code[data-theme*=' '],
+.dark code[data-theme*=' '] span {
+  color: var(--shiki-dark);
+  background-color: var(--shiki-dark-bg);
+}
+```
+
+인라인 코드는 Notion 스타일의 빨간 텍스트 + 회색 배경으로 꾸몄습니다.
+
+---
+
+## 9. 배포 및 SEO
+
+Next.js의 `metadata` API를 활용해 OG 태그와 Twitter 카드를 설정하고, `sitemap.ts`로 사이트맵을 자동 생성합니다.
+
+```typescript
+export const metadata: Metadata = {
+  metadataBase: new URL('https://www.inak.dev'),
+  title: '이낙 개발 블로그',
+  openGraph: { /* ... */ },
+  twitter: { /* ... */ },
+};
+```
+
+---
+
+## 마무리
+
+직접 블로그를 만들면서 가장 좋았던 점은, 글을 쓰는 행위 자체가 기술 학습이 된다는 것입니다. MDX 파일 하나 추가하면 바로 포스트가 되는 이 구조 덕분에 콘텐츠 작성의 진입장벽이 낮아졌습니다.
+
+블로그 구축을 고민하시는 분들에게 이 글이 좋은 출발점이 되면 좋겠습니다.

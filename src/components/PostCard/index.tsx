@@ -4,6 +4,16 @@ import Link from 'next/link';
 
 import { PostAbstract } from '@lib/postManagement/types';
 
+const getCategoryThumbnail = (category: string): string => {
+  const map: Record<string, string> = {
+    ReactNative: '/posts/react/default.svg',
+    NextJS: '/posts/nextjs/default.svg',
+    Frontend: '/posts/frontend/default.svg',
+    DevLog: '/posts/devlog/default.svg',
+  };
+  return map[category] || '/posts/react/default.svg';
+};
+
 const PostCard = ({ post }: { post: PostAbstract }) => {
   return (
     <Link
@@ -13,7 +23,7 @@ const PostCard = ({ post }: { post: PostAbstract }) => {
       {/* 썸네일 */}
       <div className="relative aspect-[3/2] w-full mb-3">
         <Image
-          src={'/posts/react/default.svg'}
+          src={getCategoryThumbnail(post.category)}
           className="rounded-xl"
           alt={`${post.title}_thumbnail`}
           fill

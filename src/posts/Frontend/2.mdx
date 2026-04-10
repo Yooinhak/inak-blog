@@ -1,0 +1,202 @@
+---
+title: "Glass Morphism UI 디자인을 Tailwind CSS로 구현하는 방법"
+date: 2026-02-25
+tags: ["CSS", "Tailwind CSS", "Glass Morphism", "UI Design", "DaisyUI"]
+---
+
+# Glass Morphism UI 디자인을 Tailwind CSS로 구현하는 방법
+
+Glass Morphism(글래스모피즘)은 반투명 배경에 흐림 효과를 적용해 유리처럼 보이는 디자인 트렌드입니다. Apple의 macOS, Windows 11 등에서 광범위하게 사용되며, 웹에서도 모던하고 세련된 느낌을 줄 수 있습니다.
+
+이 글에서는 개인 블로그 리뉴얼에서 Glass Morphism을 **Tailwind CSS로 체계적으로 적용**한 과정을 공유합니다.
+
+---
+
+## 1. Glass Morphism의 3가지 핵심 요소
+
+Glass Morphism은 세 가지 CSS 속성의 조합입니다.
+
+| 요소 | CSS 속성 | 역할 |
+| :--- | :--- | :--- |
+| **반투명 배경** | `background-color` + `opacity` | 뒤의 콘텐츠가 비치는 효과 |
+| **흐림(Blur)** | `backdrop-filter: blur()` | 유리 질감 표현의 핵심 |
+| **미세한 테두리** | `border` + `opacity` | 유리 가장자리의 빛 반사 효과 |
+
+---
+
+## 2. 기본 Glass Card 유틸리티 만들기
+
+반복되는 스타일을 Tailwind 클래스 조합으로 정의합니다.
+
+```tsx
+const glassCard = `
+  rounded-3xl
+  border border-white/40
+  bg-base-100/70
+  shadow-[0_20px_60px_-40px_rgba(15,23,42,0.6)]
+  backdrop-blur-xl
+  dark:border-white/10
+  dark:bg-base-100/15
+`;
+```
+
+### 각 속성 해석
+
+- `border-white/40` → 40% 투명도의 흰색 테두리 (유리 가장자리 빛 반사)
+- `bg-base-100/70` → 70% 투명도의 배경색 (DaisyUI 테마 색상 활용)
+- `shadow-[...]` → 깊이감을 주는 커스텀 그림자
+- `backdrop-blur-xl` → 24px 가우시안 블러 (핵심!)
+- `dark:` 접두사 → 다크모드에서는 투명도를 더 낮춤
+
+---
+
+## 3. 배경 그라데이션 블롭
+
+Glass Morphism이 제대로 보이려면 **뒤에 비칠 무언가**가 있어야 합니다. 추상적인 그라데이션 블롭을 배경에 배치합니다.
+
+```tsx
+{/* 루트 레이아웃의 배경 장식 */}
+<div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+  <div className="absolute -top-32 left-1/4 h-96 w-96
+    rounded-full bg-pink-400/30 blur-[120px]" />
+  <div className="absolute top-1/3 right-0 h-80 w-80
+    rounded-full bg-cyan-400/20 blur-[140px]" />
+  <div className="absolute -bottom-40 left-1/2 h-[520px] w-[520px]
+    rounded-full bg-blue-500/15 blur-[160px]" />
+</div>
+```
+
+핵심 포인트:
+
+- `pointer-events-none` → 배경이 클릭을 방해하지 않도록
+- `fixed` → 스크롤해도 배경이 고정
+- `-z-10` → 모든 콘텐츠 뒤에 위치
+- `blur-[120px]` ~ `blur-[160px]` → 충분히 흐려서 자연스러운 그라데이션
+
+---
+
+## 4. 다크모드 대응 전략
+
+Glass Morphism은 밝은 배경에서 자연스럽지만, 다크모드에서는 다른 접근이 필요합니다.
+
+### 라이트 모드
+
+```css
+border: 1px solid rgba(255, 255, 255, 0.4);   /* 밝은 테두리 */
+background: rgba(255, 255, 255, 0.7);          /* 높은 투명도 */
+```
+
+### 다크 모드
+
+```css
+border: 1px solid rgba(255, 255, 255, 0.1);   /* 미세한 테두리 */
+background: rgba(30, 30, 40, 0.15);            /* 매우 낮은 투명도 */
+```
+
+Tailwind에서는 `dark:` 접두사로 간단히 처리합니다.
+
+```tsx
+<div className="
+  border-white/40 bg-base-100/70      /* 라이트 */
+  dark:border-white/10 dark:bg-base-100/15  /* 다크 */
+">
+```
+
+다크모드에서는 투명도를 크게 낮추는 것이 포인트입니다. 어두운 배경에서 너무 투명하면 콘텐츠 가독성이 떨어지고, 너무 불투명하면 Glass 효과가 사라집니다.
+
+---
+
+## 5. 네비게이션 바에 적용
+
+헤더에 Glass Morphism을 적용하면 스크롤 시 콘텐츠가 비치는 세련된 효과를 줍니다.
+
+```tsx
+<nav className="
+  navbar sticky top-0 z-30
+  border-b border-white/30
+  bg-base-100/70
+  shadow-sm
+  backdrop-blur-xl
+  dark:border-white/10
+  dark:bg-base-100/10
+">
+```
+
+- `sticky top-0` → 상단 고정
+- `backdrop-blur-xl` → 스크롤 시 콘텐츠가 흐려지며 비침
+- `bg-base-100/70` → 반투명 배경으로 뒤 콘텐츠 살짝 보임
+
+---
+
+## 6. 인터랙티브 요소에 적용
+
+### 포스트 카드
+
+```tsx
+<Link className="
+  rounded-2xl border border-white/40
+  bg-base-100/70 p-4
+  backdrop-blur-xl
+  transition duration-200
+  hover:-translate-y-1 hover:shadow-xl
+  dark:border-white/10 dark:bg-base-100/15
+">
+```
+
+hover 시 살짝 떠오르는 효과(`-translate-y-1`)와 그림자 강화(`shadow-xl`)로 카드가 살아있는 느낌을 줍니다.
+
+### 배지/라벨
+
+```tsx
+const sectionLabel = `
+  inline-flex items-center gap-2
+  rounded-full
+  border border-white/40
+  bg-white/70
+  px-3 py-1
+  text-xs font-semibold
+  uppercase tracking-[0.28em]
+  shadow-sm backdrop-blur
+  dark:border-white/10
+  dark:bg-white/5
+`;
+```
+
+작은 UI 요소에도 일관된 Glass 스타일을 적용하면 전체적인 통일감이 생깁니다.
+
+---
+
+## 7. 성능 고려사항
+
+`backdrop-filter: blur()`는 GPU 가속을 사용하지만, 남용하면 성능에 영향을 줄 수 있습니다.
+
+- 블러 반경이 클수록 비용 증가 (`blur-sm` < `blur-xl`)
+- 블러 요소가 화면에 많으면 렌더링 비용 누적
+- 모바일에서는 `blur-md` 이하로 줄이는 것도 고려
+- `will-change: backdrop-filter`로 GPU 레이어 힌트 제공 가능
+
+실제 프로젝트에서는 5~6개 이내의 Glass 요소를 유지하는 것이 좋습니다.
+
+---
+
+## 8. 자주 하는 실수
+
+### 배경 없이 Glass 적용
+
+블러 효과는 **뒤에 비칠 콘텐츠**가 있어야 의미가 있습니다. 흰 배경 위에 Glass를 올리면 그냥 반투명 상자처럼 보입니다. 반드시 그라데이션 블롭이나 이미지를 배경에 배치하세요.
+
+### 텍스트 가독성 무시
+
+반투명 배경에 텍스트를 올릴 때는 충분한 대비가 필요합니다. `bg-base-100/70` 정도의 투명도가 가독성과 Glass 효과의 균형점입니다.
+
+### 테두리를 빠뜨림
+
+`border-white/40` 같은 미세한 테두리가 없으면 Glass 요소가 배경과 구분되지 않습니다. 이 작은 테두리가 유리의 가장자리 반사를 표현하는 핵심입니다.
+
+---
+
+## 마무리
+
+Glass Morphism은 적용하기는 쉽지만 잘 적용하기는 어렵습니다. 투명도, 블러 강도, 테두리의 미세한 조절이 완성도를 결정합니다.
+
+Tailwind CSS의 유틸리티 클래스 조합으로 Glass 스타일을 체계화하면, 일관된 디자인 시스템을 유지하면서도 빠르게 UI를 구성할 수 있습니다.
