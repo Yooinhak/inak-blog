@@ -1,395 +1,448 @@
 import type { Metadata } from 'next';
+import type { CSSProperties } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
+
+import { IconArrow, IconGithub } from '@components/icons';
+import SupportCoffee from '@components/SupportCoffee';
 
 export const metadata: Metadata = {
   title: 'About | 유인학 개발 블로그',
-  description: '프론트엔드 개발자 유인학입니다. 저에 대해 더 알아보세요.',
+  description: '라이브 게임 서비스의 웹·커뮤니티·어드민을 만드는 프론트엔드 개발자 유인학입니다.',
 };
 
-const glassCard =
-  'rounded-3xl border border-white/40 bg-base-100/70 shadow-[0_20px_60px_-40px_rgba(15,23,42,0.6)] backdrop-blur-xl dark:border-white/10 dark:bg-base-100/15';
+type Project = {
+  badge: string;
+  name: string;
+  period: string;
+  summary: string;
+  highlights: string[];
+  techs: string[];
+};
 
-const sectionLabel =
-  'inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/70 px-3 py-1 text-xs font-semibold uppercase tracking-[0.28em] text-slate-600 shadow-sm backdrop-blur dark:border-white/10 dark:bg-white/5 dark:text-slate-200';
+const PROJECTS: Project[] = [
+  {
+    badge: 'Event Web',
+    name: '테일즈런너 이벤트 웹',
+    period: '2025.01 ~ 현재',
+    summary:
+      '라이브 게임의 시즌별 웹 이벤트·캠페인을 경태 팀장과 함께 개발했습니다. 일부는 퍼블리싱부터 직접 진행하고, 프론트엔드 개발은 백엔드와 데이터 연동을 협업해 완성했습니다. 설날 윷놀이, 아이디어 페스티벌, 마춘자 브랜드관, 네이버웹툰 콜라보, 2026 대운동회 등 수십 종을 담당했습니다.',
+    highlights: [
+      '외주 퍼블리싱 가이드를 갱신해 외주 산출물의 품질과 일관성을 높임',
+      '이미지 webp 변환·srcSet 버전 관리로 로딩을 최적화하고, Swiper·html2canvas로 인터랙션 구현',
+      'GA4 태깅으로 캠페인 성과 측정을 지원하고, 한게임·라온·스토브 등 채널링 환경 대응',
+    ],
+    techs: ['React', 'Vite', 'TanStack Query', 'Zustand', 'Swiper', 'html2canvas'],
+  },
+  {
+    badge: 'Community',
+    name: '테일즈런너 광장 (커뮤니티)',
+    period: '2025.03 ~ 2025.11',
+    summary:
+      '게임 내 SNS형 커뮤니티 "광장"의 프론트엔드를 처음부터 맡아 구현했습니다. 게임피드, 스크랩, 해시태그, 응원메시지, 방문 기록, 길드광장 등 커뮤니티 핵심 기능을 설계·구현했습니다.',
+    highlights: [
+      '무한 스크롤 게시판을 TanStack Virtual 가상화로 렌더링해 대량 피드에서도 안정적인 성능 확보',
+      '게임 클라이언트와의 연동(인게임 로그인, square key 라우팅)과 AI 필터링·제재 콘텐츠 상태 처리',
+      'apis / hooks / components를 도메인 단위로 분리해 관심사를 명확히 한 구조 설계',
+    ],
+    techs: ['React', 'TypeScript', 'TanStack Query', 'TanStack Virtual', 'Jotai'],
+  },
+  {
+    badge: 'Global Admin',
+    name: '몰레프(MOLEP) 글로벌 게임 포털 어드민',
+    period: '2026.02 ~ 현재',
+    summary:
+      '글로벌 게임 퍼블리싱 포털의 관리자 도구를 프론트엔드 담당으로, 백엔드 한 분과 합을 맞춰 구축했습니다. 국가·언어·약관 배포, 홈 레이아웃, 쿠폰, 공지 등 운영 전반을 담당했습니다.',
+    highlights: [
+      'feature 기반 아키텍처 + MSW 목 + zod 스키마로 타입 안전성과 병렬 개발 생산성을 확보',
+      '토큰 인증 flow를 재설계해 30분 세션 만료·access token 중앙화·접근권한 정기검토 적용',
+      '입력값 유효성 검사를 공통 모듈로 구조화하고 날짜 처리를 UTC로 표준화',
+    ],
+    techs: ['React', 'Vite', 'TanStack Query', 'Jotai', 'zod', 'MSW'],
+  },
+  {
+    badge: 'Game Admin',
+    name: '테일즈런너 통합 어드민',
+    period: '2024.11 ~ 현재',
+    summary:
+      '운영팀이 매일 사용하는 어드민의 기능 개발과 유지보수를 담당하며, 서비스 운영툴과 회원 관리 도구를 폭넓게 개선했습니다.',
+    highlights: [
+      '이벤트 설정·생일 이벤트 템플릿·공지·모니터링 키워드 등 운영 기능 개발',
+      '노블레스 런너즈 시즌 관리 화면을 신규 구축(시즌 생성·대상자 명단·혜택 기간 검증 등)',
+      '로그인 5회 실패 계정 잠금, 권한그룹 변경 사유 입력으로 변경 이력 추적 등 보안·감사 반영',
+    ],
+    techs: ['React', 'TanStack Query', 'React Hook Form', 'xlsx'],
+  },
+  {
+    badge: 'Responsive',
+    name: '테일즈런너 공식 홈페이지 모바일 반응형 전환',
+    period: '2024.11 ~ 현재',
+    summary:
+      'PC 전용으로 제공되던 공식 홈페이지를 모바일·태블릿까지 대응하도록 반응형 전환했습니다. 커뮤니티, 내정보, 새소식, 노블레스 등 주요 섹션을 모바일 대응했습니다.',
+    highlights: [
+      'Samsung/Galaxy 브라우저에서 SPA 진입 시 viewport가 적용되지 않던 문제를 useLayoutEffect 기반으로 해결',
+      'iOS dialog 오토포커스·갤럭시 뒤로가기 쿠폰 초기화 등 기기·브라우저별 호환성 이슈를 다수 처리',
+      '모바일 최소 화면 너비 보장, PC 전용 화면 분기 등 안전한 분기 전략으로 점진적 전환',
+    ],
+    techs: ['React', 'Tailwind CSS', 'Zustand', 'SWR'],
+  },
+];
 
-const AboutPage = () => {
+const VALUES = [
+  { k: '라이브 서비스', v: '대규모 게임 서비스의 웹·커뮤니티·어드민을 맡아 개발하고 안정적으로 운영·개선합니다.' },
+  { k: '반응형 · 호환성', v: 'PC 전용 라이브 서비스를 모바일까지 대응하고 Samsung·iOS 브라우저 이슈를 해결합니다.' },
+  { k: 'B2B 어드민', v: '권한·인증·감사가 얽힌 운영 도구를 안정적이고 확장 가능한 구조로 설계합니다.' },
+  { k: '성능 · 협업', v: 'webp·가상화로 체감 성능을 높이고, 기획·백엔드·QA와 합을 맞춰 개선합니다.' },
+];
+
+const SKILLS = [
+  {
+    group: 'Front-End',
+    items: [
+      'TypeScript',
+      'JavaScript',
+      'React',
+      'React Native',
+      'Next.js',
+      'Vite',
+      'TanStack Query',
+      'Zustand',
+      'Jotai',
+      'SWR',
+      'React Hook Form',
+      'zod',
+      'Tailwind CSS',
+      'styled-components',
+      'SCSS',
+    ],
+  },
+  {
+    group: 'Collaboration & Tools',
+    items: ['Git', 'GitHub', 'GitLab', 'Slack', 'Notion', 'Figma', 'MSW', 'AWS', 'VSCode'],
+  },
+];
+
+const CAREER = [
+  {
+    year: '2024.11',
+    title: '블로믹스 (Blomics) · 프론트엔드 개발자',
+    desc: '테일즈런너(라이브 게임)의 이벤트 웹·커뮤니티·통합 어드민과 몰레프 글로벌 포털 어드민을 담당. 공식 홈페이지 모바일 반응형 전환과 크로스 브라우저 이슈 해결.',
+  },
+  {
+    year: '2022.10',
+    title: 'Corretto · 프론트엔드 개발자',
+    desc: 'SI 프로젝트와 자체 솔루션 프론트엔드 개발. 쇼핑·교육·CRM 등 다양한 도메인의 플랫폼·백오피스를 구축.',
+  },
+];
+
+const EARLIER = [
+  {
+    name: 'Gel-click',
+    link: 'https://gelclick.com/home/main.do',
+    period: '2022.11 ~ 2023.10',
+    summary: '쇼핑몰 통합관리 솔루션 — OMS·CMS 플랫폼/백오피스, i18n 글로벌 언어 지원',
+    techs: ['Next.js', 'styled-components', 'Jotai'],
+  },
+  {
+    name: '윙버디',
+    link: 'https://wingbuddy.kr/',
+    period: '2023.05 ~ 2023.08',
+    summary: '온라인 특수교육 플랫폼 — 모바일 전용 서비스를 웹앱 반응형으로 전환, ebook 기능 개발',
+    techs: ['Next.js', 'styled-components', 'Jotai'],
+  },
+  {
+    name: 'KorlyMally',
+    link: 'https://korlymally.kr/',
+    period: '2023.10 ~ 2024.01',
+    summary: '해외 쇼핑 플랫폼 — 국제 e-commerce, WMS·OMS 백오피스 프론트엔드 개발',
+    techs: ['Next.js', 'styled-components', 'Jotai'],
+  },
+  {
+    name: 'Future Plan',
+    link: null,
+    period: '2024.01 ~ 2024.06',
+    summary: '진로진학 시스템 리빌딩 — 전체 페이지 프론트엔드 개발 참여',
+    techs: ['Next.js', 'styled-components', 'Jotai'],
+  },
+  {
+    name: '한화정밀기계',
+    link: null,
+    period: '2024.07 ~ 2024.10',
+    summary: 'CRM 시스템 — table-MUI·echart 기반 대시보드 관리',
+    techs: ['Next.js', 'styled-components', 'Jotai'],
+  },
+];
+
+const softText: CSSProperties = { color: 'var(--text-soft)' };
+const muteText: CSSProperties = { color: 'var(--text-mute)' };
+
+function ProjectCard({ p }: { p: Project }) {
   return (
-    <div className="relative">
-      <div className="pointer-events-none absolute -top-32 left-1/2 h-[320px] w-[320px] -translate-x-1/2 rounded-full bg-sky-300/40 blur-[120px] dark:bg-sky-500/20" />
-      <div className="pointer-events-none absolute top-1/3 right-0 h-[260px] w-[260px] rounded-full bg-emerald-300/30 blur-[120px] dark:bg-emerald-400/15" />
+    <div className="glass" style={{ padding: '22px 24px', borderRadius: 'var(--radius)' }}>
+      <div
+        style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 14, flexWrap: 'wrap' }}
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <span className="eyebrow" style={{ color: 'var(--accent)' }}>
+            {p.badge}
+          </span>
+          <h3 style={{ margin: 0, fontSize: 19, fontWeight: 800, letterSpacing: '-0.02em', color: 'var(--text)' }}>
+            {p.name}
+          </h3>
+        </div>
+        <span className="mono" style={{ fontSize: 12, fontWeight: 600, ...muteText, flexShrink: 0 }}>
+          {p.period}
+        </span>
+      </div>
 
-      <div className="relative mx-auto flex max-w-6xl flex-col gap-20 px-4 py-16 sm:py-20">
-        <section className="grid items-center gap-12 lg:grid-cols-[1.1fr_0.9fr]">
-          <div className="space-y-6">
-            <span className={sectionLabel}>Front-End Developer</span>
-            <h1 className="text-4xl font-semibold text-base-content sm:text-6xl">유인학</h1>
-            <p className="text-lg leading-relaxed text-base-content/80">
-              학습을 즐기며 사용자의 맥락을 먼저 고민합니다. 팀과의 협업에서 투명한 소통을 지향하며, 경험을 매끄럽게
-              이어주는 프론트엔드 화면을 만드는 데 집중합니다.
-            </p>
-            <div className="flex flex-wrap gap-3">
-              <Link
-                href="mailto:syu3236@gmail.com"
-                className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-base-100/70 px-4 py-2 text-sm font-semibold text-base-content shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:shadow-md dark:border-white/10 dark:bg-base-100/15"
-              >
-                📧 Email
-              </Link>
-              <Link
-                href="https://github.com/Yooinhak"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-base-100/70 px-4 py-2 text-sm font-semibold text-base-content shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:shadow-md dark:border-white/10 dark:bg-base-100/15"
-              >
-                💻 Github
-              </Link>
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-base-100/70 px-4 py-2 text-sm font-semibold text-base-content shadow-sm backdrop-blur dark:border-white/10 dark:bg-base-100/15">
-                📱 010-3680-3224
+      <p style={{ margin: '14px 0 0', fontSize: 14.5, lineHeight: 1.66, ...softText }}>{p.summary}</p>
+
+      <ul
+        style={{
+          listStyle: 'none',
+          margin: '14px 0 0',
+          padding: 0,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 9,
+        }}
+      >
+        {p.highlights.map(h => (
+          <li key={h} style={{ position: 'relative', paddingLeft: 20, fontSize: 14, lineHeight: 1.6, ...softText }}>
+            <span
+              style={{
+                position: 'absolute',
+                left: 2,
+                top: 9,
+                width: 6,
+                height: 6,
+                borderRadius: 2,
+                background: 'var(--accent)',
+                transform: 'rotate(45deg)',
+              }}
+            />
+            {h}
+          </li>
+        ))}
+      </ul>
+
+      <div className="skill-chips" style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 16 }}>
+        {p.techs.map(t => (
+          <span className="chip" key={t}>
+            {t}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default function AboutPage() {
+  return (
+    <div className="wrap page-about">
+      {/* ---------- Hero ---------- */}
+      <section className="about-hero">
+        <div className="about-intro">
+          <span className="eyebrow">/ about</span>
+          <h1>
+            프론트엔드 개발자
+            <br />
+            <span className="hl">유인학</span>입니다.
+          </h1>
+          <p>
+            라이브 게임 서비스의 웹·커뮤니티·어드민을 만드는 프론트엔드 개발자입니다. 동료와 합을 맞춰 운영 중인 서비스를
+            안정적으로 개선하고, 사용자의 맥락을 먼저 고민합니다.
+          </p>
+          <div className="about-links">
+            <a className="btn btn-primary" href="mailto:syu3236@gmail.com">
+              이메일 보내기 <IconArrow />
+            </a>
+            <a className="btn btn-ghost" href="https://github.com/Yooinhak" target="_blank" rel="noopener noreferrer">
+              <IconGithub size={17} /> GitHub
+            </a>
+          </div>
+          <div className="stat-strip compact" style={{ marginTop: 8 }}>
+            <div className="stat">
+              <span className="stat-n mono">3+</span>
+              <span className="stat-l mono">years</span>
+            </div>
+            <div className="stat">
+              <span className="stat-n mono">Blomics</span>
+              <span className="stat-l mono">current</span>
+            </div>
+            <div className="stat">
+              <span className="stat-n mono">Live</span>
+              <span className="stat-l mono">service</span>
+            </div>
+          </div>
+        </div>
+        <div className="about-photo glass">
+          <Image src="/images/inhak-profile.jpg" alt="유인학 프로필" width={220} height={220} />
+          <div className="about-photo-badge mono">inak.dev</div>
+        </div>
+      </section>
+
+      {/* ---------- 핵심 역량 ---------- */}
+      <section className="about-values">
+        {VALUES.map(v => (
+          <div className="value glass" key={v.k}>
+            <span className="value-k">{v.k}</span>
+            <p>{v.v}</p>
+          </div>
+        ))}
+      </section>
+
+      {/* ---------- 주요 프로젝트 ---------- */}
+      <section className="sec">
+        <div className="sec-head">
+          <div>
+            <span className="eyebrow">/ work</span>
+            <h2 className="sec-title">주요 프로젝트</h2>
+          </div>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+          {PROJECTS.map(p => (
+            <ProjectCard p={p} key={p.name} />
+          ))}
+        </div>
+      </section>
+
+      {/* ---------- 경력 ---------- */}
+      <section className="sec">
+        <div className="sec-head">
+          <div>
+            <span className="eyebrow">/ career</span>
+            <h2 className="sec-title">경력</h2>
+          </div>
+        </div>
+        <div className="timeline">
+          {CAREER.map(c => (
+            <div className="tl-item" key={c.title}>
+              <span className="tl-year mono">{c.year}</span>
+              <div className="tl-dot" />
+              <div className="tl-body glass">
+                <h3>{c.title}</h3>
+                <p>{c.desc}</p>
               </div>
             </div>
-            <div className="grid gap-4 sm:grid-cols-3">
-              {[
-                { label: 'Current', value: 'Blomics' },
-                { label: 'Experience', value: '2+ Years' },
-                { label: 'Focus', value: 'UI/UX' },
-              ].map(item => (
-                <div key={item.label} className={`${glassCard} px-4 py-3 text-center`}>
-                  <p className="text-xs uppercase tracking-[0.3em] text-base-content/60">{item.label}</p>
-                  <p className="mt-2 text-lg font-semibold text-base-content">{item.value}</p>
-                </div>
-              ))}
-            </div>
-          </div>
+          ))}
+        </div>
+      </section>
 
-          <div className={`${glassCard} relative overflow-hidden p-8`}>
-            <div className="flex flex-col gap-6">
-              <div className="flex items-center gap-4">
-                <div className="relative h-20 w-20 overflow-hidden rounded-2xl ring-2 ring-white/50">
-                  <Image src="/images/inhak-profile.jpg" alt="유인학 프로필 사진" fill className="object-cover" />
-                </div>
-                <div>
-                  <p className="text-sm uppercase tracking-[0.3em] text-base-content/60">Profile</p>
-                  <p className="text-2xl font-semibold text-base-content">유인학</p>
-                  <p className="text-base-content/70">Frontend Developer</p>
-                </div>
-              </div>
-
-              <div className="grid gap-3 sm:grid-cols-2">
-                <div className="rounded-2xl border border-white/30 bg-white/60 p-4 text-sm text-base-content/70 backdrop-blur dark:border-white/10 dark:bg-white/5">
-                  문제를 작은 단위로 나누고 빠르게 검증합니다.
-                </div>
-                <div className="rounded-2xl border border-white/30 bg-white/60 p-4 text-sm text-base-content/70 backdrop-blur dark:border-white/10 dark:bg-white/5">
-                  사용자의 흐름을 끊지 않는 인터랙션을 설계합니다.
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3 rounded-2xl border border-white/30 bg-white/60 px-4 py-3 backdrop-blur dark:border-white/10 dark:bg-white/5">
-                <Image src="/images/logo.png" alt="블로그 로고" width={48} height={24} />
-                <div>
-                  <p className="text-sm font-semibold text-base-content">이낙 개발 블로그</p>
-                  <p className="text-xs text-base-content/60">기록과 성장의 아카이브</p>
-                </div>
-              </div>
-            </div>
+      {/* ---------- 기술 스택 ---------- */}
+      <section className="sec">
+        <div className="sec-head">
+          <div>
+            <span className="eyebrow">/ skills</span>
+            <h2 className="sec-title">기술 스택</h2>
           </div>
-        </section>
-
-        <section className="space-y-6">
-          <div className="flex flex-col gap-3 text-center">
-            <span className={sectionLabel}>About Me</span>
-            <h2 className="text-3xl font-semibold text-base-content sm:text-4xl">일하는 방식과 태도</h2>
-            <p className="text-base text-base-content/70">빠른 실행과 정돈된 협업을 통해 성장하는 것을 즐깁니다.</p>
-          </div>
-          <div className="grid gap-4 md:grid-cols-2">
-            {[
-              '무엇이든 관심이 생기면 빠르게 도전하고 실행합니다.',
-              '사람들과 소통하고 의견을 나눌 때 행복합니다.',
-              '사용자 입장에서 필요한 것이 무엇인지 고민하면서 개발합니다.',
-              '지속적인 학습과 도전을 통해 새로운 기술에 대한 열정을 유지합니다.',
-            ].map(item => (
-              <div key={item} className={`${glassCard} p-6 text-base text-base-content/80`}>
-                {item}
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="space-y-6">
-          <div className="flex flex-col gap-3 text-center">
-            <span className={sectionLabel}>Channels</span>
-            <h2 className="text-3xl font-semibold text-base-content sm:text-4xl">연락 채널</h2>
-          </div>
-          <div className="grid gap-4 md:grid-cols-3">
-            <Link
-              href="mailto:syu3236@gmail.com"
-              className={`${glassCard} p-6 text-center transition hover:-translate-y-1`}
-            >
-              <div className="text-3xl">📧</div>
-              <p className="mt-3 font-semibold text-base-content">Email</p>
-              <p className="text-sm text-base-content/60">syu3236@gmail.com</p>
-            </Link>
-            <div className={`${glassCard} p-6 text-center`}>
-              <div className="text-3xl">📱</div>
-              <p className="mt-3 font-semibold text-base-content">Phone</p>
-              <p className="text-sm text-base-content/60">010-3680-3224</p>
-            </div>
-            <Link
-              href="https://github.com/Yooinhak"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`${glassCard} p-6 text-center transition hover:-translate-y-1`}
-            >
-              <div className="text-3xl">💻</div>
-              <p className="mt-3 font-semibold text-base-content">Github</p>
-              <p className="text-sm text-base-content/60">@Yooinhak</p>
-            </Link>
-          </div>
-        </section>
-
-        <section className="space-y-6">
-          <div className="flex flex-col gap-3 text-center">
-            <span className={sectionLabel}>Tech Stack</span>
-            <h2 className="text-3xl font-semibold text-base-content sm:text-4xl">기술 스택</h2>
-          </div>
-          <div className="grid gap-6 md:grid-cols-2">
-            <div className={`${glassCard} p-6`}>
-              <h3 className="text-xl font-semibold text-base-content">Front-End</h3>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {[
-                  'HTML',
-                  'CSS',
-                  'JavaScript',
-                  'React',
-                  'React-Native',
-                  'Next.js',
-                  'Jotai',
-                  'SCSS',
-                  'Styled-components',
-                  'TailwindCSS',
-                ].map(tech => (
-                  <span
-                    key={tech}
-                    className="rounded-full border border-white/40 bg-white/70 px-3 py-1 text-xs font-semibold text-slate-700 shadow-sm backdrop-blur dark:border-white/10 dark:bg-white/5 dark:text-slate-200"
-                  >
-                    {tech}
+        </div>
+        <div className="skills">
+          {SKILLS.map(s => (
+            <div className="skill-group" key={s.group}>
+              <span className="skill-label mono">{s.group}</span>
+              <div className="skill-chips">
+                {s.items.map(i => (
+                  <span className="chip" key={i}>
+                    {i}
                   </span>
                 ))}
               </div>
             </div>
-            <div className={`${glassCard} p-6`}>
-              <h3 className="text-xl font-semibold text-base-content">Collaboration & Tools</h3>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {['Slack', 'Notion', 'Teams', 'VSCode', 'Atom', 'Figma', 'Git', 'Github', 'Bitbucket', 'AWS'].map(
-                  tool => (
-                    <span
-                      key={tool}
-                      className="rounded-full border border-white/40 bg-white/70 px-3 py-1 text-xs font-semibold text-slate-700 shadow-sm backdrop-blur dark:border-white/10 dark:bg-white/5 dark:text-slate-200"
-                    >
-                      {tool}
-                    </span>
-                  ),
+          ))}
+        </div>
+      </section>
+
+      {/* ---------- 이전 프로젝트 경험 (Corretto) ---------- */}
+      <section className="sec">
+        <div className="sec-head">
+          <div>
+            <span className="eyebrow">/ earlier</span>
+            <h2 className="sec-title">이전 프로젝트 경험</h2>
+          </div>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
+          {EARLIER.map(e => (
+            <div className="glass" key={e.name} style={{ padding: '20px 22px', borderRadius: 'var(--radius)' }}>
+              <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 10 }}>
+                {e.link ? (
+                  <a
+                    href={e.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ fontSize: 17, fontWeight: 700, color: 'var(--text)', textDecoration: 'none' }}
+                  >
+                    {e.name}
+                  </a>
+                ) : (
+                  <span style={{ fontSize: 17, fontWeight: 700, color: 'var(--text)' }}>{e.name}</span>
                 )}
+                <span className="mono" style={{ fontSize: 11.5, ...muteText, flexShrink: 0 }}>
+                  {e.period}
+                </span>
+              </div>
+              <p style={{ margin: '10px 0 0', fontSize: 13.5, lineHeight: 1.6, ...softText }}>{e.summary}</p>
+              <div className="skill-chips" style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 14 }}>
+                {e.techs.map(t => (
+                  <span className="chip" key={t}>
+                    {t}
+                  </span>
+                ))}
               </div>
             </div>
-          </div>
-        </section>
+          ))}
+        </div>
+      </section>
 
-        <section className="space-y-6">
-          <div className="flex flex-col gap-3 text-center">
-            <span className={sectionLabel}>Career</span>
-            <h2 className="text-3xl font-semibold text-base-content sm:text-4xl">경력</h2>
+      {/* ---------- 개인 프로젝트 · 학력 ---------- */}
+      <section className="sec">
+        <div className="sec-head">
+          <div>
+            <span className="eyebrow">/ more</span>
+            <h2 className="sec-title">개인 프로젝트 · 학력</h2>
           </div>
-          <div className="space-y-5">
-            {[
-              {
-                company: '블로믹스 (Blomics)',
-                period: '2024.11 ~ 현재',
-                role: '프론트엔드 개발자',
-                details: ['테일즈런너 게임 웹 페이지 유지보수', '어드민 페이지 유지보수'],
-              },
-              {
-                company: 'Corretto',
-                period: '2022.10 ~ 2024.10',
-                role: '프론트엔드 개발자',
-                details: ['SI 프로젝트 프론트엔드 개발', '자체 솔루션 프론트엔드 개발'],
-              },
-            ].map(item => (
-              <div key={item.company} className={`${glassCard} p-6`}>
-                <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-                  <h3 className="text-2xl font-semibold text-base-content">{item.company}</h3>
-                  <span className="rounded-full border border-white/40 bg-white/70 px-3 py-1 text-xs font-semibold text-slate-700 dark:border-white/10 dark:bg-white/5 dark:text-slate-200">
-                    {item.period}
-                  </span>
-                </div>
-                <p className="mt-2 text-base-content/70">{item.role}</p>
-                <ul className="mt-3 list-disc list-inside space-y-1 text-sm text-base-content/70">
-                  {item.details.map(detail => (
-                    <li key={detail}>{detail}</li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="space-y-6">
-          <div className="flex flex-col gap-3 text-center">
-            <span className={sectionLabel}>Work Experience</span>
-            <h2 className="text-3xl font-semibold text-base-content sm:text-4xl">프로젝트 경험</h2>
-          </div>
-          <div className="space-y-5">
-            {[
-              {
-                name: 'Gel-click',
-                link: 'https://gelclick.com/home/main.do',
-                period: ['2022.11 ~ 2023.04', '2023.08 ~ 2023.10'],
-                summary: '쇼핑몰 통합관리 솔루션',
-                points: [
-                  'OMS, CMS 종합 관리 플랫폼',
-                  '플랫폼 및 백오피스 프론트엔드 개발',
-                  'i18n을 이용한 글로벌 언어 지원 서비스',
-                ],
-              },
-              {
-                name: '윙버디',
-                link: 'https://wingbuddy.kr/',
-                period: ['2023.05 ~ 2023.08'],
-                summary: '온라인 특수교육 플랫폼',
-                points: ['모바일 전용 서비스를 웹 앱 반응형으로 전환', 'ebook 추가 기능 개발'],
-              },
-              {
-                name: 'KorlyMally',
-                link: 'https://korlymally.kr/',
-                period: ['2023.10 ~ 2024.01'],
-                summary: '해외 쇼핑 플랫폼',
-                points: ['국제 e-commerce', 'WMS, OMS 백오피스 프론트엔드 개발'],
-              },
-              {
-                name: 'Future Plan',
-                link: null,
-                period: ['2024.01 ~ 2024.06'],
-                summary: '진로진학 시스템 리빌딩',
-                points: ['전체적인 페이지 프론트엔드 개발 참여'],
-              },
-              {
-                name: '한화정밀기계',
-                link: null,
-                period: ['2024.07 ~ 2024.10'],
-                summary: 'CRM 시스템',
-                points: ['CRM 개발', 'table-MUI, echart를 사용한 대시보드 관리'],
-              },
-            ].map(item => (
-              <div key={item.name} className={`${glassCard} p-6`}>
-                <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-                  {item.link ? (
-                    <Link
-                      href={item.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-2xl font-semibold text-base-content transition hover:text-primary"
-                    >
-                      {item.name}
-                    </Link>
-                  ) : (
-                    <h3 className="text-2xl font-semibold text-base-content">{item.name}</h3>
-                  )}
-                  <div className="flex flex-wrap gap-2">
-                    {item.period.map(date => (
-                      <span
-                        key={date}
-                        className="rounded-full border border-white/40 bg-white/70 px-3 py-1 text-xs font-semibold text-slate-700 dark:border-white/10 dark:bg-white/5 dark:text-slate-200"
-                      >
-                        {date}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-                <p className="mt-2 text-base-content/70">{item.summary}</p>
-                <ul className="mt-3 list-disc list-inside space-y-1 text-sm text-base-content/70">
-                  {item.points.map(point => (
-                    <li key={point}>{point}</li>
-                  ))}
-                </ul>
-                <div className="mt-4 flex flex-wrap gap-2 text-xs font-semibold text-base-content/60">
-                  <span className="rounded-full border border-white/40 bg-white/60 px-3 py-1 backdrop-blur dark:border-white/10 dark:bg-white/5">
-                    Next.js
-                  </span>
-                  <span className="rounded-full border border-white/40 bg-white/60 px-3 py-1 backdrop-blur dark:border-white/10 dark:bg-white/5">
-                    styled-components
-                  </span>
-                  <span className="rounded-full border border-white/40 bg-white/60 px-3 py-1 backdrop-blur dark:border-white/10 dark:bg-white/5">
-                    Jotai
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="space-y-6">
-          <div className="flex flex-col gap-3 text-center">
-            <span className={sectionLabel}>Projects</span>
-            <h2 className="text-3xl font-semibold text-base-content sm:text-4xl">개인 프로젝트</h2>
-          </div>
-          <div className={`${glassCard} p-6`}>
-            <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-              <Link
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 16 }}>
+          <div className="glass" style={{ padding: '22px 24px', borderRadius: 'var(--radius)' }}>
+            <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 10 }}>
+              <a
                 href="https://github.com/Yooinhak/Safety_Tour_Flatform"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-2xl font-semibold text-base-content transition hover:text-primary"
+                style={{ fontSize: 17, fontWeight: 700, color: 'var(--text)', textDecoration: 'none' }}
               >
                 Safety Tour Platform
-              </Link>
-              <span className="rounded-full border border-white/40 bg-white/70 px-3 py-1 text-xs font-semibold text-slate-700 dark:border-white/10 dark:bg-white/5 dark:text-slate-200">
+              </a>
+              <span className="mono" style={{ fontSize: 11.5, ...muteText, flexShrink: 0 }}>
                 2021.09 ~ 2022.04
               </span>
             </div>
-            <p className="mt-2 text-base-content/70">
-              코로나 위험도를 확인할 수 있는 안전한 관광지 여행 정보 제공 어플리케이션
+            <p style={{ margin: '10px 0 0', fontSize: 13.5, lineHeight: 1.6, ...softText }}>
+              코로나 위험도를 확인할 수 있는 안전한 관광지 여행 정보 제공 앱. React Native 기반 하이브리드 앱.
             </p>
-            <ul className="mt-3 list-disc list-inside space-y-1 text-sm text-base-content/70">
-              <li>React Native를 사용한 하이브리드 앱</li>
-            </ul>
-            <div className="mt-4 flex flex-wrap gap-2 text-xs font-semibold text-base-content/60">
-              {['React Native', 'React Navigation', 'React Hooks', 'Axios'].map(item => (
-                <span
-                  key={item}
-                  className="rounded-full border border-white/40 bg-white/60 px-3 py-1 backdrop-blur dark:border-white/10 dark:bg-white/5"
-                >
-                  {item}
+            <div className="skill-chips" style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 14 }}>
+              {['React Native', 'React Navigation', 'React Hooks', 'Axios'].map(t => (
+                <span className="chip" key={t}>
+                  {t}
                 </span>
               ))}
             </div>
           </div>
-        </section>
 
-        <section className="space-y-6">
-          <div className="flex flex-col gap-3 text-center">
-            <span className={sectionLabel}>Education</span>
-            <h2 className="text-3xl font-semibold text-base-content sm:text-4xl">학력</h2>
-          </div>
-          <div className={`${glassCard} p-6`}>
-            <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-              <h3 className="text-2xl font-semibold text-base-content">남서울대학교</h3>
-              <span className="rounded-full border border-white/40 bg-white/70 px-3 py-1 text-xs font-semibold text-slate-700 dark:border-white/10 dark:bg-white/5 dark:text-slate-200">
+          <div className="glass" style={{ padding: '22px 24px', borderRadius: 'var(--radius)' }}>
+            <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 10 }}>
+              <span style={{ fontSize: 17, fontWeight: 700, color: 'var(--text)' }}>남서울대학교</span>
+              <span className="mono" style={{ fontSize: 11.5, ...muteText, flexShrink: 0 }}>
                 2017.03 ~ 2023.08
               </span>
             </div>
-            <p className="mt-2 text-base-content/70">컴퓨터소프트웨어학과 전공</p>
-            <div className="mt-4 grid gap-4 text-sm text-base-content/70 sm:grid-cols-2">
-              <div className="rounded-2xl border border-white/30 bg-white/60 p-3 backdrop-blur dark:border-white/10 dark:bg-white/5">
-                <span className="font-semibold text-base-content">총 학점:</span> 3.51/4.5
-              </div>
-              <div className="rounded-2xl border border-white/30 bg-white/60 p-3 backdrop-blur dark:border-white/10 dark:bg-white/5">
-                <span className="font-semibold text-base-content">전공평점:</span> 3.74/4.5
-              </div>
-            </div>
+            <p style={{ margin: '10px 0 0', fontSize: 13.5, lineHeight: 1.6, ...softText }}>
+              컴퓨터소프트웨어학과 전공 · 총 학점 3.51 / 4.5 · 전공 평점 3.74 / 4.5
+            </p>
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
+
+      <SupportCoffee />
     </div>
   );
-};
-
-export default AboutPage;
+}

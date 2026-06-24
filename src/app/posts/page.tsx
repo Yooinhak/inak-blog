@@ -1,27 +1,14 @@
-import CategoryFilter from '@components/CategoryFilter';
-import PostCard from '@components/PostCard';
-import { getPostList } from '@lib/postManagement';
-import { getPostCategories } from '@lib/postManagement/getPostList';
-import { PostAbstract } from '@lib/postManagement/types';
+import { Suspense } from 'react';
+import { getPostList, getTagCloud } from '@lib/postManagement/getPostList';
+import SearchPosts from '@components/SearchPosts';
 
-type SearchParams = Promise<{ category?: string }>;
-
-const Page = async (props: { searchParams: SearchParams }) => {
-  const { category } = await props.searchParams;
-  const categories = getPostCategories();
-  const postList: PostAbstract[] = getPostList(category);
-
+export default function PostsPage() {
+  const posts = getPostList();
+  const tags = getTagCloud(posts);
+  // SearchPosts uses useSearchParams() → must sit under a Suspense boundary.
   return (
-    <div className="w-full max-w-7xl flex flex-col gap-4 p-4 items-center mx-auto">
-      <CategoryFilter categories={categories} />
-
-      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 w-full">
-        {postList.map((postItem, postItemIndex) => (
-          <PostCard key={`${postItem.category}_${postItem.id}_${postItemIndex}`} post={postItem} />
-        ))}
-      </section>
-    </div>
+    <Suspense fallback={null}>
+      <SearchPosts posts={posts} tags={tags} />
+    </Suspense>
   );
-};
-
-export default Page;
+}

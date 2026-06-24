@@ -42,3 +42,8 @@ next-env.d.ts
 
 bun.lockb
 bun.lock
+
+# bkit
+.bkit/
+.bkit-memory.json
+docs/

@@ -1,5 +1,6 @@
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import Image from 'next/image';
+import Link from 'next/link';
 import { Suspense } from 'react';
 
 import rehypePrettyCode from 'rehype-pretty-code';
@@ -7,131 +8,133 @@ import rehypeSlug from 'rehype-slug';
 import remarkBreaks from 'remark-breaks';
 import remarkGfm from 'remark-gfm';
 
+import CategoryThumb from '@components/CategoryThumb';
+import LikeButton from '@components/LikeButton';
+import MetaRow from '@components/MetaRow';
+import PostCard from '@components/PostCard';
+import SupportCoffee from '@components/SupportCoffee';
 import TableOfContents from '@components/TableOfContents';
+import { getCategory } from '@lib/categories';
 import { getPostDetail } from '@lib/postManagement';
-import { PostDetail } from '@lib/postManagement/types';
+import { getPostList } from '@lib/postManagement/getPostList';
+import type { PostDetail } from '@lib/postManagement/types';
 
 interface PageParams {
   params: Promise<{ category: string; id: string }>;
 }
 
-const getCategoryThumbnail = (category: string): string => {
-  const map: Record<string, string> = {
-    ReactNative: '/posts/react/default.svg',
-    NextJS: '/posts/nextjs/default.svg',
-    Frontend: '/posts/frontend/default.svg',
-    DevLog: '/posts/devlog/default.svg',
-  };
-  return map[category] || '/posts/react/default.svg';
-};
-
-const getReadingTime = (content: string): number => {
-  // 한국어: ~500자/분, 영어: ~200단어/분
-  const koreanChars = (content.match(/[\uac00-\ud7af]/g) || []).length;
-  const englishWords = content
-    .replace(/[\uac00-\ud7af]/g, '')
-    .split(/\s+/)
-    .filter(w => w.length > 0).length;
-  const minutes = koreanChars / 500 + englishWords / 200;
-  return Math.max(1, Math.round(minutes));
-};
-
 const stripFirstH1 = (content: string): string => {
   const lines = content.split('\n');
-  const firstContentIdx = lines.findIndex(line => line.trim().length > 0);
-  if (firstContentIdx >= 0 && /^#\s+/.test(lines[firstContentIdx])) {
-    lines.splice(firstContentIdx, 1);
+  const idx = lines.findIndex(l => l.trim().length > 0);
+  if (idx >= 0 && /^#\s+/.test(lines[idx])) {
+    lines.splice(idx, 1);
     return lines.join('\n');
   }
   return content;
 };
 
-const PostArticle = async ({ content }: { content: string }) => {
-  return (
-    <article className="mt-8">
-      <MDXRemote
-        source={content}
-        options={{
-          mdxOptions: {
-            remarkPlugins: [remarkGfm, remarkBreaks],
-            rehypePlugins: [
-              [
-                rehypePrettyCode,
-                {
-                  theme: {
-                    dark: 'github-dark-dimmed',
-                    light: 'github-light',
-                  },
-                },
-              ],
-              rehypeSlug,
-            ],
-          },
-        }}
-      />
-    </article>
-  );
-};
-
-const ArticleSkeleton = () => (
-  <div className="mt-8 animate-pulse space-y-4">
-    {Array.from({ length: 8 }).map((_, i) => (
-      <div key={i} className="space-y-2">
-        <div className="h-4 rounded bg-base-content/10" style={{ width: `${75 + ((i * 17) % 25)}%` }} />
-        <div className="h-4 rounded bg-base-content/10" style={{ width: `${50 + ((i * 13) % 40)}%` }} />
-      </div>
-    ))}
-  </div>
+const Article = async ({ content }: { content: string }) => (
+  <MDXRemote
+    source={content}
+    options={{
+      mdxOptions: {
+        remarkPlugins: [remarkGfm, remarkBreaks],
+        rehypePlugins: [
+          [rehypePrettyCode, { theme: { dark: 'github-dark-dimmed', light: 'github-light' } }],
+          rehypeSlug,
+        ],
+      },
+    }}
+  />
 );
 
-const Page = async ({ params }: PageParams) => {
+export default async function Page({ params }: PageParams) {
   const { category, id } = await params;
-  const postDetail: PostDetail = getPostDetail(category, id);
-  const readingTime = getReadingTime(postDetail.content);
-  const thumbnail = getCategoryThumbnail(category);
-  const content = stripFirstH1(postDetail.content);
+  const detail: PostDetail = getPostDetail(category, id);
+  const content = stripFirstH1(detail.content);
+  const c = getCategory(category);
+
+  const all = getPostList();
+  const current = all.find(p => p.category === category && p.id === id);
+  const related = all.filter(p => p.category === category && p.id !== id).slice(0, 3);
+  const fill =
+    related.length < 3 ? all.filter(p => p.id !== id && !related.includes(p)).slice(0, 3 - related.length) : [];
+  const rel = [...related, ...fill];
 
   return (
-    <section className="relative min-h-[calc(100vh_-_65px_-_52px)] overflow-hidden text-base-content">
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/3 right-0 h-[360px] w-[360px] rounded-full bg-pink-300/40 blur-[140px] dark:bg-pink-600/30" />
-        <div className="absolute -bottom-32 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-cyan-300/30 blur-[160px] dark:bg-cyan-500/20" />
+    <article className="page-post">
+      <div className="wrap post-top">
+        <Link className="back-link mono" href={`/posts?category=${category}`}>
+          ← {c.label}
+        </Link>
+        <div className="post-hero">
+          <span className="eyebrow" style={{ color: `oklch(0.6 0.16 ${c.hue})` }}>
+            {c.label}
+          </span>
+          <h1>{detail.title}</h1>
+          {current ? <MetaRow post={current} /> : <span className="meta-row mono">{detail.formattedCreatedDate}</span>}
+          {current?.tags?.length ? (
+            <div className="post-tags">
+              {current.tags.map(t => (
+                <Link key={t} className="chip tag" href={`/posts?tag=${encodeURIComponent(t)}`}>
+                  {t}
+                </Link>
+              ))}
+            </div>
+          ) : null}
+        </div>
+        <div className="post-cover">
+          <CategoryThumb category={category} size="hero" />
+        </div>
       </div>
 
-      <div className="relative z-10 w-full px-0 py-12">
-        <div className="mx-auto w-full max-w-4xl rounded-3xl border border-white/40 bg-base-100/70 p-6 shadow-[0_20px_60px_-40px_rgba(15,23,42,0.6)] backdrop-blur-xl dark:border-white/10 dark:bg-base-100/15 sm:p-10">
-          <div className="prose dark:prose-invert w-full max-w-none">
-            <Image
-              src={thumbnail}
-              alt={'preview image'}
-              className="my-4 max-h-80 w-full rounded-2xl object-cover"
-              width={1200}
-              height={630}
-              sizes="(max-width: 1024px) 100vw, 960px"
-              priority
-              fetchPriority="high"
-            />
+      <div className="wrap post-layout">
+        <aside className="post-aside">
+          <TableOfContents contentId="post-content" />
+          <LikeButton id={`${category}/${id}`} initialLikes={current?.likes ?? 0} views={current?.views} />
+        </aside>
 
-            <div className="not-prose space-y-3">
-              <p className="text-xs font-semibold uppercase tracking-[0.35em] text-base-content/50">{category}</p>
-              <h1 className="text-3xl font-bold sm:text-4xl">{postDetail.title}</h1>
-              <div className="flex items-center gap-3 text-sm text-base-content/50">
-                <span>{postDetail.formattedCreatedDate}</span>
-                <span className="h-1 w-1 rounded-full bg-base-content/30" />
-                <span>{readingTime}분 읽기</span>
-              </div>
-            </div>
-
-            <Suspense fallback={<ArticleSkeleton />}>
-              <PostArticle content={content} />
+        <div className="post-main">
+          <div className="post-prose" id="post-content">
+            <Suspense fallback={<p>불러오는 중…</p>}>
+              <Article content={content} />
             </Suspense>
           </div>
+
+          <div className="post-end glass">
+            <div className="post-end-author">
+              <Image src="/images/inhak-profile.jpg" alt="Inak" width={52} height={52} />
+              <div>
+                <span className="ea-name">
+                  이낙 <b>Inak</b>
+                </span>
+                <span className="ea-role mono">Frontend Developer</span>
+              </div>
+              <Link className="btn btn-ghost" href="/about">
+                소개 보기
+              </Link>
+            </div>
+          </div>
         </div>
-
-        <TableOfContents />
       </div>
-    </section>
-  );
-};
 
-export default Page;
+      <div className="wrap sec">
+        <div className="sec-head">
+          <div>
+            <span className="eyebrow">/ related</span>
+            <h2 className="sec-title">관련 글</h2>
+          </div>
+        </div>
+        <div className="grid-3">
+          {rel.map(p => (
+            <PostCard key={p.url} post={p} />
+          ))}
+        </div>
+      </div>
+
+      <div className="wrap">
+        <SupportCoffee />
+      </div>
+    </article>
+  );
+}
