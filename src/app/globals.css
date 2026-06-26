@@ -6,17 +6,9 @@
 }
 @custom-variant dark (&:where([data-theme=dim], [data-theme=dim] *));
 
-@layer components {
-  [data-theme='dim'] .prose pre {
-    background-color: var(--shiki-dark-bg) !important;
-    color: var(--shiki-dark) !important;
-    border: 1px solid #374151 !important;
-  }
-
-  [data-theme='dim'] .prose pre code span {
-    color: var(--shiki-dark) !important;
-  }
-}
+/* Code-block syntax theming is defined in the "/* code */ /*" section below,
+   scoped to .post-prose (the real MDX container) and covering BOTH themes
+   (nord = light → --shiki-light, dim = dark → --shiki-dark). */
 
 /* ============================================================
    inak.dev redesign — handoff design system (appended)
@@ -142,9 +134,10 @@ body {
   position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none;
 }
 .bg-field .orb {
-  position: absolute; border-radius: 50%; filter: blur(120px);
+  position: absolute; border-radius: 50%; filter: blur(110px);
+  transform: translateZ(0); will-change: transform;
 }
-.bg-field .orb-1 { width: 620px; height: 620px; top: -240px; left: 50%; transform: translateX(-55%); background: var(--orb-1); }
+.bg-field .orb-1 { width: 620px; height: 620px; top: -240px; left: 50%; transform: translateX(-55%) translateZ(0); background: var(--orb-1); }
 .bg-field .orb-2 { width: 560px; height: 560px; bottom: -260px; left: -160px; background: var(--orb-2); }
 .bg-field .orb-3 { width: 480px; height: 480px; top: 32%; right: -180px; background: var(--orb-3); }
 .bg-field.bg-mesh::after {
@@ -342,10 +335,10 @@ a:focus-visible, button:focus-visible, input:focus-visible {
    ============================================================ */
 
 /* ---------- header ---------- */
-.hdr { position: sticky; top: 0; z-index: 40; transition: padding 0.3s var(--ease); }
+.hdr { position: sticky; top: 0; z-index: 40; padding-top: 12px; transition: padding 0.3s var(--ease); }
 .hdr-inner {
   height: 64px; display: flex; align-items: center; justify-content: space-between;
-  margin-top: 12px; padding: 0 18px; border-radius: 999px;
+  padding: 0 18px; border-radius: 999px;
   background: transparent; border: 1px solid transparent;
   transition: all 0.35s var(--ease);
 }
@@ -456,7 +449,7 @@ a:focus-visible, button:focus-visible, input:focus-visible {
 
 .stat-strip { display: flex; gap: 30px; flex-wrap: wrap; }
 .stat-strip.compact { gap: 22px; }
-.stat { display: flex; flex-direction: column; gap: 2px; }
+.stat-item { display: flex; flex-direction: column; gap: 2px; }
 .stat-n { font-size: 26px; font-weight: 800; color: var(--text); letter-spacing: -0.02em; line-height: 1; }
 .stat-l { font-size: 11px; font-weight: 500; color: var(--text-mute); letter-spacing: 0.08em; text-transform: uppercase; }
 
@@ -759,6 +752,50 @@ a:focus-visible, button:focus-visible, input:focus-visible {
 .code-dots i { width: 11px; height: 11px; border-radius: 50%; background: oklch(0.4 0.03 260); display: block; }
 .code-dots i:first-child { background: oklch(0.65 0.18 25); } .code-dots i:nth-child(2) { background: oklch(0.78 0.15 85); } .code-dots i:nth-child(3) { background: oklch(0.7 0.15 145); }
 .code-block code { display: block; padding: 18px 20px; font-size: 13.5px; line-height: 1.7; color: oklch(0.88 0.02 260); white-space: pre; overflow-x: auto; }
+
+/* ---------- MDX code blocks: rehype-pretty-code dual-theme ----------
+   rehype-pretty-code only DEFINES --shiki-light / --shiki-dark (+ -bg) vars on
+   each token; it does not pick one. We select per active daisyUI theme.
+   Container is .post-prose (NOT .prose). nord = light, dim = dark. */
+.post-prose pre {
+  margin: 24px 0;
+  border: 1px solid var(--hairline);
+  border-radius: 14px;
+  overflow-x: auto;
+  background: transparent;
+}
+.post-prose pre code {
+  display: block;
+  padding: 18px 20px;
+  border-radius: 14px;
+  font-family: var(--font-mono);
+  font-size: 13.5px;
+  line-height: 1.7;
+  white-space: pre;
+  /* light theme (nord) — default */
+  background-color: var(--shiki-light-bg);
+  color: var(--shiki-light);
+}
+.post-prose pre code span { color: var(--shiki-light); }
+
+/* dark theme (dim) */
+[data-theme='dim'] .post-prose pre { border-color: oklch(1 0 0 / 0.08); }
+[data-theme='dim'] .post-prose pre code {
+  background-color: var(--shiki-dark-bg);
+  color: var(--shiki-dark);
+}
+[data-theme='dim'] .post-prose pre code span { color: var(--shiki-dark); }
+
+/* inline code */
+.post-prose :not(pre) > code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  padding: 0.12em 0.42em;
+  border-radius: 6px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  word-break: break-word;
+}
 
 /* callout */
 .callout { margin: 24px 0; padding: 16px 20px; border-radius: 14px; background: var(--accent-soft); border: 1px solid var(--glass-border); color: var(--text); font-size: 15px; line-height: 1.65; }

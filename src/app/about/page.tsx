@@ -17,6 +17,7 @@ type Project = {
   summary: string;
   highlights: string[];
   techs: string[];
+  link?: string | null;
 };
 
 const PROJECTS: Project[] = [
@@ -134,41 +135,77 @@ const CAREER = [
   },
 ];
 
-const EARLIER = [
+// Corretto 재직(2022.10~2024.10) 시절 SI·자체 솔루션 프로젝트 — 주요 프로젝트로 통합
+const CORRETTO_PROJECTS: Project[] = [
   {
-    name: 'Gel-click',
-    link: 'https://gelclick.com/home/main.do',
-    period: '2022.11 ~ 2023.10',
-    summary: '쇼핑몰 통합관리 솔루션 — OMS·CMS 플랫폼/백오피스, i18n 글로벌 언어 지원',
-    techs: ['Next.js', 'styled-components', 'Jotai'],
-  },
-  {
-    name: '윙버디',
-    link: 'https://wingbuddy.kr/',
-    period: '2023.05 ~ 2023.08',
-    summary: '온라인 특수교육 플랫폼 — 모바일 전용 서비스를 웹앱 반응형으로 전환, ebook 기능 개발',
-    techs: ['Next.js', 'styled-components', 'Jotai'],
-  },
-  {
-    name: 'KorlyMally',
-    link: 'https://korlymally.kr/',
-    period: '2023.10 ~ 2024.01',
-    summary: '해외 쇼핑 플랫폼 — 국제 e-commerce, WMS·OMS 백오피스 프론트엔드 개발',
-    techs: ['Next.js', 'styled-components', 'Jotai'],
-  },
-  {
-    name: 'Future Plan',
-    link: null,
-    period: '2024.01 ~ 2024.06',
-    summary: '진로진학 시스템 리빌딩 — 전체 페이지 프론트엔드 개발 참여',
-    techs: ['Next.js', 'styled-components', 'Jotai'],
-  },
-  {
-    name: '한화정밀기계',
-    link: null,
+    badge: 'CRM Dashboard',
+    name: '한화정밀기계 CRM 시스템',
     period: '2024.07 ~ 2024.10',
-    summary: 'CRM 시스템 — table-MUI·echart 기반 대시보드 관리',
+    summary:
+      '영업·고객 관리를 위한 CRM 시스템의 대시보드와 관리 화면을 개발했습니다. MUI 테이블과 ECharts 기반 시각화로 흩어진 데이터를 한 화면에서 파악할 수 있도록 구성했습니다.',
+    highlights: [
+      'MUI Table 기반 대량 데이터 그리드를 정렬·필터·페이지네이션과 함께 구현해 운영 효율 향상',
+      'ECharts로 매출·고객 지표 대시보드를 시각화해 운영진이 핵심 지표를 한눈에 파악하도록 지원',
+      '복잡한 관리 화면의 상태를 Jotai로 구조화하고 공통 폼·필터 컴포넌트로 재사용성 확보',
+    ],
+    techs: ['Next.js', 'styled-components', 'Jotai', 'MUI', 'ECharts'],
+    link: null,
+  },
+  {
+    badge: 'Career Platform',
+    name: 'Future Plan 진로진학 시스템',
+    period: '2024.01 ~ 2024.06',
+    summary:
+      '학생의 진로·진학을 지원하는 시스템의 전면 리빌딩에 참여해, 전체 페이지의 프론트엔드를 새로 개발했습니다. 레거시 화면을 현대적인 컴포넌트 구조로 재구성했습니다.',
+    highlights: [
+      '레거시 시스템을 Next.js 기반으로 리빌딩하며 전체 화면 흐름과 라우팅을 재설계',
+      '진로·진학 데이터를 보여주는 조회 화면과 다단계 입력 폼을 구현해 사용 흐름을 단순화',
+      '컴포넌트 단위 재사용 구조를 도입해 다수 페이지를 일관된 UI로 통일',
+    ],
     techs: ['Next.js', 'styled-components', 'Jotai'],
+    link: null,
+  },
+  {
+    badge: 'Global Commerce',
+    name: 'KorlyMally 해외 쇼핑 플랫폼',
+    period: '2023.10 ~ 2024.01',
+    summary:
+      '국내 상품을 해외 사용자에게 판매하는 국제 e-commerce 플랫폼과 WMS·OMS 백오피스의 프론트엔드를 개발했습니다. 다국가 환경을 전제로 사용자몰과 운영툴을 함께 다뤘습니다.',
+    highlights: [
+      '상품 탐색·장바구니·주문 흐름 등 e-commerce 핵심 사용자 플로우를 구현',
+      'WMS·OMS 백오피스에서 입출고·주문 관리 화면을 대량 데이터 기준으로 설계',
+      '다국가 사용자를 위한 i18n·통화/배송 표기 처리로 글로벌 환경 대응',
+    ],
+    techs: ['Next.js', 'styled-components', 'Jotai', 'i18n'],
+    link: 'https://korlymally.kr/',
+  },
+  {
+    badge: 'EdTech',
+    name: '윙버디 온라인 특수교육 플랫폼',
+    period: '2023.05 ~ 2023.08',
+    summary:
+      '특수교육 대상 학습자를 위한 온라인 교육 플랫폼으로, 모바일 전용으로 제공되던 서비스를 웹앱 반응형으로 전환하고 ebook 학습 기능을 개발했습니다.',
+    highlights: [
+      '모바일 전용 화면을 데스크톱·태블릿까지 대응하는 반응형 웹앱으로 전환',
+      'ebook 뷰어 기능을 개발해 페이지 탐색·학습 콘텐츠 렌더링을 구현',
+      '다양한 학습자를 고려한 접근성 친화적 UI로 사용성을 확보',
+    ],
+    techs: ['Next.js', 'styled-components', 'Jotai'],
+    link: 'https://wingbuddy.kr/',
+  },
+  {
+    badge: 'Commerce OMS',
+    name: 'Gel-click 쇼핑몰 통합관리 솔루션',
+    period: '2022.11 ~ 2023.10',
+    summary:
+      '여러 오픈마켓·자사몰의 주문·상품·재고를 한곳에서 관리하는 통합관리(OMS·CMS) 솔루션의 플랫폼과 백오피스를 개발했습니다. 글로벌 셀러를 위한 다국어 환경을 지원했습니다.',
+    highlights: [
+      '주문·상품·재고 등 대량 테이블 UI를 정렬·필터·페이지네이션과 함께 구현해 운영 효율을 높임',
+      'i18n 다국어 구조를 도입해 글로벌 언어 환경을 지원하고 문구를 중앙에서 관리',
+      '반복되는 폼·모달·테이블을 공통 컴포넌트로 추상화하고 Jotai로 전역 상태를 가볍게 관리',
+    ],
+    techs: ['Next.js', 'styled-components', 'Jotai', 'i18n'],
+    link: 'https://gelclick.com/home/main.do',
   },
 ];
 
@@ -186,7 +223,18 @@ function ProjectCard({ p }: { p: Project }) {
             {p.badge}
           </span>
           <h3 style={{ margin: 0, fontSize: 19, fontWeight: 800, letterSpacing: '-0.02em', color: 'var(--text)' }}>
-            {p.name}
+            {p.link ? (
+              <a
+                href={p.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: 'inherit', textDecoration: 'none' }}
+              >
+                {p.name}
+              </a>
+            ) : (
+              p.name
+            )}
           </h3>
         </div>
         <span className="mono" style={{ fontSize: 12, fontWeight: 600, ...muteText, flexShrink: 0 }}>
@@ -261,15 +309,15 @@ export default function AboutPage() {
             </a>
           </div>
           <div className="stat-strip compact" style={{ marginTop: 8 }}>
-            <div className="stat">
+            <div className="stat-item">
               <span className="stat-n mono">3+</span>
               <span className="stat-l mono">years</span>
             </div>
-            <div className="stat">
+            <div className="stat-item">
               <span className="stat-n mono">Blomics</span>
               <span className="stat-l mono">current</span>
             </div>
-            <div className="stat">
+            <div className="stat-item">
               <span className="stat-n mono">Live</span>
               <span className="stat-l mono">service</span>
             </div>
@@ -289,43 +337,6 @@ export default function AboutPage() {
             <p>{v.v}</p>
           </div>
         ))}
-      </section>
-
-      {/* ---------- 주요 프로젝트 ---------- */}
-      <section className="sec">
-        <div className="sec-head">
-          <div>
-            <span className="eyebrow">/ work</span>
-            <h2 className="sec-title">주요 프로젝트</h2>
-          </div>
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
-          {PROJECTS.map(p => (
-            <ProjectCard p={p} key={p.name} />
-          ))}
-        </div>
-      </section>
-
-      {/* ---------- 경력 ---------- */}
-      <section className="sec">
-        <div className="sec-head">
-          <div>
-            <span className="eyebrow">/ career</span>
-            <h2 className="sec-title">경력</h2>
-          </div>
-        </div>
-        <div className="timeline">
-          {CAREER.map(c => (
-            <div className="tl-item" key={c.title}>
-              <span className="tl-year mono">{c.year}</span>
-              <div className="tl-dot" />
-              <div className="tl-body glass">
-                <h3>{c.title}</h3>
-                <p>{c.desc}</p>
-              </div>
-            </div>
-          ))}
-        </div>
       </section>
 
       {/* ---------- 기술 스택 ---------- */}
@@ -352,43 +363,64 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* ---------- 이전 프로젝트 경험 (Corretto) ---------- */}
+      {/* ---------- 경력 ---------- */}
       <section className="sec">
         <div className="sec-head">
           <div>
-            <span className="eyebrow">/ earlier</span>
-            <h2 className="sec-title">이전 프로젝트 경험</h2>
+            <span className="eyebrow">/ career</span>
+            <h2 className="sec-title">경력</h2>
           </div>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
-          {EARLIER.map(e => (
-            <div className="glass" key={e.name} style={{ padding: '20px 22px', borderRadius: 'var(--radius)' }}>
-              <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 10 }}>
-                {e.link ? (
-                  <a
-                    href={e.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ fontSize: 17, fontWeight: 700, color: 'var(--text)', textDecoration: 'none' }}
-                  >
-                    {e.name}
-                  </a>
-                ) : (
-                  <span style={{ fontSize: 17, fontWeight: 700, color: 'var(--text)' }}>{e.name}</span>
-                )}
-                <span className="mono" style={{ fontSize: 11.5, ...muteText, flexShrink: 0 }}>
-                  {e.period}
-                </span>
-              </div>
-              <p style={{ margin: '10px 0 0', fontSize: 13.5, lineHeight: 1.6, ...softText }}>{e.summary}</p>
-              <div className="skill-chips" style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 14 }}>
-                {e.techs.map(t => (
-                  <span className="chip" key={t}>
-                    {t}
-                  </span>
-                ))}
+        <div className="timeline">
+          {CAREER.map(c => (
+            <div className="tl-item" key={c.title}>
+              <span className="tl-year mono">{c.year}</span>
+              <div className="tl-dot" />
+              <div className="tl-body glass">
+                <h3>{c.title}</h3>
+                <p>{c.desc}</p>
               </div>
             </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ---------- 주요 프로젝트 ---------- */}
+      <section className="sec">
+        <div className="sec-head">
+          <div>
+            <span className="eyebrow">/ work</span>
+            <h2 className="sec-title">주요 프로젝트</h2>
+          </div>
+        </div>
+
+        {/* 블로믹스 */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '4px 0 14px' }}>
+          <span className="mono" style={{ fontSize: 13, fontWeight: 700, color: 'var(--text)' }}>
+            블로믹스 (Blomics)
+          </span>
+          <span className="mono" style={{ fontSize: 11.5, ...muteText }}>
+            2024.11 ~ 현재 · 라이브 게임 서비스
+          </span>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+          {PROJECTS.map(p => (
+            <ProjectCard p={p} key={p.name} />
+          ))}
+        </div>
+
+        {/* 코레토 */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '32px 0 14px' }}>
+          <span className="mono" style={{ fontSize: 13, fontWeight: 700, color: 'var(--text)' }}>
+            코레토 (Corretto)
+          </span>
+          <span className="mono" style={{ fontSize: 11.5, ...muteText }}>
+            2022.10 ~ 2024.10 · SI · 자체 솔루션
+          </span>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+          {CORRETTO_PROJECTS.map(p => (
+            <ProjectCard p={p} key={p.name} />
           ))}
         </div>
       </section>

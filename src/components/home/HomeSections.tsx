@@ -22,7 +22,7 @@ export function StatStrip({ posts }: { posts: PostAbstract[] }) {
   return (
     <div className="stat-strip">
       {items.map((it, i) => (
-        <div className="stat" key={i}>
+        <div className="stat-item" key={i}>
           <span className="stat-n mono">{it.n}</span>
           <span className="stat-l mono">{it.l}</span>
         </div>

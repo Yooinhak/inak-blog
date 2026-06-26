@@ -46,6 +46,7 @@ const Article = async ({ content }: { content: string }) => (
       },
     }}
   />
+  
 );
 
 export default async function Page({ params }: PageParams) {

@@ -1,30 +1,25 @@
 ---
 title: "Next.js App Router + MDX로 개인 블로그 만들기: 설계부터 배포까지"
 date: 2026-03-01
+excerpt: "Next.js 16 App Router와 MDX로 파일 기반 블로그를 만든 전 과정을 정리했습니다. 폴더로 카테고리를 관리하는 구조 설계, gray-matter 프론트매터 파싱, remark·rehype 렌더링 파이프라인, 동적 라우팅, glob 목록 조회, 코드 블록 스타일링, SEO까지 다룹니다."
 tags: ["Next.js", "MDX", "Blog", "App Router", "SSR"]
 ---
 
 # Next.js App Router + MDX로 개인 블로그 만들기
 
-개발자라면 누구나 한 번쯤 "내 블로그를 직접 만들어볼까?"라는 생각을 합니다. Velog, Tistory 같은 플랫폼도 훌륭하지만, **내가 원하는 디자인과 기능을 자유롭게 구현**할 수 있는 자체 블로그는 그 자체로 포트폴리오가 됩니다.
+개발자라면 한 번쯤 "내 블로그를 직접 만들어볼까?" 하는 생각을 합니다. Velog나 Tistory 같은 플랫폼도 훌륭하지만, **디자인과 기능을 처음부터 끝까지 내 마음대로 정할 수 있는** 자체 블로그는 그 자체로 하나의 포트폴리오가 됩니다. 글을 담는 그릇을 만드는 일이, 동시에 결과물을 만드는 일이 되는 셈이죠.
 
-이 글에서는 Next.js 16의 App Router와 MDX를 조합해 블로그를 구축한 과정을 공유합니다.
+이 글에서는 Next.js 16의 App Router와 MDX를 조합해 블로그를 구축한 과정을, 설계 결정부터 배포까지 순서대로 풀어봅니다.
 
 ---
 
 ## 1. 왜 Next.js + MDX인가?
 
-### Next.js App Router의 장점
+먼저 두 도구를 고른 이유부터 짚고 가겠습니다.
 
-App Router는 기존 Pages Router와 달리 **React Server Components(RSC)**를 기본으로 사용합니다. 블로그처럼 정적 콘텐츠가 많은 프로젝트에서 이점이 큽니다.
+App Router는 기존 Pages Router와 달리 **React Server Components(RSC)**를 기본값으로 씁니다. 블로그처럼 정적 콘텐츠가 많은 프로젝트에서는 이 차이가 꽤 큽니다. 서버 컴포넌트에서 `fs.readFileSync`로 파일 시스템에 직접 접근할 수 있고, 그만큼 클라이언트로 내려보내는 번들이 가벼워집니다. 게다가 동적 라우팅이 폴더 구조 그대로 표현돼서 URL과 파일이 직관적으로 대응됩니다.
 
-- 서버 컴포넌트에서 파일 시스템 직접 접근 가능 (`fs.readFileSync`)
-- 클라이언트 번들 사이즈 최소화
-- 동적 라우팅이 폴더 구조로 직관적
-
-### MDX의 장점
-
-MDX는 Markdown 안에서 JSX 컴포넌트를 사용할 수 있게 해줍니다. 일반 Markdown보다 표현력이 풍부하면서도, CMS 없이 파일 기반으로 콘텐츠를 관리할 수 있습니다.
+여기에 MDX를 더하면, Markdown 안에서 JSX 컴포넌트를 그대로 쓸 수 있습니다. 일반 Markdown보다 표현력이 풍부하면서도, 콘텐츠는 여전히 파일로 남아 CMS 없이 관리됩니다. **"서버에서 파일을 읽어 가볍게 그린다(RSC) + 콘텐츠는 파일로 둔다(MDX)"**는 이 조합이 블로그의 뼈대가 됐습니다.
 
 ---
 
@@ -50,13 +45,13 @@ src/
         └── types.ts
 ```
 
-핵심은 **카테고리를 폴더 구조로 관리**하는 것입니다. `src/posts/[카테고리명]/[번호].mdx` 형태로 파일을 넣으면 자동으로 카테고리가 인식됩니다.
+설계의 핵심은 **카테고리를 폴더 구조 그 자체로 관리**한다는 것입니다. `src/posts/[카테고리명]/[번호].mdx` 형태로 파일을 넣기만 하면 카테고리가 자동으로 인식됩니다. 별도의 설정 파일이나 데이터베이스 없이, 파일을 두는 위치가 곧 메타데이터가 되는 구조죠.
 
 ---
 
 ## 3. Frontmatter 파싱: gray-matter
 
-각 MDX 파일의 상단에는 YAML 형식의 메타데이터를 작성합니다.
+각 MDX 파일 맨 위에는 YAML 형식의 메타데이터를 적습니다.
 
 ```yaml
 ---
@@ -66,7 +61,7 @@ tags: ["Next.js", "MDX"]
 ---
 ```
 
-이를 파싱하기 위해 `gray-matter` 라이브러리를 사용합니다.
+이 블록을 본문과 분리해 파싱하는 일은 `gray-matter`가 맡습니다.
 
 ```typescript
 import matter from 'gray-matter';
@@ -78,11 +73,13 @@ const { data, content } = matter(file);
 // content → 본문 마크다운 문자열
 ```
 
+`data`에는 메타데이터가, `content`에는 본문이 깔끔하게 나뉘어 들어옵니다. 목록 페이지에서는 `data`만 모아 카드로 그리고, 상세 페이지에서는 `content`를 렌더링하면 됩니다.
+
 ---
 
 ## 4. MDX 렌더링 파이프라인
 
-`next-mdx-remote`를 사용해 서버 컴포넌트에서 MDX를 렌더링합니다. 여기에 다양한 플러그인을 조합하면 풍부한 표현이 가능합니다.
+본문 렌더링은 `next-mdx-remote`로 서버 컴포넌트에서 처리합니다. 여기에 플러그인을 얹는 만큼 표현력이 늘어납니다.
 
 ```tsx
 import { MDXRemote } from 'next-mdx-remote/rsc';
@@ -110,7 +107,7 @@ import rehypeSlug from 'rehype-slug';
 />
 ```
 
-### 각 플러그인의 역할
+각 플러그인이 맡는 역할은 다음과 같습니다.
 
 | 플러그인 | 역할 |
 | :--- | :--- |
@@ -119,11 +116,13 @@ import rehypeSlug from 'rehype-slug';
 | **rehypePrettyCode** | Shiki 기반 코드 하이라이팅, 라이트/다크 테마 지원 |
 | **rehypeSlug** | heading에 자동 id 부여 (목차 연동용) |
 
+remark는 Markdown 단계를, rehype는 변환된 HTML 단계를 손본다고 이해하면 흐름이 잡힙니다. 그래서 배열에 적는 순서가 곧 처리 순서이고, 순서가 결과를 바꾸기도 합니다.
+
 ---
 
 ## 5. 동적 라우팅: [category]/[id]
 
-App Router에서는 폴더명에 대괄호를 사용해 동적 세그먼트를 만듭니다.
+App Router에서는 폴더명에 대괄호를 씌워 동적 세그먼트를 만듭니다.
 
 ```tsx
 // src/app/posts/[category]/[id]/page.tsx
@@ -140,7 +139,7 @@ const Page = async ({ params }: { params: Promise<{ category: string; id: string
 };
 ```
 
-URL 구조가 `/posts/NextJS/1`처럼 깔끔하게 매핑되고, 파일 시스템의 폴더 구조와 1:1로 대응됩니다.
+덕분에 `/posts/NextJS/1` 같은 URL이 파일 시스템의 폴더 구조와 1:1로 맞아떨어집니다. 라우팅 설정을 따로 관리할 필요 없이, 파일을 어디에 두느냐가 곧 주소가 됩니다.
 
 ---
 
@@ -154,13 +153,13 @@ const getPostPaths = (category?: string) => {
 };
 ```
 
-`glob`의 `**` 패턴으로 모든 카테고리의 MDX 파일을 한 번에 찾고, 카테고리가 지정되면 해당 폴더만 검색합니다.
+`glob`의 `**` 패턴으로 모든 카테고리의 MDX 파일을 한 번에 긁어오고, 카테고리가 지정되면 해당 폴더만 좁혀 검색합니다. 함수 하나로 "전체 목록"과 "카테고리별 목록"을 모두 처리할 수 있어 군더더기가 없습니다.
 
 ---
 
 ## 7. 카테고리 필터링
 
-URL 파라미터 기반으로 카테고리 필터를 구현했습니다. `?category=NextJS` 같은 쿼리스트링을 사용하며, 서버 컴포넌트에서 `searchParams`를 받아 처리합니다.
+필터는 URL 쿼리스트링을 기준으로 구현했습니다. `?category=NextJS` 같은 형태이고, 서버 컴포넌트에서 `searchParams`를 받아 곧장 목록을 좁힙니다.
 
 ```tsx
 const Page = async ({ searchParams }: { searchParams: Promise<{ category?: string }> }) => {
@@ -170,13 +169,13 @@ const Page = async ({ searchParams }: { searchParams: Promise<{ category?: strin
 };
 ```
 
-클라이언트 사이드에서는 `useRouter`와 `useSearchParams`로 카테고리 변경 시 URL을 업데이트합니다.
+필터 상태를 URL에 담아 두면 새로고침이나 링크 공유에도 그대로 유지된다는 장점이 있습니다. 클라이언트 쪽에서는 `useRouter`와 `useSearchParams`로 카테고리가 바뀔 때 URL만 갱신해주면 됩니다.
 
 ---
 
 ## 8. 코드 블록 스타일링
 
-`rehype-pretty-code`가 생성하는 HTML에 맞춰 CSS를 커스터마이징했습니다. 특히 라이트/다크 테마 전환을 위해 CSS 변수를 활용합니다.
+`rehype-pretty-code`가 만들어내는 HTML 구조에 맞춰 CSS를 따로 다듬었습니다. 라이트/다크 전환은 CSS 변수로 처리합니다.
 
 ```css
 code[data-theme*=' '],
@@ -192,13 +191,13 @@ code[data-theme*=' '] span {
 }
 ```
 
-인라인 코드는 Notion 스타일의 빨간 텍스트 + 회색 배경으로 꾸몄습니다.
+테마별 색상이 토큰마다 CSS 변수로 들어가 있어, 다크모드로 전환해도 코드 색이 자연스럽게 따라옵니다. 인라인 코드는 Notion 스타일의 빨간 텍스트 + 회색 배경으로 마감했습니다.
 
 ---
 
 ## 9. 배포 및 SEO
 
-Next.js의 `metadata` API를 활용해 OG 태그와 Twitter 카드를 설정하고, `sitemap.ts`로 사이트맵을 자동 생성합니다.
+마지막은 검색 노출입니다. Next.js의 `metadata` API로 OG 태그와 Twitter 카드를 설정하고, `sitemap.ts`로 사이트맵을 자동 생성합니다.
 
 ```typescript
 export const metadata: Metadata = {
@@ -209,10 +208,12 @@ export const metadata: Metadata = {
 };
 ```
 
+`metadataBase`를 한 번 잡아두면 OG 이미지나 canonical 경로를 상대 경로로 적어도 알아서 절대 URL로 채워줘서 편합니다.
+
 ---
 
 ## 마무리
 
-직접 블로그를 만들면서 가장 좋았던 점은, 글을 쓰는 행위 자체가 기술 학습이 된다는 것입니다. MDX 파일 하나 추가하면 바로 포스트가 되는 이 구조 덕분에 콘텐츠 작성의 진입장벽이 낮아졌습니다.
+직접 블로그를 만들며 가장 좋았던 점은, 글을 쓰는 행위 자체가 기술 학습이 된다는 것이었습니다. MDX 파일 하나만 추가하면 곧바로 포스트가 되는 구조 덕분에, 글쓰기의 진입장벽이 눈에 띄게 낮아졌습니다.
 
-블로그 구축을 고민하시는 분들에게 이 글이 좋은 출발점이 되면 좋겠습니다.
+블로그 구축을 고민 중이신 분께 이 글이 든든한 출발점이 되면 좋겠습니다.
