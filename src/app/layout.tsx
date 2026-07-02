@@ -4,19 +4,32 @@ import localFont from 'next/font/local';
 import Header from '@components/Header';
 import Footer from '@components/Footer';
 import { ThemeProvider } from '@components/ThemeProvider';
+import { SITE } from '@lib/siteConfig';
 
 import './globals.css';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://www.inak.dev'),
-  title: '이낙 개발 블로그',
-  description: '프론트엔드 · React · 개발 기록을 남기는 이낙의 블로그',
+  metadataBase: new URL(SITE.url),
+  title: {
+    default: SITE.title,
+    template: `%s | ${SITE.name}`,
+  },
+  description: SITE.description,
+  alternates: {
+    types: { 'application/rss+xml': `${SITE.url}/feed.xml` },
+  },
   openGraph: {
-    title: '이낙 개발 블로그',
-    description: '이낙 개발 블로그입니다.',
-    siteName: '이낙 개발 블로그',
+    title: SITE.title,
+    description: SITE.description,
+    siteName: SITE.name,
     images: ['/images/logo.png'],
     type: 'website',
+    locale: SITE.locale,
+  },
+  twitter: {
+    card: 'summary',
+    title: SITE.title,
+    description: SITE.description,
   },
 };
 

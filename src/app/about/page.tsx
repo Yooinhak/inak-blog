@@ -6,8 +6,8 @@ import { IconArrow, IconGithub } from '@components/icons';
 import SupportCoffee from '@components/SupportCoffee';
 
 export const metadata: Metadata = {
-  title: 'About | 유인학 개발 블로그',
-  description: '라이브 게임 서비스의 웹·커뮤니티·어드민을 만드는 프론트엔드 개발자 유인학입니다.',
+  title: 'About',
+  description: '라이브 게임 서비스의 웹·커뮤니티·어드민을 만드는 프론트엔드 개발자 유인학(이낙)입니다.',
 };
 
 type Project = {

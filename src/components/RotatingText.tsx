@@ -1,45 +1,67 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { useEffect, useMemo, useState } from 'react';
 
 const WORDS = ['accessible UIs', 'scalable systems', 'delightful UX', 'React projects', 'design systems'];
 
+/** Grapheme-safe split (handles 한글/emoji correctly) with a plain fallback. */
+const splitGraphemes = (text: string): string[] => {
+  if (typeof Intl !== 'undefined' && 'Segmenter' in Intl) {
+    const seg = new Intl.Segmenter('ko', { granularity: 'grapheme' });
+    return Array.from(seg.segment(text), s => s.segment);
+  }
+  return Array.from(text);
+};
+
 /**
- * Robust entrance: the resting (visible) state is the base style, the per-char
- * slide-up is committed on the next frame via React state + a CSS transition,
- * so the text is never stuck hidden — even when timelines don't run (print/SSR).
+ * Per-character stagger rotation, as described in
+ * "Framer Motion으로 글자가 춤추는 텍스트 로테이션 애니메이션 만들기".
+ * Chars spring up from below on enter and exit upward, clipped by the pill.
+ * Respects prefers-reduced-motion (plain swap, no motion).
  */
 export default function RotatingText({ words = WORDS, interval = 2300 }: { words?: string[]; interval?: number }) {
   const [i, setI] = useState(0);
-  const [on, setOn] = useState(true);
+  const reduce = useReducedMotion();
 
   useEffect(() => {
-    const id = setInterval(() => setI((p) => (p + 1) % words.length), interval);
+    const id = setInterval(() => setI(p => (p + 1) % words.length), interval);
     return () => clearInterval(id);
   }, [words.length, interval]);
 
-  useEffect(() => {
-    const reduce = !window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
-    if (reduce) { setOn(true); return; }
-    setOn(false);
-    const r = requestAnimationFrame(() => requestAnimationFrame(() => setOn(true)));
-    return () => cancelAnimationFrame(r);
-  }, [i]);
+  const chars = useMemo(() => splitGraphemes(words[i]), [words, i]);
 
-  const word = words[i];
-  return (
-    <span className="rot">
-      <span className="rot-inner" key={i}>
-        {Array.from(word).map((ch, idx) => (
-          <span
-            key={idx}
-            className="rot-ch"
-            style={{ transform: on ? 'translateY(0)' : 'translateY(108%)', transitionDelay: `${idx * 28}ms` }}
-          >
-            {ch === ' ' ? '\u00A0' : ch}
-          </span>
-        ))}
+  if (reduce) {
+    return (
+      <span className="rot">
+        <span className="rot-inner">{words[i]}</span>
       </span>
+    );
+  }
+
+  return (
+    <span className="rot" aria-label={words[i]}>
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.span className="rot-inner" key={i} aria-hidden="true">
+          {chars.map((ch, idx) => (
+            <motion.span
+              key={`${i}-${idx}`}
+              className="rot-ch"
+              initial={{ y: '110%' }}
+              animate={{ y: 0 }}
+              exit={{ y: '-110%' }}
+              transition={{
+                type: 'spring',
+                stiffness: 380,
+                damping: 32,
+                delay: idx * 0.028,
+              }}
+            >
+              {ch === ' ' ? ' ' : ch}
+            </motion.span>
+          ))}
+        </motion.span>
+      </AnimatePresence>
     </span>
   );
 }

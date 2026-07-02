@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -9,33 +10,59 @@ import remarkBreaks from 'remark-breaks';
 import remarkGfm from 'remark-gfm';
 
 import CategoryThumb from '@components/CategoryThumb';
+import CodeBlock from '@components/CodeBlock';
 import LikeButton from '@components/LikeButton';
 import MetaRow from '@components/MetaRow';
 import PostCard from '@components/PostCard';
+import ReadProgress from '@components/ReadProgress';
 import SupportCoffee from '@components/SupportCoffee';
 import TableOfContents from '@components/TableOfContents';
 import { getCategory } from '@lib/categories';
 import { getPostDetail } from '@lib/postManagement';
 import { getPostList } from '@lib/postManagement/getPostList';
 import type { PostDetail } from '@lib/postManagement/types';
+import { SITE } from '@lib/siteConfig';
 
 interface PageParams {
   params: Promise<{ category: string; id: string }>;
 }
 
-const stripFirstH1 = (content: string): string => {
-  const lines = content.split('\n');
-  const idx = lines.findIndex(l => l.trim().length > 0);
-  if (idx >= 0 && /^#\s+/.test(lines[idx])) {
-    lines.splice(idx, 1);
-    return lines.join('\n');
-  }
-  return content;
-};
+/** Pre-render every post at build time. */
+export function generateStaticParams() {
+  return getPostList().map(p => ({ category: p.category, id: p.id }));
+}
+
+/** Per-post title/description/OG — without this every post shares the site-wide metadata. */
+export async function generateMetadata({ params }: PageParams): Promise<Metadata> {
+  const { category, id } = await params;
+  const detail = getPostDetail(category, id);
+  const url = `/posts/${category}/${id}`;
+
+  return {
+    title: detail.title,
+    description: detail.excerpt,
+    alternates: { canonical: url },
+    openGraph: {
+      title: detail.title,
+      description: detail.excerpt,
+      url,
+      siteName: SITE.name,
+      type: 'article',
+      locale: SITE.locale,
+      tags: detail.tags,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: detail.title,
+      description: detail.excerpt,
+    },
+  };
+}
 
 const Article = async ({ content }: { content: string }) => (
   <MDXRemote
     source={content}
+    components={{ pre: CodeBlock }}
     options={{
       mdxOptions: {
         remarkPlugins: [remarkGfm, remarkBreaks],
@@ -46,13 +73,11 @@ const Article = async ({ content }: { content: string }) => (
       },
     }}
   />
-  
 );
 
 export default async function Page({ params }: PageParams) {
   const { category, id } = await params;
   const detail: PostDetail = getPostDetail(category, id);
-  const content = stripFirstH1(detail.content);
   const c = getCategory(category);
 
   const all = getPostList();
@@ -62,8 +87,22 @@ export default async function Page({ params }: PageParams) {
     related.length < 3 ? all.filter(p => p.id !== id && !related.includes(p)).slice(0, 3 - related.length) : [];
   const rel = [...related, ...fill];
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: detail.title,
+    description: detail.excerpt,
+    datePublished: current?.date,
+    inLanguage: 'ko',
+    url: `${SITE.url}/posts/${category}/${id}`,
+    author: { '@type': 'Person', name: SITE.author, url: `${SITE.url}/about` },
+    keywords: detail.tags?.join(', '),
+  };
+
   return (
     <article className="page-post">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <ReadProgress />
       <div className="wrap post-top">
         <Link className="back-link mono" href={`/posts?category=${category}`}>
           ← {c.label}
@@ -98,7 +137,7 @@ export default async function Page({ params }: PageParams) {
         <div className="post-main">
           <div className="post-prose" id="post-content">
             <Suspense fallback={<p>불러오는 중…</p>}>
-              <Article content={content} />
+              <Article content={detail.content} />
             </Suspense>
           </div>
 

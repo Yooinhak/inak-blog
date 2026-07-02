@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@plugin "@tailwindcss/typography";
 @config "../../tailwind.config.ts";
 @plugin "daisyui" {
   themes: nord --default, dim --prefersdark;
@@ -227,6 +226,7 @@ a:focus-visible, button:focus-visible, input:focus-visible {
 }
 
 /* ---------- scrollbar ---------- */
+html { scrollbar-color: var(--text-mute) transparent; } /* standard (Firefox etc.) */
 ::-webkit-scrollbar { width: 11px; height: 11px; }
 ::-webkit-scrollbar-thumb { background: var(--text-mute); opacity: 0.4; border-radius: 99px; border: 3px solid var(--bg); }
 ::-webkit-scrollbar-track { background: transparent; }
@@ -326,8 +326,9 @@ a:focus-visible, button:focus-visible, input:focus-visible {
 
 /* ---------- rotating text ---------- */
 .rot { display: inline-flex; vertical-align: bottom; border-radius: 12px;
-  background: var(--accent-soft); padding: 0 0.32em; }
-.rot-inner { display: inline-block; color: var(--accent); }
+  background: var(--accent-soft); padding: 0 0.32em; overflow: hidden; }
+.rot-inner { display: inline-flex; color: var(--accent); }
+.rot-ch { display: inline-block; will-change: transform; }
 
 /* ===================== layout.css ===================== */
 /* ============================================================
@@ -683,7 +684,7 @@ a:focus-visible, button:focus-visible, input:focus-visible {
 
 /* active filters */
 .active-filters { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font-size: 12.5px; color: var(--text-mute); margin-bottom: 22px; }
-.af-pill { padding: 5px 11px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-weight: 600; cursor: pointer; }
+.af-pill { padding: 5px 11px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-weight: 600; cursor: pointer; border: none; font-family: inherit; font-size: inherit; }
 .af-pill:hover { background: var(--accent); color: var(--on-accent); }
 .af-clear { border: none; background: none; color: var(--text-soft); text-decoration: underline; cursor: pointer; font-family: var(--font-mono); font-size: 12px; }
 
@@ -737,21 +738,27 @@ a:focus-visible, button:focus-visible, input:focus-visible {
 .post-prose { font-size: 16.5px; line-height: 1.8; color: var(--text-soft); max-width: 720px; }
 .post-prose h2 { scroll-margin-top: 92px; margin: 48px 0 16px; font-size: 25px; font-weight: 800; letter-spacing: -0.025em; color: var(--text); line-height: 1.3; }
 .post-prose h2::before { content: '# '; color: var(--accent); font-family: var(--font-mono); font-weight: 700; }
+/* alt-text syntax: decorative '#' is skipped by screen readers where supported */
+.post-prose h2::before { content: '# ' / ''; }
+.post-prose h3 { scroll-margin-top: 92px; margin: 34px 0 12px; font-size: 19px; font-weight: 700; letter-spacing: -0.02em; color: var(--text); line-height: 1.35; }
 .post-prose p { margin: 18px 0; }
 .post-prose ul { margin: 18px 0; padding-left: 4px; list-style: none; display: flex; flex-direction: column; gap: 10px; }
 .post-prose ul li { position: relative; padding-left: 26px; }
 .post-prose ul li::before { content: ''; position: absolute; left: 6px; top: 12px; width: 7px; height: 7px; border-radius: 2px; background: var(--accent); transform: rotate(45deg); }
 .post-prose strong, .post-prose b { color: var(--text); font-weight: 700; }
 
-/* code */
-.code-block { margin: 24px 0; border-radius: 16px; overflow: hidden; border: 1px solid var(--hairline); background: oklch(0.18 0.02 260); }
-[data-theme='dim'] .code-block { background: oklch(0.13 0.015 260); }
-.code-top { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-bottom: 1px solid oklch(1 0 0 / 0.07); }
-.code-lang { font-size: 11.5px; color: oklch(0.7 0.04 260); font-weight: 600; letter-spacing: 0.05em; }
-.code-dots { display: flex; gap: 6px; }
-.code-dots i { width: 11px; height: 11px; border-radius: 50%; background: oklch(0.4 0.03 260); display: block; }
-.code-dots i:first-child { background: oklch(0.65 0.18 25); } .code-dots i:nth-child(2) { background: oklch(0.78 0.15 85); } .code-dots i:nth-child(3) { background: oklch(0.7 0.15 145); }
-.code-block code { display: block; padding: 18px 20px; font-size: 13.5px; line-height: 1.7; color: oklch(0.88 0.02 260); white-space: pre; overflow-x: auto; }
+/* code — .code-block wraps every MDX <pre> (see components/CodeBlock.tsx):
+   header shows the language + a copy button; theme-aware so it matches the
+   github-light / github-dark-dimmed shiki backgrounds. */
+.code-block { margin: 24px 0; border-radius: 16px; overflow: hidden; border: 1px solid var(--hairline); }
+.code-top { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px 8px 16px; background: var(--bg-2); border-bottom: 1px solid var(--hairline); }
+.code-lang { font-family: var(--font-mono); font-size: 11.5px; color: var(--text-mute); font-weight: 600; letter-spacing: 0.05em; text-transform: lowercase; }
+.code-copy { display: inline-flex; align-items: center; gap: 6px; border: none; background: none; padding: 5px 10px; border-radius: 8px;
+  font-family: var(--font-mono); font-size: 11.5px; font-weight: 600; color: var(--text-mute); cursor: pointer; transition: all 0.2s var(--ease); }
+.code-copy:hover { color: var(--accent); background: var(--accent-soft); }
+.code-copy.copied { color: var(--accent); }
+.code-block pre { margin: 0 !important; border: none !important; border-radius: 0 !important; }
+.code-block pre code { border-radius: 0 !important; }
 
 /* ---------- MDX code blocks: rehype-pretty-code dual-theme ----------
    rehype-pretty-code only DEFINES --shiki-light / --shiki-dark (+ -bg) vars on

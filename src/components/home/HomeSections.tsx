@@ -17,7 +17,8 @@ export function StatStrip({ posts }: { posts: PostAbstract[] }) {
     { n: posts.length, l: 'posts' },
     { n: new Set(posts.map(p => p.category)).size, l: 'categories' },
     { n: tagSet.size, l: 'tags' },
-    { n: views ? fmtNum(views) : '∞', l: 'views' },
+    // only show views once real counts exist (frontmatter/api) — no fake metrics
+    ...(views ? [{ n: fmtNum(views), l: 'views' }] : []),
   ];
   return (
     <div className="stat-strip">

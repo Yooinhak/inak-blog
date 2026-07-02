@@ -93,9 +93,9 @@ export default function SearchPosts({ posts, tags }: { posts: PostAbstract[]; ta
       {hasFilter && (
         <div className="active-filters mono">
           <span>필터:</span>
-          {cat && <span className="af-pill" onClick={() => setCat('')}>{getCategory(cat).label} ×</span>}
-          {tag && <span className="af-pill" onClick={() => setTag('')}>#{tag} ×</span>}
-          {q && <span className="af-pill" onClick={() => setQ('')}>&quot;{q}&quot; ×</span>}
+          {cat && <button className="af-pill" onClick={() => setCat('')}>{getCategory(cat).label} ×</button>}
+          {tag && <button className="af-pill" onClick={() => setTag('')}>#{tag} ×</button>}
+          {q && <button className="af-pill" onClick={() => setQ('')}>&quot;{q}&quot; ×</button>}
           <button className="af-clear" onClick={() => { setCat(''); setTag(''); setQ(''); }}>모두 지우기</button>
         </div>
       )}
