@@ -3,7 +3,6 @@ import type { CSSProperties } from 'react';
 import Image from 'next/image';
 
 import { IconArrow, IconGithub } from '@components/icons';
-import SupportCoffee from '@components/SupportCoffee';
 
 export const metadata: Metadata = {
   title: 'About',
@@ -473,8 +472,6 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
-
-      <SupportCoffee />
     </div>
   );
 }

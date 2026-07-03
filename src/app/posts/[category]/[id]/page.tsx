@@ -59,10 +59,18 @@ export async function generateMetadata({ params }: PageParams): Promise<Metadata
   };
 }
 
+/** Tables need a scroll wrapper — a bare <table>'s min-content width
+    (th is nowrap) overflows the viewport on mobile. */
+const Table = (props: React.ComponentPropsWithoutRef<'table'>) => (
+  <div className="table-wrap">
+    <table {...props} />
+  </div>
+);
+
 const Article = async ({ content }: { content: string }) => (
   <MDXRemote
     source={content}
-    components={{ pre: CodeBlock }}
+    components={{ pre: CodeBlock, table: Table }}
     options={{
       mdxOptions: {
         remarkPlugins: [remarkGfm, remarkBreaks],
