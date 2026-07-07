@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 
-import { IconArrow, IconGithub } from '@components/icons';
-import { wrap, eyebrow, btnPrimary, btnGhost, chip, sec, secHead, secTitle } from '@lib/ui';
 import { cn } from '@utils/cn';
+
+import { IconArrow, IconGithub } from '@components/icons';
+import { btnGhost, btnPrimary, chip, eyebrow, sec, secHead, secTitle, wrap } from '@lib/ui';
 
 export const metadata: Metadata = {
   title: 'About',
@@ -277,8 +278,8 @@ export default function AboutPage() {
             <span className="text-accent">유인학</span>입니다.
           </h1>
           <p className="m-0 text-[16.5px] leading-[1.75] text-text-soft max-w-[48ch]">
-            라이브 게임 서비스의 웹·커뮤니티·어드민을 만드는 프론트엔드 개발자입니다. 동료와 합을 맞춰 운영 중인 서비스를
-            안정적으로 개선하고, 사용자의 맥락을 먼저 고민합니다.
+            라이브 게임 서비스의 웹·커뮤니티·어드민을 만드는 프론트엔드 개발자입니다. 동료와 합을 맞춰 운영 중인
+            서비스를 안정적으로 개선하고, 사용자의 맥락을 먼저 고민합니다.
           </p>
           <div className="flex gap-3 flex-wrap mt-1">
             <a className={btnPrimary} href="mailto:syu3236@gmail.com">
@@ -295,8 +296,12 @@ export default function AboutPage() {
               { n: 'Live', l: 'service' },
             ].map(s => (
               <div className="flex flex-col gap-0.5" key={s.l}>
-                <span className="font-mono text-[26px] font-extrabold text-text tracking-[-0.02em] leading-none">{s.n}</span>
-                <span className="font-mono text-[11px] font-medium text-text-mute tracking-[0.08em] uppercase">{s.l}</span>
+                <span className="font-mono text-[26px] font-extrabold text-text tracking-[-0.02em] leading-none">
+                  {s.n}
+                </span>
+                <span className="font-mono text-[11px] font-medium text-text-mute tracking-[0.08em] uppercase">
+                  {s.l}
+                </span>
               </div>
             ))}
           </div>
@@ -336,7 +341,9 @@ export default function AboutPage() {
         <div className="grid grid-cols-2 gap-5 max-[820px]:grid-cols-1">
           {SKILLS.map(s => (
             <div className="flex flex-col gap-3 p-[22px] rounded-card border border-hairline" key={s.group}>
-              <span className="font-mono text-xs font-semibold tracking-[0.12em] uppercase text-text-mute">{s.group}</span>
+              <span className="font-mono text-xs font-semibold tracking-[0.12em] uppercase text-text-mute">
+                {s.group}
+              </span>
               <div className="flex flex-wrap gap-2">
                 {s.items.map(i => (
                   <span className={chipStatic} key={i}>

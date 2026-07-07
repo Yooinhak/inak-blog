@@ -1,13 +1,16 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { wrap, iconBtn } from '@lib/ui';
+import { useEffect, useState } from 'react';
+
 import { cn } from '@utils/cn';
+
+import { iconBtn, wrap } from '@lib/ui';
+
 import DarkMode from './DarkMode';
-import { IconSearch, IconMenu } from './icons';
+import { IconMenu, IconSearch } from './icons';
 
 const NAV = [
   { label: 'Home', href: '/' },
@@ -38,15 +41,15 @@ export default function Header() {
     return () => window.removeEventListener('scroll', fn);
   }, []);
 
-  const isActive = (href: string) =>
-    href === '/' ? pathname === '/' : pathname.startsWith(href);
+  const isActive = (href: string) => (href === '/' ? pathname === '/' : pathname.startsWith(href));
 
   return (
-    <header className="sticky top-0 z-40 pt-3">
+    <header className="sticky top-0 z-40 pt-3 max-[760px]:px-3 max-[760px]:pt-2">
       <div
         className={cn(
           wrap,
           'h-16 flex items-center justify-between px-[18px] rounded-full border',
+          'max-[760px]:h-[52px] max-[760px]:px-3.5',
           'transition-all duration-[350ms] ease-fluid',
           scrolled
             ? 'bg-glass border-glass-border shadow-glass backdrop-blur-[20px] backdrop-saturate-[1.4]'
@@ -54,13 +57,26 @@ export default function Header() {
         )}
       >
         <Link className="inline-flex items-end gap-0.5 cursor-pointer no-underline" href="/">
-          <Image src="/images/logo.png" alt="inak" width={96} height={28} className="h-7 w-auto block dark:hidden" priority />
-          <Image src="/images/logo_dark.png" alt="inak" width={96} height={28} className="h-7 w-auto hidden dark:block" priority />
-          <span className="font-mono text-[13px] font-semibold text-text-mute mb-[3px]">.dev</span>
+          <Image
+            src="/images/logo.png"
+            alt="inak"
+            width={96}
+            height={28}
+            className="h-7 w-auto block dark:hidden max-[760px]:h-6"
+            priority
+          />
+          <Image
+            src="/images/logo_dark.png"
+            alt="inak"
+            width={96}
+            height={28}
+            className="h-7 w-auto hidden dark:block max-[760px]:h-6"
+            priority
+          />
         </Link>
 
         <nav className="flex items-center gap-1 max-[760px]:hidden">
-          {NAV.map((n) => (
+          {NAV.map(n => (
             <Link
               key={n.label}
               href={n.href}
@@ -71,15 +87,21 @@ export default function Header() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-2">
-          <button className={iconBtn} aria-label="검색" onClick={() => router.push('/posts?focus=1')}>
+        <div className="flex items-center gap-2 max-[760px]:gap-1.5">
+          <button
+            className={cn(iconBtn, 'max-[760px]:w-[34px] max-[760px]:h-[34px]')}
+            aria-label="검색"
+            onClick={() => router.push('/posts?focus=1')}
+          >
             <IconSearch size={18} />
           </button>
-          <DarkMode />
+          <div className="flex max-[760px]:scale-90">
+            <DarkMode />
+          </div>
           <button
-            className={cn(iconBtn, 'hidden max-[760px]:inline-flex')}
+            className={cn(iconBtn, 'hidden max-[760px]:inline-flex max-[760px]:w-[34px] max-[760px]:h-[34px]')}
             aria-label="메뉴"
-            onClick={() => setMenuOpen((o) => !o)}
+            onClick={() => setMenuOpen(o => !o)}
           >
             <IconMenu />
           </button>
@@ -87,8 +109,8 @@ export default function Header() {
       </div>
 
       {menuOpen && (
-        <div className="glass mx-[18px] mt-2 p-2.5 hidden max-[760px]:flex flex-col gap-0.5">
-          {NAV.map((n) => (
+        <div className="glass mx-0 mt-2 p-2.5 hidden max-[760px]:flex flex-col gap-0.5">
+          {NAV.map(n => (
             <Link
               key={n.label}
               href={n.href}

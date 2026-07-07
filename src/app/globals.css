@@ -199,10 +199,12 @@ a:focus-visible, button:focus-visible, input:focus-visible {
   border: 1px solid var(--hairline);
   border-radius: 14px;
   overflow-x: auto;
-  background: transparent;
+  background-color: var(--shiki-light-bg);
 }
 .post-prose pre code {
   display: block;
+  width: max-content;
+  min-width: 100%;
   padding: 18px 20px;
   border-radius: 14px;
   font-family: var(--font-mono);
@@ -213,7 +215,10 @@ a:focus-visible, button:focus-visible, input:focus-visible {
   color: var(--shiki-light);
 }
 .post-prose pre code span { color: var(--shiki-light); }
-[data-theme='dim'] .post-prose pre { border-color: oklch(1 0 0 / 0.08); }
+[data-theme='dim'] .post-prose pre {
+  border-color: oklch(1 0 0 / 0.08);
+  background-color: var(--shiki-dark-bg);
+}
 [data-theme='dim'] .post-prose pre code {
   background-color: var(--shiki-dark-bg);
   color: var(--shiki-dark);
