@@ -31,22 +31,25 @@ export default function RotatingText({ words = WORDS, interval = 2300 }: { words
 
   const chars = useMemo(() => splitGraphemes(words[i]), [words, i]);
 
+  const pill = 'inline-flex align-bottom rounded-xl bg-accent-soft px-[0.32em] overflow-hidden';
+  const inner = 'inline-flex text-accent';
+
   if (reduce) {
     return (
-      <span className="rot">
-        <span className="rot-inner">{words[i]}</span>
+      <span className={pill}>
+        <span className={inner}>{words[i]}</span>
       </span>
     );
   }
 
   return (
-    <span className="rot" aria-label={words[i]}>
+    <span className={pill} aria-label={words[i]}>
       <AnimatePresence mode="wait" initial={false}>
-        <motion.span className="rot-inner" key={i} aria-hidden="true">
+        <motion.span className={inner} key={i} aria-hidden="true">
           {chars.map((ch, idx) => (
             <motion.span
               key={`${i}-${idx}`}
-              className="rot-ch"
+              className="inline-block will-change-transform"
               initial={{ y: '110%' }}
               animate={{ y: 0 }}
               exit={{ y: '-110%' }}

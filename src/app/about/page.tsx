@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
-import type { CSSProperties } from 'react';
 import Image from 'next/image';
 
 import { IconArrow, IconGithub } from '@components/icons';
+import { wrap, eyebrow, btnPrimary, btnGhost, chip, sec, secHead, secTitle } from '@lib/ui';
+import { cn } from '@utils/cn';
 
 export const metadata: Metadata = {
   title: 'About',
@@ -208,27 +209,18 @@ const CORRETTO_PROJECTS: Project[] = [
   },
 ];
 
-const softText: CSSProperties = { color: 'var(--text-soft)' };
-const muteText: CSSProperties = { color: 'var(--text-mute)' };
+/** static (non-interactive) chip — no hover motion */
+const chipStatic = cn(chip, 'cursor-default hover:translate-y-0 hover:text-text-soft');
 
 function ProjectCard({ p }: { p: Project }) {
   return (
-    <div className="glass" style={{ padding: '22px 24px', borderRadius: 'var(--radius)' }}>
-      <div
-        style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 14, flexWrap: 'wrap' }}
-      >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-          <span className="eyebrow" style={{ color: 'var(--accent)' }}>
-            {p.badge}
-          </span>
-          <h3 style={{ margin: 0, fontSize: 19, fontWeight: 800, letterSpacing: '-0.02em', color: 'var(--text)' }}>
+    <div className="glass py-[22px] px-6">
+      <div className="flex items-start justify-between gap-3.5 flex-wrap">
+        <div className="flex flex-col gap-1.5">
+          <span className={cn(eyebrow, 'text-accent')}>{p.badge}</span>
+          <h3 className="m-0 text-[19px] font-extrabold tracking-[-0.02em] text-text">
             {p.link ? (
-              <a
-                href={p.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ color: 'inherit', textDecoration: 'none' }}
-              >
+              <a href={p.link} target="_blank" rel="noopener noreferrer" className="text-inherit no-underline">
                 {p.name}
               </a>
             ) : (
@@ -236,45 +228,25 @@ function ProjectCard({ p }: { p: Project }) {
             )}
           </h3>
         </div>
-        <span className="mono" style={{ fontSize: 12, fontWeight: 600, ...muteText, flexShrink: 0 }}>
-          {p.period}
-        </span>
+        <span className="font-mono text-xs font-semibold text-text-mute shrink-0">{p.period}</span>
       </div>
 
-      <p style={{ margin: '14px 0 0', fontSize: 14.5, lineHeight: 1.66, ...softText }}>{p.summary}</p>
+      <p className="mt-3.5 mb-0 text-[14.5px] leading-[1.66] text-text-soft">{p.summary}</p>
 
-      <ul
-        style={{
-          listStyle: 'none',
-          margin: '14px 0 0',
-          padding: 0,
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 9,
-        }}
-      >
+      <ul className="list-none mt-3.5 mb-0 p-0 flex flex-col gap-[9px]">
         {p.highlights.map(h => (
-          <li key={h} style={{ position: 'relative', paddingLeft: 20, fontSize: 14, lineHeight: 1.6, ...softText }}>
-            <span
-              style={{
-                position: 'absolute',
-                left: 2,
-                top: 9,
-                width: 6,
-                height: 6,
-                borderRadius: 2,
-                background: 'var(--accent)',
-                transform: 'rotate(45deg)',
-              }}
-            />
+          <li
+            key={h}
+            className="relative pl-5 text-sm leading-[1.6] text-text-soft before:content-[''] before:absolute before:left-0.5 before:top-[9px] before:w-1.5 before:h-1.5 before:rounded-[2px] before:bg-accent before:rotate-45"
+          >
             {h}
           </li>
         ))}
       </ul>
 
-      <div className="skill-chips" style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 16 }}>
+      <div className="flex flex-wrap gap-2 mt-4">
         {p.techs.map(t => (
-          <span className="chip" key={t}>
+          <span className={chipStatic} key={t}>
             {t}
           </span>
         ))}
@@ -283,76 +255,91 @@ function ProjectCard({ p }: { p: Project }) {
   );
 }
 
+function CompanyLabel({ name, note }: { name: string; note: string }) {
+  return (
+    <div className="flex items-center gap-2.5">
+      <span className="font-mono text-[13px] font-bold text-text">{name}</span>
+      <span className="font-mono text-[11.5px] text-text-mute">{note}</span>
+    </div>
+  );
+}
+
 export default function AboutPage() {
   return (
-    <div className="wrap page-about">
+    <div className={cn(wrap, 'pt-10')}>
       {/* ---------- Hero ---------- */}
-      <section className="about-hero">
-        <div className="about-intro">
-          <span className="eyebrow">/ about</span>
-          <h1>
+      <section className="grid grid-cols-[1fr_220px] gap-12 items-center pt-6 pb-4 max-[820px]:grid-cols-1 max-[820px]:gap-7">
+        <div className="flex flex-col gap-5">
+          <span className={eyebrow}>/ about</span>
+          <h1 className="mt-2 mb-0 text-[clamp(32px,4.8vw,56px)] font-extrabold leading-[1.12] tracking-[-0.035em] text-text">
             프론트엔드 개발자
             <br />
-            <span className="hl">유인학</span>입니다.
+            <span className="text-accent">유인학</span>입니다.
           </h1>
-          <p>
+          <p className="m-0 text-[16.5px] leading-[1.75] text-text-soft max-w-[48ch]">
             라이브 게임 서비스의 웹·커뮤니티·어드민을 만드는 프론트엔드 개발자입니다. 동료와 합을 맞춰 운영 중인 서비스를
             안정적으로 개선하고, 사용자의 맥락을 먼저 고민합니다.
           </p>
-          <div className="about-links">
-            <a className="btn btn-primary" href="mailto:syu3236@gmail.com">
+          <div className="flex gap-3 flex-wrap mt-1">
+            <a className={btnPrimary} href="mailto:syu3236@gmail.com">
               이메일 보내기 <IconArrow />
             </a>
-            <a className="btn btn-ghost" href="https://github.com/Yooinhak" target="_blank" rel="noopener noreferrer">
+            <a className={btnGhost} href="https://github.com/Yooinhak" target="_blank" rel="noopener noreferrer">
               <IconGithub size={17} /> GitHub
             </a>
           </div>
-          <div className="stat-strip compact" style={{ marginTop: 8 }}>
-            <div className="stat-item">
-              <span className="stat-n mono">3+</span>
-              <span className="stat-l mono">years</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-n mono">Blomics</span>
-              <span className="stat-l mono">current</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-n mono">Live</span>
-              <span className="stat-l mono">service</span>
-            </div>
+          <div className="flex flex-wrap gap-[22px] mt-2">
+            {[
+              { n: '3+', l: 'years' },
+              { n: 'Blomics', l: 'current' },
+              { n: 'Live', l: 'service' },
+            ].map(s => (
+              <div className="flex flex-col gap-0.5" key={s.l}>
+                <span className="font-mono text-[26px] font-extrabold text-text tracking-[-0.02em] leading-none">{s.n}</span>
+                <span className="font-mono text-[11px] font-medium text-text-mute tracking-[0.08em] uppercase">{s.l}</span>
+              </div>
+            ))}
           </div>
         </div>
-        <div className="about-photo glass">
-          <Image src="/images/inhak-profile.jpg" alt="유인학 프로필" width={220} height={220} />
-          <div className="about-photo-badge mono">inak.dev</div>
+        <div className="glass relative p-2 overflow-hidden justify-self-end w-full max-w-[220px] max-[820px]:max-w-[200px] max-[820px]:justify-self-start">
+          <Image
+            src="/images/inhak-profile.jpg"
+            alt="유인학 프로필"
+            width={220}
+            height={220}
+            className="w-full aspect-square object-cover object-top rounded-[14px] block"
+          />
+          <div className="font-mono absolute bottom-4 left-4 px-[11px] py-[5px] rounded-full bg-accent text-on-accent text-[11px] font-bold">
+            inak.dev
+          </div>
         </div>
       </section>
 
       {/* ---------- 핵심 역량 ---------- */}
-      <section className="about-values">
+      <section className="grid grid-cols-3 gap-4 mt-12 max-[820px]:grid-cols-1">
         {VALUES.map(v => (
-          <div className="value glass" key={v.k}>
-            <span className="value-k">{v.k}</span>
-            <p>{v.v}</p>
+          <div className="glass p-6 flex flex-col gap-2" key={v.k}>
+            <span className="text-lg font-extrabold text-accent tracking-[-0.02em]">{v.k}</span>
+            <p className="m-0 text-[14.5px] leading-[1.6] text-text-soft">{v.v}</p>
           </div>
         ))}
       </section>
 
       {/* ---------- 기술 스택 ---------- */}
-      <section className="sec">
-        <div className="sec-head">
+      <section className={sec}>
+        <div className={secHead}>
           <div>
-            <span className="eyebrow">/ skills</span>
-            <h2 className="sec-title">기술 스택</h2>
+            <span className={eyebrow}>/ skills</span>
+            <h2 className={secTitle}>기술 스택</h2>
           </div>
         </div>
-        <div className="skills">
+        <div className="grid grid-cols-2 gap-5 max-[820px]:grid-cols-1">
           {SKILLS.map(s => (
-            <div className="skill-group" key={s.group}>
-              <span className="skill-label mono">{s.group}</span>
-              <div className="skill-chips">
+            <div className="flex flex-col gap-3 p-[22px] rounded-card border border-hairline" key={s.group}>
+              <span className="font-mono text-xs font-semibold tracking-[0.12em] uppercase text-text-mute">{s.group}</span>
+              <div className="flex flex-wrap gap-2">
                 {s.items.map(i => (
-                  <span className="chip" key={i}>
+                  <span className={chipStatic} key={i}>
                     {i}
                   </span>
                 ))}
@@ -363,21 +350,22 @@ export default function AboutPage() {
       </section>
 
       {/* ---------- 경력 ---------- */}
-      <section className="sec">
-        <div className="sec-head">
+      <section className={sec}>
+        <div className={secHead}>
           <div>
-            <span className="eyebrow">/ career</span>
-            <h2 className="sec-title">경력</h2>
+            <span className={eyebrow}>/ career</span>
+            <h2 className={secTitle}>경력</h2>
           </div>
         </div>
-        <div className="timeline">
+        <div className="flex flex-col gap-1">
           {CAREER.map(c => (
-            <div className="tl-item" key={c.title}>
-              <span className="tl-year mono">{c.year}</span>
-              <div className="tl-dot" />
-              <div className="tl-body glass">
-                <h3>{c.title}</h3>
-                <p>{c.desc}</p>
+            <div className="grid grid-cols-[72px_28px_1fr] items-stretch group/tl" key={c.title}>
+              <span className="font-mono flex items-center text-[15px] font-bold text-accent">{c.year}</span>
+              {/* timeline rail + dot */}
+              <div className="relative flex justify-center before:content-[''] before:absolute before:top-0 before:bottom-0 before:w-0.5 before:bg-hairline group-first/tl:before:top-1/2 group-last/tl:before:bottom-1/2 after:content-[''] after:absolute after:top-[calc(50%-6px)] after:w-3 after:h-3 after:rounded-full after:bg-accent after:border-[3px] after:border-bg" />
+              <div className="glass py-[18px] px-[22px] my-2 flex-1">
+                <h3 className="mt-0 mb-[5px] text-[17px] font-bold tracking-[-0.02em]">{c.title}</h3>
+                <p className="m-0 text-sm leading-[1.6] text-text-soft">{c.desc}</p>
               </div>
             </div>
           ))}
@@ -385,39 +373,29 @@ export default function AboutPage() {
       </section>
 
       {/* ---------- 주요 프로젝트 ---------- */}
-      <section className="sec">
-        <div className="sec-head">
+      <section className={sec}>
+        <div className={secHead}>
           <div>
-            <span className="eyebrow">/ work</span>
-            <h2 className="sec-title">주요 프로젝트</h2>
+            <span className={eyebrow}>/ work</span>
+            <h2 className={secTitle}>주요 프로젝트</h2>
           </div>
         </div>
 
         {/* 블로믹스 */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '4px 0 14px' }}>
-          <span className="mono" style={{ fontSize: 13, fontWeight: 700, color: 'var(--text)' }}>
-            블로믹스 (Blomics)
-          </span>
-          <span className="mono" style={{ fontSize: 11.5, ...muteText }}>
-            2024.11 ~ 현재 · 라이브 게임 서비스
-          </span>
+        <div className="mt-1 mb-3.5">
+          <CompanyLabel name="블로믹스 (Blomics)" note="2024.11 ~ 현재 · 라이브 게임 서비스" />
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+        <div className="flex flex-col gap-[18px]">
           {PROJECTS.map(p => (
             <ProjectCard p={p} key={p.name} />
           ))}
         </div>
 
         {/* 코레토 */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '32px 0 14px' }}>
-          <span className="mono" style={{ fontSize: 13, fontWeight: 700, color: 'var(--text)' }}>
-            코레토 (Corretto)
-          </span>
-          <span className="mono" style={{ fontSize: 11.5, ...muteText }}>
-            2022.10 ~ 2024.10 · SI · 자체 솔루션
-          </span>
+        <div className="mt-8 mb-3.5">
+          <CompanyLabel name="코레토 (Corretto)" note="2022.10 ~ 2024.10 · SI · 자체 솔루션" />
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+        <div className="flex flex-col gap-[18px]">
           {CORRETTO_PROJECTS.map(p => (
             <ProjectCard p={p} key={p.name} />
           ))}
@@ -425,48 +403,44 @@ export default function AboutPage() {
       </section>
 
       {/* ---------- 개인 프로젝트 · 학력 ---------- */}
-      <section className="sec">
-        <div className="sec-head">
+      <section className={sec}>
+        <div className={secHead}>
           <div>
-            <span className="eyebrow">/ more</span>
-            <h2 className="sec-title">개인 프로젝트 · 학력</h2>
+            <span className={eyebrow}>/ more</span>
+            <h2 className={secTitle}>개인 프로젝트 · 학력</h2>
           </div>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 16 }}>
-          <div className="glass" style={{ padding: '22px 24px', borderRadius: 'var(--radius)' }}>
-            <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 10 }}>
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-4">
+          <div className="glass py-[22px] px-6">
+            <div className="flex items-baseline justify-between gap-2.5">
               <a
                 href="https://github.com/Yooinhak/Safety_Tour_Flatform"
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{ fontSize: 17, fontWeight: 700, color: 'var(--text)', textDecoration: 'none' }}
+                className="text-[17px] font-bold text-text no-underline"
               >
                 Safety Tour Platform
               </a>
-              <span className="mono" style={{ fontSize: 11.5, ...muteText, flexShrink: 0 }}>
-                2021.09 ~ 2022.04
-              </span>
+              <span className="font-mono text-[11.5px] text-text-mute shrink-0">2021.09 ~ 2022.04</span>
             </div>
-            <p style={{ margin: '10px 0 0', fontSize: 13.5, lineHeight: 1.6, ...softText }}>
+            <p className="mt-2.5 mb-0 text-[13.5px] leading-[1.6] text-text-soft">
               코로나 위험도를 확인할 수 있는 안전한 관광지 여행 정보 제공 앱. React Native 기반 하이브리드 앱.
             </p>
-            <div className="skill-chips" style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 14 }}>
+            <div className="flex flex-wrap gap-1.5 mt-3.5">
               {['React Native', 'React Navigation', 'React Hooks', 'Axios'].map(t => (
-                <span className="chip" key={t}>
+                <span className={chipStatic} key={t}>
                   {t}
                 </span>
               ))}
             </div>
           </div>
 
-          <div className="glass" style={{ padding: '22px 24px', borderRadius: 'var(--radius)' }}>
-            <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 10 }}>
-              <span style={{ fontSize: 17, fontWeight: 700, color: 'var(--text)' }}>남서울대학교</span>
-              <span className="mono" style={{ fontSize: 11.5, ...muteText, flexShrink: 0 }}>
-                2017.03 ~ 2023.08
-              </span>
+          <div className="glass py-[22px] px-6">
+            <div className="flex items-baseline justify-between gap-2.5">
+              <span className="text-[17px] font-bold text-text">남서울대학교</span>
+              <span className="font-mono text-[11.5px] text-text-mute shrink-0">2017.03 ~ 2023.08</span>
             </div>
-            <p style={{ margin: '10px 0 0', fontSize: 13.5, lineHeight: 1.6, ...softText }}>
+            <p className="mt-2.5 mb-0 text-[13.5px] leading-[1.6] text-text-soft">
               컴퓨터소프트웨어학과 전공 · 총 학점 3.51 / 4.5 · 전공 평점 3.74 / 4.5
             </p>
           </div>

@@ -2,7 +2,11 @@
 
 import { useEffect, useState } from 'react';
 import { fmtNum } from '@lib/categories';
+import { cn } from '@utils/cn';
 import { IconHeart, IconEye } from './icons';
+
+const actBtn =
+  'inline-flex items-center gap-[7px] px-3.5 py-[9px] rounded-full border text-[13px] font-semibold transition-all duration-[220ms] ease-fluid backdrop-blur-[10px]';
 
 /**
  * Like button with localStorage persistence (per post id).
@@ -29,13 +33,23 @@ export default function LikeButton({ id, initialLikes = 0, views }: { id: string
   };
 
   return (
-    <div className="post-actions">
-      <button className={`act-btn ${liked ? 'liked' : ''}`} onClick={toggle} aria-label="좋아요">
-        <IconHeart size={18} fill={liked} /> <span className="mono">{fmtNum(likes)}</span>
+    <div className="flex gap-2.5">
+      <button
+        className={cn(
+          actBtn,
+          'cursor-pointer',
+          liked
+            ? 'text-[oklch(0.6_0.2_18)] border-[oklch(0.6_0.2_18)] bg-[oklch(0.6_0.2_18/0.1)]'
+            : 'border-glass-border bg-glass text-text-soft hover:text-accent hover:border-accent hover:-translate-y-px',
+        )}
+        onClick={toggle}
+        aria-label="좋아요"
+      >
+        <IconHeart size={18} fill={liked} /> <span className="font-mono">{fmtNum(likes)}</span>
       </button>
       {typeof views === 'number' && (
-        <span className="act-btn" aria-label="조회수">
-          <IconEye size={18} /> <span className="mono">{fmtNum(views)}</span>
+        <span className={cn(actBtn, 'border-glass-border bg-glass text-text-soft')} aria-label="조회수">
+          <IconEye size={18} /> <span className="font-mono">{fmtNum(views)}</span>
         </span>
       )}
     </div>

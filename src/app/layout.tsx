@@ -45,14 +45,16 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="ko" className={pretendard.variable} suppressHydrationWarning>
       <body className={pretendard.className}>
         <ThemeProvider>
-          {/* calm, blue-centric ambient field (replaces the old sky/emerald/amber orbs) */}
-          <div className="bg-field bg-orbs" aria-hidden="true">
-            <div className="orb orb-1" /><div className="orb orb-2" /><div className="orb orb-3" />
+          {/* calm, blue-centric ambient orb field */}
+          <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none" aria-hidden="true">
+            <div className="absolute rounded-full blur-[110px] will-change-transform w-[620px] h-[620px] -top-60 left-1/2 -translate-x-[55%] bg-[var(--orb-1)]" />
+            <div className="absolute rounded-full blur-[110px] will-change-transform w-[560px] h-[560px] -bottom-[260px] -left-40 bg-[var(--orb-2)]" />
+            <div className="absolute rounded-full blur-[110px] will-change-transform w-[480px] h-[480px] top-[32%] -right-[180px] bg-[var(--orb-3)]" />
           </div>
 
-          <div className="content">
+          <div className="relative z-[1]">
             <Header />
-            <main>{children}</main>
+            <main className="min-h-[calc(100vh-72px)] pb-24">{children}</main>
             <Footer />
           </div>
         </ThemeProvider>

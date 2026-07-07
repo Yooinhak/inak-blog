@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 
-/** Top-of-page reading progress bar (uses the .read-progress design-system CSS). */
+/** Top-of-page reading progress bar. */
 export default function ReadProgress() {
   const barRef = useRef<HTMLDivElement>(null);
 
@@ -28,5 +28,5 @@ export default function ReadProgress() {
     };
   }, []);
 
-  return <div ref={barRef} className="read-progress" aria-hidden="true" />;
+  return <div ref={barRef} className="fixed top-0 inset-x-0 h-[3px] bg-accent origin-left scale-x-0 z-[60]" aria-hidden="true" />;
 }
