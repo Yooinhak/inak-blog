@@ -1,28 +1,36 @@
+import { Analytics } from '@vercel/analytics/next';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 
-import Footer from '@components/Footer';
 import Header from '@components/Header';
+import Footer from '@components/Footer';
 import { ThemeProvider } from '@components/ThemeProvider';
+import { SITE } from '@lib/siteConfig';
 
 import './globals.css';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://www.inak.dev'),
-  title: '이낙 개발 블로그',
-  description: '이낙 개발 블로그',
+  metadataBase: new URL(SITE.url),
+  title: {
+    default: SITE.title,
+    template: `%s | ${SITE.name}`,
+  },
+  description: SITE.description,
+  alternates: {
+    types: { 'application/rss+xml': `${SITE.url}/feed.xml` },
+  },
   openGraph: {
-    title: '이낙 개발 블로그',
-    description: '이낙 개발 블로그입니다.',
-    siteName: '이낙 개발 블로그',
+    title: SITE.title,
+    description: SITE.description,
+    siteName: SITE.name,
     images: ['/images/logo.png'],
     type: 'website',
+    locale: SITE.locale,
   },
   twitter: {
-    card: 'summary_large_image',
-    title: '이낙 개발 블로그',
-    description: '이낙 개발 블로그입니다.',
-    images: ['/images/logo.png'],
+    card: 'summary',
+    title: SITE.title,
+    description: SITE.description,
   },
 };
 
@@ -33,27 +41,25 @@ const pretendard = localFont({
   variable: '--font-pretendard',
 });
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="kr" className={`${pretendard.variable}`} suppressHydrationWarning>
-      <body className={`antialiased ${pretendard.className} bg-[#eef2f6] text-base-content dark:bg-[#0b111a]`}>
+    <html lang="ko" className={pretendard.variable} suppressHydrationWarning>
+      <body className={pretendard.className}>
         <ThemeProvider>
-          <div className="relative min-h-screen overflow-hidden">
-            <div className="pointer-events-none absolute -top-48 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-sky-200/50 blur-[140px] dark:bg-sky-500/20" />
-            <div className="pointer-events-none absolute -bottom-64 -left-28 h-[520px] w-[520px] rounded-full bg-emerald-200/40 blur-[160px] dark:bg-emerald-400/15" />
-            <div className="pointer-events-none absolute top-1/3 -right-32 h-[420px] w-[420px] rounded-full bg-amber-200/40 blur-[140px] dark:bg-amber-400/15" />
+          {/* calm, blue-centric ambient orb field */}
+          <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none" aria-hidden="true">
+            <div className="absolute rounded-full blur-[110px] will-change-transform w-[620px] h-[620px] -top-60 left-1/2 -translate-x-[55%] bg-[var(--orb-1)]" />
+            <div className="absolute rounded-full blur-[110px] will-change-transform w-[560px] h-[560px] -bottom-[260px] -left-40 bg-[var(--orb-2)]" />
+            <div className="absolute rounded-full blur-[110px] will-change-transform w-[480px] h-[480px] top-[32%] -right-[180px] bg-[var(--orb-3)]" />
+          </div>
 
-            <div className="relative z-10">
-              <Header />
-              <main className="min-h-[calc(100vh_-_65px_-_52px)]">{children}</main>
-              <Footer />
-            </div>
+          <div className="relative z-[1]">
+            <Header />
+            <main className="min-h-[calc(100vh-72px)] pb-24">{children}</main>
+            <Footer />
           </div>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );

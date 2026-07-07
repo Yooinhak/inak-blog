@@ -1,12 +1,12 @@
 ---
 title: "Framer Motion으로 글자가 춤추는 텍스트 로테이션 애니메이션 만들기"
 date: 2026-02-20
-tags: ["Framer Motion", "React", "Animation", "TypeScript", "UI"]
+excerpt: "랜딩 페이지의 첫인상을 책임지는 텍스트 로테이션 애니메이션을 Framer Motion으로 만들었습니다. Intl.Segmenter로 글자를 정확히 쪼개고, stagger 딜레이로 순차 등장을 연출하고, AnimatePresence·useImperativeHandle·접근성까지 챙긴 과정을 정리합니다."
+tags: ["Framer Motion", "React", "Animation", "TypeScript", "UI Design"]
 ---
 
-# Framer Motion으로 글자가 춤추는 텍스트 로테이션 애니메이션 만들기
 
-랜딩 페이지에서 가장 눈길을 끄는 요소 중 하나는 **텍스트가 자연스럽게 전환되는 애니메이션**입니다. 단순히 fade in/out이 아닌, 글자 하나하나가 순차적으로 등장하며 바뀌는 효과를 Framer Motion으로 구현한 과정을 공유합니다.
+랜딩 페이지에서 가장 먼저 시선을 붙드는 요소 중 하나가 **자연스럽게 전환되는 텍스트 애니메이션**입니다. 단순한 fade in/out이 아니라, 글자 하나하나가 순서대로 솟아오르며 문구가 바뀌는 효과 말이죠. 이 글에서는 그 효과를 Framer Motion으로 구현한 과정을, 설계 의도부터 코드까지 차근차근 풀어봅니다.
 
 ---
 
@@ -18,19 +18,15 @@ Building [scalable systems] with care.
 Building [beautiful interfaces] with care.
 ```
 
-대괄호 안의 텍스트가 2초마다 자동으로 전환되며, 각 글자가 아래에서 위로 올라오는 spring 애니메이션이 적용됩니다.
+대괄호 안의 문구가 2초마다 자동으로 바뀌고, 그때마다 각 글자가 아래에서 위로 솟아오르는 spring 애니메이션이 붙습니다. 정적인 한 줄이 살아 움직이는 한 줄로 바뀌는, 작지만 인상적인 차이입니다.
 
 ---
 
 ## 2. 설계 방향
 
-구현 전에 몇 가지 요구사항을 정리했습니다.
+코드를 짜기 전에 요구사항부터 못 박았습니다. 글자(character) 단위로 쪼개 stagger 애니메이션을 걸 것, 자동 로테이션과 수동 제어(next/previous/jumpTo)를 모두 지원할 것, `forwardRef`로 외부에서 애니메이션을 제어할 수 있게 할 것, splitBy 옵션으로 글자·단어·줄 단위를 고를 수 있게 할 것, 그리고 TypeScript로 타입 안전성을 확보할 것.
 
-- 글자(character) 단위로 분리해서 stagger 애니메이션 적용
-- 자동 로테이션 + 수동 제어(next/previous/jumpTo) 지원
-- `forwardRef`로 외부에서 애니메이션 제어 가능
-- splitBy 옵션으로 글자/단어/줄 단위 선택 가능
-- TypeScript로 타입 안전성 확보
+요구사항을 먼저 정리해두니, 컴포넌트가 가져야 할 prop과 ref API의 윤곽이 자연스럽게 잡혔습니다. "재사용 가능한 컴포넌트"를 목표로 둔 순간, 단순한 데모와는 설계가 달라졌습니다.
 
 ---
 
@@ -38,7 +34,7 @@ Building [beautiful interfaces] with care.
 
 ### 3-1. 텍스트를 글자 단위로 분리
 
-Unicode를 올바르게 처리하기 위해 `Intl.Segmenter`를 우선 사용하고, 지원하지 않는 환경에서는 `Array.from`으로 폴백합니다.
+가장 먼저 풀어야 할 문제는 "글자를 어떻게 정확히 쪼개느냐"였습니다. 단순히 문자열을 쪼개면 이모지나 한글 같은 다중 바이트 문자가 깨지기 때문에, `Intl.Segmenter`를 우선 쓰고 지원하지 않는 환경에서는 `Array.from`으로 폴백했습니다.
 
 ```typescript
 const splitIntoCharacters = (text: string): string[] => {
@@ -50,11 +46,11 @@ const splitIntoCharacters = (text: string): string[] => {
 };
 ```
 
-이모지나 한글 같은 다중 바이트 문자도 정확히 한 글자씩 분리됩니다.
+`grapheme` 단위로 분할하기 때문에, 사람이 "한 글자"로 인식하는 단위 그대로 정확히 쪼개집니다. 이모지나 한글도 안전합니다.
 
 ### 3-2. Stagger 딜레이 계산
 
-글자가 순서대로 등장하는 효과의 핵심은 각 글자에 미세하게 다른 딜레이를 주는 것입니다.
+글자가 순서대로 등장하는 효과의 비결은 단순합니다. **각 글자에 미세하게 다른 시작 딜레이를 주는 것**이죠.
 
 ```typescript
 const getStaggerDelay = (index: number, totalChars: number): number => {
@@ -72,12 +68,7 @@ const getStaggerDelay = (index: number, totalChars: number): number => {
 };
 ```
 
-`staggerFrom` 옵션으로 애니메이션의 시작점을 자유롭게 변경할 수 있습니다.
-
-- `first` → 첫 글자부터 순서대로
-- `last` → 마지막 글자부터 역순으로
-- `center` → 가운데에서 바깥으로 퍼지듯
-- `random` → 무작위 순서로 등장
+`staggerFrom` 옵션으로 애니메이션이 퍼져나가는 기점을 바꿀 수 있습니다. `first`는 첫 글자부터 순서대로, `last`는 마지막 글자부터 역순으로, `center`는 가운데에서 바깥으로 퍼지듯, `random`은 무작위 순서로 등장합니다. 같은 문구라도 기점 하나로 완전히 다른 인상을 줄 수 있다는 점이 재미있습니다.
 
 ### 3-3. AnimatePresence로 전환 관리
 
@@ -107,13 +98,13 @@ const getStaggerDelay = (index: number, totalChars: number): number => {
 </AnimatePresence>
 ```
 
-`AnimatePresence`가 `key` 변화를 감지해 이전 텍스트는 위로 사라지고, 새 텍스트는 아래에서 올라옵니다. 각 글자의 `overflow: hidden` 래퍼가 애니메이션 도중 글자가 영역 밖으로 보이지 않도록 합니다.
+`AnimatePresence`가 `key` 변화를 감지해, 이전 문구는 위로 빠져나가고 새 문구는 아래에서 올라오게 만듭니다. 여기서 각 글자를 감싼 `overflow: hidden` 래퍼가 중요한데, 애니메이션 도중 글자가 영역 밖으로 삐져나와 보이는 걸 잘라줍니다. 이 한 겹 덕분에 "글자가 칸 안에서 깔끔하게 교체되는" 느낌이 완성됩니다.
 
 ---
 
 ## 4. 자동 로테이션
 
-`useEffect`와 `setInterval`로 자동 전환을 구현합니다.
+자동 전환은 `useEffect`와 `setInterval`로 구현합니다.
 
 ```typescript
 useEffect(() => {
@@ -123,13 +114,13 @@ useEffect(() => {
 }, [next, rotationInterval, auto]);
 ```
 
-`auto` prop으로 자동 로테이션을 on/off 할 수 있고, `rotationInterval`로 전환 간격을 밀리초 단위로 조절합니다.
+`auto` prop으로 자동 로테이션을 켜고 끌 수 있고, `rotationInterval`로 전환 간격을 밀리초 단위로 조절합니다. cleanup에서 `clearInterval`을 잊지 않는 것이 포인트입니다. 빠뜨리면 인터벌이 쌓여 전환이 점점 빨라지는 버그를 만나게 됩니다.
 
 ---
 
 ## 5. 외부 제어: useImperativeHandle
 
-`forwardRef` + `useImperativeHandle`로 부모 컴포넌트에서 애니메이션을 직접 제어할 수 있습니다.
+`forwardRef`와 `useImperativeHandle`을 엮으면, 부모 컴포넌트에서 애니메이션을 직접 조종할 수 있습니다.
 
 ```typescript
 useImperativeHandle(ref, () => ({
@@ -140,7 +131,7 @@ useImperativeHandle(ref, () => ({
 }));
 ```
 
-사용 예시:
+덕분에 버튼이나 다른 이벤트로 전환을 트리거하는 일이 간단해집니다.
 
 ```tsx
 const textRef = useRef<RotatingTextRef>(null);
@@ -149,11 +140,13 @@ const textRef = useRef<RotatingTextRef>(null);
 <RotatingText ref={textRef} texts={['Hello', 'World']} />
 ```
 
+자동 로테이션은 기본 동작으로 두되, 필요할 때 외부에서 명령형으로 끼어들 수 있는 문을 열어둔 셈입니다.
+
 ---
 
 ## 6. 접근성(Accessibility) 고려
 
-화면 리더 사용자를 위해 `sr-only` 클래스로 현재 텍스트를 숨겨진 상태로 제공하고, 시각적 애니메이션 요소에는 `aria-hidden`을 적용합니다.
+화려한 애니메이션일수록 화면 리더 사용자를 잊기 쉽습니다. 그래서 현재 문구는 `sr-only`로 숨겨 텍스트로 전달하고, 시각적 애니메이션 요소에는 `aria-hidden`을 붙여 보조기기가 중복해서 읽지 않도록 했습니다.
 
 ```tsx
 <span className="sr-only">{texts[currentTextIndex]}</span>
@@ -161,6 +154,8 @@ const textRef = useRef<RotatingTextRef>(null);
   {/* 애니메이션 요소 */}
 </motion.div>
 ```
+
+"보는 사람에게는 애니메이션을, 듣는 사람에게는 깔끔한 텍스트를" 동시에 전달하는 구조입니다.
 
 ---
 
@@ -185,6 +180,6 @@ const textRef = useRef<RotatingTextRef>(null);
 
 ## 마무리
 
-텍스트 애니메이션은 작은 디테일이지만, 랜딩 페이지의 첫인상을 크게 좌우합니다. Framer Motion의 `AnimatePresence`와 spring 물리엔진 덕분에 자연스러운 모션을 비교적 적은 코드로 구현할 수 있었습니다.
+텍스트 애니메이션은 작은 디테일이지만, 랜딩 페이지의 첫인상을 크게 좌우합니다. Framer Motion의 `AnimatePresence`와 spring 물리 엔진 덕분에, 자연스러운 모션을 생각보다 적은 코드로 만들 수 있었습니다.
 
-핵심은 **글자를 개별 요소로 분리**하고, **stagger 딜레이로 순차 등장 효과**를 만드는 것입니다. 이 패턴을 응용하면 타이핑 효과, 물결 애니메이션 등 다양한 변형을 만들 수 있습니다.
+핵심은 두 가지입니다. **글자를 개별 요소로 쪼개는 것**, 그리고 **stagger 딜레이로 순차 등장을 연출하는 것**. 이 패턴만 손에 익으면 타이핑 효과나 물결 애니메이션 같은 변형도 같은 원리로 어렵지 않게 만들 수 있습니다.
