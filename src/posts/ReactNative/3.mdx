@@ -1,0 +1,161 @@
+---
+title: "Expo 개발 빌드가 계속 실패할 때: 'No script URL'의 진짜 범인을 찾아서"
+date: 2026-07-08
+excerpt: "Release 빌드는 잘 도는데 Debug 빌드만 실행하면 'No script URL provided'로 죽는 미스터리를 추적했습니다. Expo Go의 함정, 네트워크 권한, 그리고 패키지 매니저가 조용히 심어둔 진짜 원인(SDK 비호환 버전)과 프리빌트 React Native Core의 링커 에러까지 — 하루 종일 파낸 트러블슈팅 전 과정을 정리합니다."
+tags: ["React Native", "Expo", "Troubleshooting", "expo-dev-client", "CocoaPods"]
+---
+
+지난 글에서 "No script url provided" 에러를 **릴리즈 빌드로 우회**하는 방법을 다뤘습니다. 그런데 우회는 어디까지나 우회일 뿐, 개발을 하려면 결국 Metro와 실시간으로 연결되는 **디버그 빌드**가 필요합니다. 문제는 이것이었습니다.
+
+> Release 빌드는 멀쩡히 도는데, Debug 빌드만 실행하면 무조건 죽는다.
+
+같은 코드, 같은 기기, 같은 네트워크인데 말이죠. 이 미스터리를 하루 종일 추적한 끝에, 에러 메시지와는 전혀 상관없어 보이는 곳에서 진짜 범인을 찾았습니다. 결론부터 말하면 **패키지 매니저가 조용히 설치한 SDK 비호환 버전** 때문이었습니다. 같은 증상으로 고통받는 분들을 위해 전 과정을 남깁니다.
+
+---
+
+## 1. 증상 정리
+
+| 항목 | 상태 |
+| :--- | :--- |
+| **환경** | Expo SDK 55 · React Native 0.83 · bun · 실기기(iPhone) |
+| **Release 빌드** | ✅ 정상 동작 |
+| **Debug 빌드** | ❌ 실행 즉시 `No script URL provided` 레드박스 |
+| **expo-dev-client 설치 후** | ❌ 런처 화면조차 안 뜨고 흰 화면 + 동일 에러 |
+
+Release가 된다는 건 앱 코드·서명·빌드 파이프라인이 모두 건강하다는 뜻입니다. Debug만 죽는다면 문제는 딱 하나, **"폰이 Metro에서 JS 번들을 받아오는 경로"** 어딘가에 있습니다. 그런데 그 경로가 생각보다 여러 겹이었습니다.
+
+---
+
+## 2. 첫 번째 함정: Expo Go는 내 앱을 실행할 수 없다
+
+삽질의 시작은 엉뚱하게도 Expo Go였습니다. `npx expo start`가 띄워주는 QR을 스캔하면 Expo Go가 열리는데, 이런 메시지를 만났습니다.
+
+```
+Project is incompatible with this version of Expo Go
+```
+
+"최신 버전을 받으라"는 안내 때문에 앱스토어를 들락거렸지만, **이건 버전 문제가 아닙니다.** Expo Go는 네이티브 라이브러리가 고정된 세트로 내장된 '미리보기 샌드박스'라서, 커스텀 네이티브 모듈(제 경우 expo-share-intent, Sentry)이 하나라도 있으면 아무리 업데이트해도 실행이 불가능합니다.
+
+Expo 공식 문서도 명확히 말합니다. **스토어 출시를 목표로 하는 앱은 개발 빌드(development build)가 정석**이고, Expo Go는 학습·프로토타이핑용입니다. QR의 편리함은 `expo-dev-client`를 설치하면 내 앱에서 그대로 누릴 수 있습니다.
+
+```bash
+bun add expo-dev-client   # ← 사실 이 명령이 오늘의 복선입니다
+npx expo run:ios --device
+```
+
+---
+
+## 3. 두 번째 함정: 네트워크는 생각보다 자주 어긋난다
+
+dev-client를 설치하고도 같은 에러가 반복되어, 앱을 배제한 **순수 네트워크 진단**을 먼저 했습니다. 이 방법은 강력히 추천합니다.
+
+```bash
+# Mac에서
+npx expo start
+ipconfig getifaddr en0   # → 예: 192.168.0.12
+```
+
+폰의 **Safari**에서 `http://192.168.0.12:8081/status`에 접속해 `packager-status:running`이 보이는지 확인하는 겁니다. 앱 문제인지 네트워크 문제인지 이 한 번으로 갈립니다.
+
+제 경우 여기서 두 가지가 걸렸습니다.
+
+**하나, 폰이 다른 네트워크에 붙어 있었습니다.** 같은 Wi-Fi라고 믿었지만 아니었죠. 허무하지만 가장 흔한 원인입니다.
+
+**둘, iOS 로컬 네트워크 권한.** 같은 네트워크로 옮기자 그제야 "LinkNest이(가) 로컬 네트워크에서 기기를 찾고 연결하려고 합니다" 팝업이 떴습니다. 이 권한을 거부하거나 팝업을 놓치면 Metro 연결이 원천 차단됩니다. 설정 → 개인정보 보호 및 보안 → 로컬 네트워크에서 확인할 수 있고, 회사망처럼 기기 간 통신을 차단(AP isolation)하는 환경이라면 LAN 자체가 불가능하니 `npx expo start --tunnel`로 우회하면 됩니다.
+
+그런데 네트워크를 다 잡고도... 여전히 흰 화면에 같은 에러였습니다. 여기서부터 진짜 추적이 시작됩니다.
+
+---
+
+## 4. 진짜 범인: 패키지 매니저가 조용히 심은 비호환 버전
+
+이상한 점이 하나 있었습니다. expo-dev-client가 설치되어 있다면 Metro 연결에 실패했을 때 **Dev Launcher 화면**(개발 서버 목록 UI)이 떠야 합니다. 그런데 제 앱은 런처 없이 곧바로 레드박스였죠. 마치 dev-client가 **없는 것처럼** 행동했습니다.
+
+확인해보니, 정말 없었습니다.
+
+```bash
+grep -c "expo-dev-launcher" ios/Podfile.lock
+# → 0   (?!)
+```
+
+package.json에도 있고 node_modules에도 있는데, **네이티브 빌드 산출물에는 존재하지 않는** 상태. `pod install`은 심지어 "107 pods installed"라며 성공했다고 말합니다. node_modules를 지우고 다시 깔아도, ios 폴더를 재생성해도 결과는 똑같았습니다.
+
+결정적 단서는 Expo가 SDK별 호환 버전을 정의해둔 `bundledNativeModules.json`과의 대조에서 나왔습니다.
+
+```bash
+node -e "const b=require('./node_modules/expo/bundledNativeModules.json');
+console.log('요구:', b['expo-dev-client']);
+console.log('설치:', require('./node_modules/expo-dev-client/package.json').version)"
+# 요구: ~55.0.36
+# 설치: 57.0.5   ← 두 메이저나 앞선 버전!
+```
+
+`bun add expo-dev-client`가 SDK 호환 버전이 아니라 **레지스트리 최신 버전(SDK 57용)**을 설치했던 겁니다. 그리고 Expo autolinking은 프로젝트 SDK와 호환되지 않는 모듈을 만나면 **에러 한 줄 없이 조용히 빌드에서 제외**합니다. "설치는 됐는데 빌드에는 없는" 유령 패키지의 정체가 이것이었습니다.
+
+해결은 허무할 만큼 간단합니다.
+
+```bash
+# 방법 1: expo install이 SDK에 맞는 버전을 골라줍니다
+npx expo install expo-dev-client
+
+# 방법 2: 어긋난 패키지 전체 일괄 교정
+npx expo install --fix
+```
+
+여기서 오늘의 교훈이 나옵니다. **Expo 관련 패키지는 `bun add`/`npm install`이 아니라 반드시 `npx expo install`로 설치하세요.** 패키지 매니저는 SDK의 존재를 모릅니다.
+
+---
+
+## 5. 마지막 관문: 프리빌트 React Native Core의 링커 에러
+
+버전을 교정하자 드디어 dev-launcher가 링크 단계까지 진입했고... 새로운 에러가 기다리고 있었습니다.
+
+```
+❌ Undefined symbols for architecture arm64
+┌─ Symbol: _OBJC_CLASS_$_RCTPackagerConnection
+└─ Referenced from: libexpo-dev-launcher.a(EXDevLauncherController.o)
+```
+
+React Native 0.81부터 iOS는 빌드 시간을 줄이기 위해 **미리 컴파일된 XCFramework(프리빌트 코어)**를 기본으로 사용합니다. 그런데 이 프리빌트 바이너리에 dev-launcher가 필요로 하는 개발용 심볼(`RCTPackagerConnection`)이 빠져 있었던 겁니다.
+
+해결책은 React Native를 소스부터 빌드하도록 전환하는 것입니다. `ios/Podfile.properties.json`에 한 줄을 추가합니다.
+
+```json
+{
+  "expo.jsEngine": "hermes",
+  "ios.buildReactNativeFromSource": "true"
+}
+```
+
+```bash
+npx pod-install
+npx expo run:ios --device
+```
+
+첫 소스 빌드는 10~20분 정도로 길지만(이후엔 캐시로 단축), 빌드가 끝나자 마침내 — 하루 종일 보지 못했던 **Dev Launcher 화면**이 떴습니다.
+
+---
+
+## 6. 같은 늪에 빠진 분들을 위한 진단 순서
+
+증상은 하나("No script URL")지만 원인은 여러 겹일 수 있습니다. 위에서부터 순서대로 확인하세요.
+
+**1단계 — Expo Go로 열고 있지 않은지.** 커스텀 네이티브 모듈이 있다면 개발 빌드가 필수입니다. QR 대신 직접 빌드한 앱을 실행하세요.
+
+**2단계 — Safari로 Metro 접속 테스트.** 폰 브라우저에서 `http://<Mac IP>:8081/status`가 열리는지 확인합니다. 안 열리면 네트워크 문제입니다: 같은 Wi-Fi인지, Mac 방화벽, 공유기의 기기 간 차단 여부를 보고, 막혀 있으면 `--tunnel`로 우회합니다.
+
+**3단계 — iOS 로컬 네트워크 권한.** 설정 → 개인정보 보호 및 보안 → 로컬 네트워크에서 앱이 허용되어 있는지 확인합니다.
+
+**4단계 — 패키지가 정말 빌드에 들어갔는지.** `grep -c "패키지명" ios/Podfile.lock`이 0이라면 설치와 무관하게 네이티브엔 없는 겁니다. `npx expo install --fix`로 버전을 교정하세요.
+
+**5단계 — 프리빌트 코어 링커 에러.** `RCTPackagerConnection` 류의 undefined symbol이 나오면 `ios.buildReactNativeFromSource`를 켜세요.
+
+---
+
+## 7. 결론
+
+이번 트러블슈팅에서 가장 오래 헤맨 이유는, 에러 메시지가 가리키는 곳(네트워크)과 진짜 원인(버전 비호환)이 완전히 달랐기 때문입니다. "pod install 성공"이라는 말과 "빌드에 포함됨"이 같은 뜻이 아니라는 것, 그리고 도구가 조용히 삼킨 실패는 산출물(Podfile.lock)을 직접 열어봐야 보인다는 것을 배웠습니다.
+
+> "에러 메시지는 증상을 말할 뿐, 원인은 산출물이 말한다."
+
+`npx expo install` 한 줄이면 겪지 않아도 될 하루였지만, 그 하루 덕분에 Expo의 빌드 파이프라인이 어떻게 도는지 한 층 깊이 이해하게 됐습니다. 이 글이 같은 늪에 빠진 분의 하루를 구했기를 바랍니다.
