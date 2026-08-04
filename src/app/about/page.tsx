@@ -8,13 +8,16 @@ import { btnGhost, btnPrimary, chip, eyebrow, sec, secHead, secTitle, wrap } fro
 
 export const metadata: Metadata = {
   title: 'About',
-  description: '라이브 게임 서비스의 웹·커뮤니티·어드민을 만드는 프론트엔드 개발자 유인학(이낙)입니다.',
+  description:
+    '라이브 게임 서비스의 웹·커뮤니티·어드민을 만드는 프론트엔드 개발자 유인학(이낙)입니다. 프론트엔드 2인 체제로 라이브 게임 웹 전 영역을 운영하며, 신규 구축과 레거시 개선을 함께 합니다.',
 };
 
 type Project = {
   badge: string;
   name: string;
   period: string;
+  /** 역할 · git 실측 지표 (짧은 pill로 렌더) */
+  meta?: string[];
   summary: string;
   highlights: string[];
   techs: string[];
@@ -26,100 +29,215 @@ const PROJECTS: Project[] = [
     badge: 'Event Web',
     name: '테일즈런너 이벤트 웹',
     period: '2025.01 ~ 현재',
+    meta: ['프론트엔드 개발', '저장소 최다 기여 (54%)', '843 commits', '이벤트 페이지 57+'],
     summary:
-      '라이브 게임의 시즌별 웹 이벤트·캠페인을 경태 팀장과 함께 개발했습니다. 일부는 퍼블리싱부터 직접 진행하고, 프론트엔드 개발은 백엔드와 데이터 연동을 협업해 완성했습니다. 설날 윷놀이, 아이디어 페스티벌, 마춘자 브랜드관, 네이버웹툰 콜라보, 2026 대운동회 등 수십 종을 담당했습니다.',
+      '라이브 게임의 시즌·콜라보·캠페인 웹 이벤트를 담당했습니다. 57개 이상의 이벤트 페이지를 직접 구현했고, 일부는 퍼블리싱부터 서버 연동까지 전 과정을 혼자 진행했습니다. 설날 윷놀이, 테일즈 아틀리에·애니멀빌리지·마춘자 브랜드관, 명탐정 코난·네이버웹툰 콜라보, K-챔피언십, 아이디어 페스티벌, 2026 대운동회 등을 맡았습니다.',
     highlights: [
-      '외주 퍼블리싱 가이드를 갱신해 외주 산출물의 품질과 일관성을 높임',
-      '이미지 webp 변환·srcSet 버전 관리로 로딩을 최적화하고, Swiper·html2canvas로 인터랙션 구현',
-      'GA4 태깅으로 캠페인 성과 측정을 지원하고, 한게임·라온·스토브 등 채널링 환경 대응',
+      '외주 퍼블리싱 가이드 문서 595줄을 직접 작성해 브랜치 워크플로우·디렉토리 규칙·린트 정책을 표준화하고, 외주 산출물의 품질과 인수 비용을 개선',
+      '공통 모달·EventSection·CustomImage 등 이벤트 템플릿을 구축하고 webp 변환·srcSet 버전 관리를 적용해, 매월 반복되는 개발 비용과 이미지 로딩 비용을 함께 절감',
+      '어드민 이벤트 속성값으로 링크·영상·노출 기간·탭 오픈을 제어해 코드 배포 없이 운영에서 이벤트를 조정할 수 있게 함',
+      '한게임·라온·스토브 채널링별 GNB·헤더·리다이렉트를 분기하고, GA4/GTM 태그 체계로 캠페인 성과 측정을 지원',
     ],
-    techs: ['React', 'Vite', 'TanStack Query', 'Zustand', 'Swiper', 'html2canvas'],
+    techs: ['React', 'Vite', 'Tailwind CSS', 'TanStack Query', 'Zustand', 'React Router', 'Swiper', 'html2canvas'],
   },
   {
     badge: 'Community',
     name: '테일즈런너 광장 (커뮤니티)',
-    period: '2025.03 ~ 2025.11',
+    period: '2025.03 ~ 2025.11 (모바일 대응 2026.06)',
+    meta: ['프론트엔드 개발', '0 → 1 신규 구축', '저장소 최다 기여 (44%)', '367 commits'],
     summary:
-      '게임 내 SNS형 커뮤니티 "광장"의 프론트엔드를 처음부터 맡아 구현했습니다. 게임피드, 스크랩, 해시태그, 응원메시지, 방문 기록, 길드광장 등 커뮤니티 핵심 기능을 설계·구현했습니다.',
+      '게임 내 SNS형 커뮤니티 "광장"의 프론트엔드를 초기부터 맡아 라이브까지 올렸습니다. 게임피드, 스크랩, 해시태그, 응원메시지, 통합검색, 방문 기록, 길드광장 등 커뮤니티 핵심 기능을 설계·구현했습니다.',
     highlights: [
-      '무한 스크롤 게시판을 TanStack Virtual 가상화로 렌더링해 대량 피드에서도 안정적인 성능 확보',
-      '게임 클라이언트와의 연동(인게임 로그인, square key 라우팅)과 AI 필터링·제재 콘텐츠 상태 처리',
-      'apis / hooks / components를 도메인 단위로 분리해 관심사를 명확히 한 구조 설계',
+      'TanStack Virtual 기반 useVirtualRows 훅을 직접 설계해 무한 스크롤과 가상 스크롤을 결합하고, 모바일에서 외부 엘리먼트가 스크롤 주체가 되는 케이스까지 옵션으로 흡수해 PC·모바일 단일 구현으로 통합',
+      '인게임 로그인 만료, 인게임 진입 URL 분기, 캐릭터 미생성·Guest·해지 대기 등 게임 계정 상태별 화면 분기를 촘촘하게 처리',
+      '회원 식별자를 memberId에서 squareKey로 마이그레이션하며 라우팅·API·검색 전 구간을 재맵핑',
+      'apis / hooks / components를 board·comment·guild·gamefeed·search 도메인 축으로 분리하고, useCheckPermission·useConfirm 등 공통 훅을 정립',
     ],
-    techs: ['React', 'TypeScript', 'TanStack Query', 'TanStack Virtual', 'Jotai'],
+    techs: ['React', 'TypeScript', 'Vite', 'Tailwind CSS', 'TanStack Query', 'TanStack Virtual', 'Jotai', 'date-fns'],
   },
   {
     badge: 'Global Admin',
-    name: '몰레프(MOLEP) 글로벌 게임 포털 어드민',
-    period: '2026.02 ~ 현재',
+    name: '몰렙(MOLEP) 글로벌 게임 포털 어드민 3종',
+    period: '2026.03 ~ 현재',
+    meta: ['프론트엔드 단독 담당', '3개 저장소 신규 구축', '저장소 기여 91~96%', '214 commits'],
     summary:
-      '글로벌 게임 퍼블리싱 포털의 관리자 도구를 프론트엔드 담당으로, 백엔드 한 분과 합을 맞춰 구축했습니다. 국가·언어·약관 배포, 홈 레이아웃, 쿠폰, 공지 등 운영 전반을 담당했습니다.',
+      '글로벌 게임 퍼블리싱 포털의 관리자 도구 3종(포털·게임·회원)을 프론트엔드 단독 담당으로 신규 구축했습니다. 빈 저장소에서 시작해 백엔드 한 분과 합을 맞춰 국가·언어·약관 배포, 홈 레이아웃, 쿠폰, 공지, 커뮤니티 운영까지 커버했습니다.',
     highlights: [
-      'feature 기반 아키텍처 + MSW 목 + zod 스키마로 타입 안전성과 병렬 개발 생산성을 확보',
-      '토큰 인증 flow를 재설계해 30분 세션 만료·access token 중앙화·접근권한 정기검토 적용',
-      '입력값 유효성 검사를 공통 모듈로 구조화하고 날짜 처리를 UTC로 표준화',
+      'feature 기반 아키텍처로 도메인을 수직 분할하고 Table·FormTable·DatePicker·FilterSearch 등 공통 컴포넌트를 자체 구축, 포털에서 검증한 구조를 재사용해 게임 어드민을 한 달 만에 신규 구축',
+      'MSW 목 핸들러로 백엔드 API 완성 전에 화면을 먼저 개발하고 순차적으로 서버 맵핑해, 백엔드 1명과의 병렬 개발 생산성을 확보',
+      'ISMS 대응으로 인증 flow를 재설계 — access token 중앙화, 30분 세션 만료, 비활성화 계정 로그인 차단, 계정 접근권한 정기검토, 권한그룹 변경 사유 필수화',
+      '입력 길이 토큰과 도메인별 예외 규칙을 유효성 검사 상수 모듈로 구조화해 React Hook Form과 결합하고, 서버와 주고받는 날짜를 UTC로 표준화',
     ],
-    techs: ['React', 'Vite', 'TanStack Query', 'Jotai', 'zod', 'MSW'],
+    techs: [
+      'React',
+      'TypeScript',
+      'Vite',
+      'Tailwind CSS',
+      'TanStack Query',
+      'Jotai',
+      'React Hook Form',
+      'MSW',
+      'dayjs',
+      'Froala Editor',
+    ],
   },
   {
     badge: 'Game Admin',
     name: '테일즈런너 통합 어드민',
-    period: '2024.11 ~ 현재',
+    period: '2024.11 ~ 2026.07',
+    meta: ['기능 개발', '유지보수', '327 commits'],
     summary:
-      '운영팀이 매일 사용하는 어드민의 기능 개발과 유지보수를 담당하며, 서비스 운영툴과 회원 관리 도구를 폭넓게 개선했습니다.',
+      '운영팀이 매일 사용하는 어드민의 기능 개발과 유지보수를 담당했습니다. 입사 직후부터 지속적으로 맡아 공지·커뮤니티 게시판·회원 제재·광장 운영툴·인게임 관리·이벤트·쿠폰까지 운영 도구 전반을 개선했습니다.',
     highlights: [
-      '이벤트 설정·생일 이벤트 템플릿·공지·모니터링 키워드 등 운영 기능 개발',
-      '노블레스 런너즈 시즌 관리 화면을 신규 구축(시즌 생성·대상자 명단·혜택 기간 검증 등)',
-      '로그인 5회 실패 계정 잠금, 권한그룹 변경 사유 입력으로 변경 이력 추적 등 보안·감사 반영',
+      '2개월에 걸친 공통 컴포넌트 리팩토링으로 리스트 페이지 구조·테이블·filter search·DatePicker·useConfirm을 순차 표준화해 레거시 어드민의 반복 코드를 제거',
+      '공지 관리에 배포일시(노출일시) 체계를 도입하고 즉시 노출·상단 고정·고정 노출 순서·노출 기준 정렬을 구현',
+      'AI 필터링 내역 관리(가중치·숨김 해제)와 제재 회원 관리, 게시판 댓글 CSV 추출 등 대량 콘텐츠 운영 기능을 개발',
+      'ISMS 대응 — 로그인 5회 실패 시 계정 잠금 및 해제, 권한그룹 변경 사유 입력으로 변경 이력 추적',
     ],
-    techs: ['React', 'TanStack Query', 'React Hook Form', 'xlsx'],
+    techs: [
+      'React',
+      'TypeScript',
+      'Vite',
+      'Tailwind CSS',
+      'TanStack Query',
+      'Jotai',
+      'React Hook Form',
+      'Froala Editor',
+      'xlsx',
+    ],
+  },
+  {
+    badge: 'Member Admin',
+    name: '테일즈런너 회원 어드민',
+    period: '2025.04 ~ 2026.05',
+    meta: ['프론트엔드 개발', '저장소 2위 기여 (42%)', '136 commits'],
+    summary:
+      '개인정보·본인확인이 얽힌 회원 운영 도구를 담당했습니다. 명의 및 신원정보 변경 요청 처리와 노블레스 런너즈 시즌 관리를 신규 구축했습니다.',
+    highlights: [
+      '명의 및 신원정보 변경을 전담 구축 — 본인·가족 명의 변경의 작성·수정·승인 flow, 서류 등록(MIME 타입 검증·heic 처리·미리보기 권한 분기), 양수·양도인 동일 계정 차단, 철회·거절 상태 동기화',
+      '노블레스 런너즈 시즌 관리를 신규 구축 — 시즌 생성·상세·수정, 대상자 명단, 혜택 기간 중복 검증, 배송지 다운로드, 활성 시즌 삭제 차단',
+      '테스트 계정 발급 및 CSV 다운로드, OTP 초기화, 기관 요청 회원 정보 조회 기능을 개발',
+      '테런 서비스해지와 라온 탈퇴 회원 상세를 오갈 때 발생하던 회원정보 연동 오류를 해결',
+    ],
+    techs: [
+      'React',
+      'TypeScript',
+      'Vite',
+      'Tailwind CSS',
+      'TanStack Query',
+      'TanStack Virtual',
+      'Jotai',
+      'React Hook Form',
+    ],
   },
   {
     badge: 'Responsive',
     name: '테일즈런너 공식 홈페이지 모바일 반응형 전환',
-    period: '2024.11 ~ 현재',
+    period: '2025.09 ~ 2026.06',
+    meta: ['전환 브랜치 단독 운영', '9개월 장기 브랜치', '라이브 무중단 전환'],
     summary:
-      'PC 전용으로 제공되던 공식 홈페이지를 모바일·태블릿까지 대응하도록 반응형 전환했습니다. 커뮤니티, 내정보, 새소식, 노블레스 등 주요 섹션을 모바일 대응했습니다.',
+      'PC 전용으로 제공되던 공식 홈페이지를 모바일·태블릿까지 대응하도록 전환했습니다. 별도 브랜치를 9개월간 유지하며 develop을 지속 머지하는 방식으로, 라이브 서비스를 멈추지 않고 점진적으로 전환했습니다.',
     highlights: [
-      'Samsung/Galaxy 브라우저에서 SPA 진입 시 viewport가 적용되지 않던 문제를 useLayoutEffect 기반으로 해결',
-      'iOS dialog 오토포커스·갤럭시 뒤로가기 쿠폰 초기화 등 기기·브라우저별 호환성 이슈를 다수 처리',
-      '모바일 최소 화면 너비 보장, PC 전용 화면 분기 등 안전한 분기 전략으로 점진적 전환',
+      'Header·GNB(슬라이드 메뉴)·메인·새소식·커뮤니티(게시판 5종과 상세)·내정보·랭킹·레이어 팝업까지 전 영역을 순차 반응형 전환',
+      'Samsung/Galaxy 브라우저에서 SPA 진입 시 viewport meta가 적용되지 않던 문제를 useLayoutEffect 기반 커스텀 viewport 적용으로 해결',
+      'iOS dialog 오토포커스, 갤럭시 뒤로가기 시 쿠폰값 미초기화, 삼성 키보드 툴바 잔존 등 재현이 까다로운 기기별 이슈를 개별 특정해 해결',
+      '약관·탈퇴 등 모바일 대응이 부적절한 화면은 PC 유도 화면으로 분기하고, 모바일 최소 화면 너비를 보장해 안전하게 점진 전환',
     ],
-    techs: ['React', 'Tailwind CSS', 'Zustand', 'SWR'],
+    techs: ['React', 'Vite', 'Tailwind CSS', 'SWR', 'Zustand'],
+  },
+  {
+    badge: 'Live Web',
+    name: '테일즈런너 공식 홈페이지 서비스 개발',
+    period: '2024.11 ~ 2026.07',
+    meta: ['기능 개발', '유지보수', '309 commits'],
+    summary:
+      '20년 넘게 서비스 중인 공식 홈페이지의 기능 개발과 운영을 담당했습니다. 알림함 신규 개발, 채널링별 서비스 해지 flow, TR 크리에이터, 랭킹, 커뮤니티 개선을 진행했습니다.',
+    highlights: [
+      '알림함을 퍼블리싱부터 API 맵핑까지 신규 개발 — 메인 로그인 박스·서브메뉴 진입점, 상세 팝업, 페이지네이션, 로그인 상태 변경 시 목록 갱신',
+      '한게임·스토브 채널링별 서비스 해지 및 해지 철회 flow와 유예기간 계산을 분기 처리',
+      '광장(커뮤니티) 노출을 useSquareOpen 플래그로 제어해 오픈과 롤백을 여러 차례 안전하게 반복',
+      'TR 크리에이터 활동내역 제출·추천 콘텐츠 신청, 확률형 아이템 검색 개선, VIP 레벨 컬러·닉네임 색상 공통코드화를 진행',
+    ],
+    techs: ['React', 'Vite', 'Tailwind CSS', 'SWR', 'Zustand', 'React Hook Form', 'recharts', 'lottie-web'],
+  },
+  {
+    badge: 'Portal',
+    name: '라온(RHAON) 회원 포털',
+    period: '2025.01 ~ 2026.05',
+    meta: ['프론트엔드 부분 참여'],
+    summary: '퍼블리싱 플랫폼 라온의 회원 포털에 부분 참여해 캐시 내역, 내 정보, OTP 인증 영역을 개선했습니다.',
+    highlights: [
+      '캐시 내역 UI를 개선하고 탭 라벨을 정리, useBalance 로직을 수정',
+      '내 정보 본인인증 섹션 디자인 개선, 프로필 기본 이미지 미노출 오류 수정, 프로필 이미지 10MB 초과 방지',
+      'OTP 인증번호 입력란에 숫자 외 문자가 입력되던 문제를 수정하고 AI 필터링 프로필 이미지 툴팁을 추가',
+    ],
+    techs: ['React', 'Vite', 'Tailwind CSS', 'SWR', 'Zustand', 'qrcode.react', 'crypto-js'],
   },
 ];
 
 const VALUES = [
-  { k: '라이브 서비스', v: '대규모 게임 서비스의 웹·커뮤니티·어드민을 맡아 개발하고 안정적으로 운영·개선합니다.' },
-  { k: '반응형 · 호환성', v: 'PC 전용 라이브 서비스를 모바일까지 대응하고 Samsung·iOS 브라우저 이슈를 해결합니다.' },
-  { k: 'B2B 어드민', v: '권한·인증·감사가 얽힌 운영 도구를 안정적이고 확장 가능한 구조로 설계합니다.' },
-  { k: '성능 · 협업', v: 'webp·가상화로 체감 성능을 높이고, 기획·백엔드·QA와 합을 맞춰 개선합니다.' },
+  {
+    k: '라이브 서비스',
+    v: '20년 넘게 서비스 중인 게임의 웹·커뮤니티·어드민을 프론트엔드 2인 체제로 운영하며, 라이브 트래픽을 멈추지 않고 점진적으로 개선합니다.',
+  },
+  {
+    k: '구조로 반복 제거',
+    v: '매월 반복되는 이벤트 개발을 템플릿·공통 컴포넌트로 추상화하고, 외주 협업 프로세스까지 문서로 표준화합니다.',
+  },
+  {
+    k: '0 → 1 · 1 → N',
+    v: '커뮤니티와 글로벌 포털 어드민을 빈 저장소에서 라이브까지 올렸고, 20년 된 레거시 서비스도 개선하며 운영합니다.',
+  },
+  {
+    k: '반응형 · 크로스 브라우저',
+    v: 'PC 전용 서비스를 모바일까지 확장하고, Samsung·iOS 등 재현이 까다로운 기기별 이슈를 끝까지 파고들어 해결합니다.',
+  },
+  {
+    k: 'B2B 어드민 · 보안',
+    v: '권한·인증·감사가 얽힌 운영 도구를 설계합니다. 세션 만료·계정 잠금·권한 변경 이력 추적을 여러 어드민에 일관되게 적용했습니다.',
+  },
+  {
+    k: '성능 · 접근성',
+    v: '피드 가상화, webp·srcSet 버전 관리, lazy import 청크 재시도로 체감 성능을 높이고 모션 민감 사용자까지 배려합니다.',
+  },
 ];
 
 const SKILLS = [
   {
-    group: 'Front-End',
+    group: 'Language & Framework',
+    items: ['TypeScript', 'JavaScript', 'React', 'Next.js', 'React Native', 'Vite'],
+  },
+  {
+    group: 'State & Data',
+    items: ['TanStack Query', 'TanStack Virtual', 'Jotai', 'Zustand', 'SWR', 'React Hook Form'],
+  },
+  {
+    group: 'Styling',
+    items: ['Tailwind CSS', 'styled-components', 'SCSS', 'clsx / tailwind-merge'],
+  },
+  {
+    group: 'Tooling & Infra',
+    items: ['MSW', 'ESLint / Prettier', 'Husky / lint-staged', 'Bun', 'GA4 / GTM', 'AWS CDN'],
+  },
+  {
+    group: 'Library',
     items: [
-      'TypeScript',
-      'JavaScript',
-      'React',
-      'React Native',
-      'Next.js',
-      'Vite',
-      'TanStack Query',
-      'Zustand',
-      'Jotai',
-      'SWR',
-      'React Hook Form',
-      'zod',
-      'Tailwind CSS',
-      'styled-components',
-      'SCSS',
+      'Swiper',
+      'html2canvas',
+      'Froala Editor',
+      'DOMPurify',
+      'xlsx',
+      'dayjs / date-fns',
+      'three.js',
+      'lottie-web',
+      'recharts / d3',
+      'ECharts',
+      'MUI',
     ],
   },
   {
-    group: 'Collaboration & Tools',
-    items: ['Git', 'GitHub', 'GitLab', 'Slack', 'Notion', 'Figma', 'MSW', 'AWS', 'VSCode'],
+    group: 'Collaboration',
+    items: ['Git / GitHub / GitLab', 'ClickUp', 'Slack', 'Notion', 'Figma', 'VSCode'],
   },
 ];
 
@@ -127,7 +245,7 @@ const CAREER = [
   {
     year: '2024.11',
     title: '블로믹스 (Blomics) · 프론트엔드 개발자',
-    desc: '테일즈런너(라이브 게임)의 이벤트 웹·커뮤니티·통합 어드민과 몰레프 글로벌 포털 어드민을 담당. 공식 홈페이지 모바일 반응형 전환과 크로스 브라우저 이슈 해결.',
+    desc: '테일즈런너(20년 차 라이브 게임)의 이벤트 웹·커뮤니티·어드민 3종·공식 홈페이지와 몰렙 글로벌 포털 어드민 3종을 담당. 프론트엔드 2인 체제로 9개 저장소를 공동 운영하며 2,200여 커밋을 기여했고, 5개 저장소에서 최다 기여자입니다.',
   },
   {
     year: '2022.10',
@@ -213,6 +331,10 @@ const CORRETTO_PROJECTS: Project[] = [
 /** static (non-interactive) chip — no hover motion */
 const chipStatic = cn(chip, 'cursor-default hover:translate-y-0 hover:text-text-soft');
 
+/** small mono pill for role / git-measured metrics */
+const metaPill =
+  'font-mono text-[11px] font-medium leading-none px-2.5 py-[6px] rounded-full border border-hairline text-text-mute';
+
 function ProjectCard({ p }: { p: Project }) {
   return (
     <div className="glass py-[22px] px-6">
@@ -231,6 +353,16 @@ function ProjectCard({ p }: { p: Project }) {
         </div>
         <span className="font-mono text-xs font-semibold text-text-mute shrink-0">{p.period}</span>
       </div>
+
+      {p.meta && p.meta.length > 0 && (
+        <div className="flex flex-wrap gap-1.5 mt-3">
+          {p.meta.map(m => (
+            <span className={metaPill} key={m}>
+              {m}
+            </span>
+          ))}
+        </div>
+      )}
 
       <p className="mt-3.5 mb-0 text-[14.5px] leading-[1.66] text-text-soft">{p.summary}</p>
 
@@ -258,7 +390,7 @@ function ProjectCard({ p }: { p: Project }) {
 
 function CompanyLabel({ name, note }: { name: string; note: string }) {
   return (
-    <div className="flex items-center gap-2.5">
+    <div className="flex items-center gap-2.5 flex-wrap">
       <span className="font-mono text-[13px] font-bold text-text">{name}</span>
       <span className="font-mono text-[11.5px] text-text-mute">{note}</span>
     </div>
@@ -278,8 +410,8 @@ export default function AboutPage() {
             <span className="text-accent">유인학</span>입니다.
           </h1>
           <p className="m-0 text-[16.5px] leading-[1.75] text-text-soft max-w-[48ch]">
-            라이브 게임 서비스의 웹·커뮤니티·어드민을 만드는 프론트엔드 개발자입니다. 동료와 합을 맞춰 운영 중인
-            서비스를 안정적으로 개선하고, 사용자의 맥락을 먼저 고민합니다.
+            20년 넘게 서비스 중인 라이브 게임의 웹 전 영역을 프론트엔드 2인 체제로 운영하고 있습니다. 반복되는 작업은
+            구조로 없애고, 사용자의 맥락과 기기 환경을 먼저 고민합니다.
           </p>
           <div className="flex gap-3 flex-wrap mt-1">
             <a className={btnPrimary} href="mailto:syu3236@gmail.com">
@@ -291,8 +423,9 @@ export default function AboutPage() {
           </div>
           <div className="flex flex-wrap gap-[22px] mt-2">
             {[
-              { n: '3+', l: 'years' },
-              { n: 'Blomics', l: 'current' },
+              { n: '4+', l: 'years' },
+              { n: '2,200+', l: 'commits' },
+              { n: '9', l: 'repos' },
               { n: 'Live', l: 'service' },
             ].map(s => (
               <div className="flex flex-col gap-0.5" key={s.l}>
@@ -321,7 +454,7 @@ export default function AboutPage() {
       </section>
 
       {/* ---------- 핵심 역량 ---------- */}
-      <section className="grid grid-cols-3 gap-4 mt-12 max-[820px]:grid-cols-1">
+      <section className="grid grid-cols-3 gap-4 mt-12 max-[900px]:grid-cols-2 max-[560px]:grid-cols-1">
         {VALUES.map(v => (
           <div className="glass p-6 flex flex-col gap-2" key={v.k}>
             <span className="text-lg font-extrabold text-accent tracking-[-0.02em]">{v.k}</span>
@@ -390,7 +523,7 @@ export default function AboutPage() {
 
         {/* 블로믹스 */}
         <div className="mt-1 mb-3.5">
-          <CompanyLabel name="블로믹스 (Blomics)" note="2024.11 ~ 현재 · 라이브 게임 서비스" />
+          <CompanyLabel name="블로믹스 (Blomics)" note="2024.11 ~ 현재 · 라이브 게임 서비스 · 프론트엔드 2인 체제" />
         </div>
         <div className="flex flex-col gap-[18px]">
           {PROJECTS.map(p => (
